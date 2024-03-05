@@ -28,8 +28,10 @@ set(marpaESLIF_git https://github.com/jddurand/c-marpaESLIF.git)
 cmake_helpers_depend(marpaESLIF
   EXTERNALPROJECT_ADD_ARGS GIT_REPOSITORY ${marpaESLIF_git} GIT_SHALLOW TRUE
   FIND FALSE
-  MAKEAVAILABLE TRUE # To have the install rules and recuperate marpaESLIF version
 )
+list(PREPEND CMAKE_PREFIX_PATH ${CMAKE_HELPERS_INSTALL_PATH}/${CMAKE_HELPERS_INSTALL_CMAKEDIR})
+message(STATUS "CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
+set(CMAKE_FIND_USE_CMAKE_PATH TRUE)
 find_package(marpaESLIF REQUIRED)
 message(STATUS "marpaESLIF version: ${marpaESLIF_VERSION}")
 
