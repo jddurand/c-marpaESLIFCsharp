@@ -34,41 +34,68 @@ message(STATUS "CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
 set(CMAKE_FIND_USE_CMAKE_PATH TRUE)
 find_package(marpaESLIF REQUIRED)
 message(STATUS "marpaESLIF version: ${marpaESLIF_VERSION}")
-
 #
-# The CSharp interface is deciphered by calculating:
-# - All offsetof of all structures
-# - All sizes of all integral data types
+# Our wrapper to ease life with structures having unions
 #
-# Note that we reuse the try_value() macro of cmake-helpers
-# that has all the bits to make sure things are ok
+cmake_helpers_library(marpaESLIF_wrapper
+  DEPENDS        PUBLIC marpaESLIF::marpaESLIF
+  TARGETS_OUTVAR targets
+)
 #
-set(try_input ${CMAKE_CURRENT_BINARY_DIR}/try_input.c)
-file(WRITE ${try_input} "
-#include <stdio.h>
-#include <stdlib.h>
-#include <marpaESLIF.h>
-
-/* We do not bother to check if offsetof is available
-#define _my_offsetof(st, m) ((size_t)((char *)&((st *)0)->m - (char *)0))
-
-int main(int argc, char **argv) {
-#ifdef MARPAESLIF_HAVE_LONG_LONG
-  long long offset = (long long) _my_offsetof(C_STRUCT, C_MEMBER);
-  fprintf(stdout, MARPAESLIF_LONG_LONG_FMT \"\\n\", offset);
-#else
-  long offset = (long) _my_offsetof(C_STRUCT, C_M);
-  fprintf(stdout, \"%ld\\n\", offset);
-#endif
-  exit(0);
-}
-")
-function(get_marpaESLIF_offsetof struct member)
-  set(CMAKE_HELPERS_TRY_RUN_COMPILE_DEFINITIONS "-DC_STRUCT=${struct} -DC_MEMBER=${member}")
-  set(CMAKE_REQUIRED_LIBRARIES marpaESLIF::marpaESLIF)
-  cmake_helpers_try_value(C_MARPAESLIF_${struct}_${member} ${try_input} "offset(${struct}, ${member})")
-endfunction()
-
-get_marpaESLIF_offsetof("marpaESLIFValueResultPair_t" "value")
+# Our cmake helpers
+#
+list(PREPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+include(get_SIZEOF_MARPAESLIF_LONG_LONG)
+include(get_marpaESLIF_offsetof)
+#
+# Types sizes
+#
+include(CheckTypeSize)
+block()
+  get_target_property(MARPAESLIF_INCLUDE_DIRECTORIES marpaESLIF::marpaESLIF INCLUDE_DIRECTORIES)
+  message(STATUS "marpaESLIF include directories: ${MARPAESLIF_INCLUDE_DIRECTORIES}")
+  list(APPEND CMAKE_C_IMPLICIT_INCLUDE_DIRECTORIES ${MARPAESLIF_INCLUDE_DIRECTORIES})
+  set(CMAKE_EXTRA_INCLUDE_FILES "marpaESLIF.h")
+  check_type_size("int" SIZEOF_int LANGUAGE C)
+  check_type_size("size_t" SIZEOF_size_t LANGUAGE C)
+  check_type_size("short" SIZEOF_short LANGUAGE C)
+  check_type_size("char" SIZEOF_char LANGUAGE C)
+  check_type_size("unsigned int" SIZEOF_unsigned_int LANGUAGE C)
+  check_type_size("long" SIZEOF_long LANGUAGE C)
+  check_type_size("float" SIZEOF_float LANGUAGE C)
+  check_type_size("double" SIZEOF_double LANGUAGE C)
+  check_type_size("unsigned char" SIZEOF_unsigned_char LANGUAGE C)
+  check_type_size("ptrdiff_t" SIZEOF_ptrdiff_t LANGUAGE C)
+  check_type_size("marpaESLIFValueResultShort_t" SIZEOF_marpaESLIFValueResultShort_t LANGUAGE C)
+  check_type_size("marpaESLIFValueResultLong_t" SIZEOF_marpaESLIFValueResultLong_t LANGUAGE C)
+  check_type_size("marpaESLIFValueResultFloat_t" SIZEOF_marpaESLIFValueResultFloat_t LANGUAGE C)
+  check_type_size("marpaESLIFValueResultDouble_t" SIZEOF_marpaESLIFValueResultDouble_t LANGUAGE C)
+  check_type_size("marpaESLIFValueResultPtr_t" SIZEOF_marpaESLIFValueResultPtr_t LANGUAGE C)
+  check_type_size("marpaESLIFValueResultArray_t" SIZEOF_marpaESLIFValueResultArray_t LANGUAGE C)
+  check_type_size("marpaESLIFValueResultString_t" SIZEOF_marpaESLIFValueResultString_t LANGUAGE C)
+  check_type_size("marpaESLIFValueResultRow_t" SIZEOF_marpaESLIFValueResultRow_t LANGUAGE C)
+  check_type_size("marpaESLIFValueResultPair_t" SIZEOF_marpaESLIFValueResultPair_t LANGUAGE C)
+  check_type_size("marpaESLIFValueResultTable_t" SIZEOF_marpaESLIFValueResultTable_t LANGUAGE C)
+  check_type_size("marpaESLIFValueResultLongDouble_t" SIZEOF_marpaESLIFValueResultLongDouble_t LANGUAGE C)
+  if(SIZEOF_MARPAESLIF_LONG_LONG)
+    check_type_size("marpaESLIFValueResultLongLong_t" SIZEOF_marpaESLIFValueResultLongLong_t LANGUAGE C)
+  endif()
+  check_type_size("marpaESLIFValueResultOffsetAndLength_t" SIZEOF_marpaESLIFValueResultOffsetAndLength_t LANGUAGE C)
+  check_type_size("marpaESLIFValueResult_t" SIZEOF_marpaESLIFValueResult_t LANGUAGE C)
+  check_type_size("marpaESLIFAlternative_t" SIZEOF_marpaESLIFAlternative_t LANGUAGE C)
+  check_type_size("marpaESLIFValueOption_t" SIZEOF_marpaESLIFValueOption_t LANGUAGE C)
+  check_type_size("marpaESLIFRecognizerProgress_t" SIZEOF_marpaESLIFRecognizerProgress_t LANGUAGE C)
+  check_type_size("marpaESLIFString_t" SIZEOF_marpaESLIFString_t LANGUAGE C)
+  check_type_size("marpaESLIFLuaFunction_t" SIZEOF_marpaESLIFLuaFunction_t LANGUAGE C)
+  check_type_size("marpaESLIFAction_t" SIZEOF_marpaESLIFAction_t LANGUAGE C)
+  check_type_size("marpaESLIFGrammarDefaults_t" SIZEOF_marpaESLIFGrammarDefaults_t LANGUAGE C)
+  check_type_size("marpaESLIFGrammarProperty_t" SIZEOF_marpaESLIFGrammarProperty_t LANGUAGE C)
+  check_type_size("marpaESLIFRuleProperty_t" SIZEOF_marpaESLIFRuleProperty_t LANGUAGE C)
+  check_type_size("marpaESLIFSymbolProperty_t" SIZEOF_marpaESLIFSymbolProperty_t LANGUAGE C)
+  check_type_size("marpaESLIFJSONDecodeOption_t" SIZEOF_marpaESLIFJSONDecodeOption_t LANGUAGE C)
+  check_type_size("marpaESLIFOption_t" SIZEOF_marpaESLIFOption_t LANGUAGE C)
+  check_type_size("marpaESLIFGrammarOption_t" SIZEOF_marpaESLIFGrammarOption_t LANGUAGE C)
+  check_type_size("marpaESLIFSymbolOption_t" SIZEOF_marpaESLIFSymbolOption_t LANGUAGE C)
+endblock()
 
 add_library(${PROJECT_NAME} SHARED src/marpaESLIF.cs)
