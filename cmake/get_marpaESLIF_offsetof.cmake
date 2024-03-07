@@ -1,6 +1,8 @@
 function(get_marpaESLIF_offsetof struct member outvar)
-  set(try_input ${CMAKE_CURRENT_BINARY_DIR}/try_input.c)
-  file(WRITE ${try_input} "
+  set(_singleton ${outvar}_SINGLETON)
+  if(NOT ${_singleton})
+    set(try_input ${CMAKE_CURRENT_BINARY_DIR}/try_input.c)
+    file(WRITE ${try_input} "
 #include <stdio.h>
 #include <stdlib.h>
 #include <marpaESLIF.h>
@@ -20,26 +22,29 @@ int main(int argc, char **argv) {
   exit(0);
 }
 ")
-  try_run(
-    _run_result
-    _compile_result
-    SOURCE_FROM_FILE _try.c ${try_input}
-    COMPILE_DEFINITIONS -DC_STRUCT=${struct} -DC_MEMBER=${member} -DMARPAESLIFCSHARP_MARPAESLIF_WRAPPER_INTROSPECTION=1
-    CMAKE_FLAGS -DINCLUDE_DIRECTORIES=${CMAKE_CURRENT_SOURCE_DIR}/include
-    COMPILE_OUTPUT_VARIABLE _compile_output
-    LINK_LIBRARIES marpaESLIF::marpaESLIF
-    RUN_OUTPUT_VARIABLE _run_output
-  )
-  if(_compile_result AND (_run_result EQUAL 0))
-    string(REGEX MATCH "^[0-9]+" offsetof ${_run_output})
-    message(STATUS "Looking for offsetof(${struct}, ${member}) gives ${offsetof}")
-    set(${outvar} ${offsetof} PARENT_SCOPE)
-  else()
-    message(STATUS "Compile result: ${_compile_result}")
-    message(STATUS "Compile output:\n${_compile_output}")
-    message(STATUS "Run result: ${_run_result}")
-    message(STATUS "Run output:\n${_run_output}")
-    message(FATAL_ERROR "Looking for offsetof(${struct}, ${member}) failure")
+    try_run(
+      _run_result
+      _compile_result
+      SOURCE_FROM_FILE _try.c ${try_input}
+      COMPILE_DEFINITIONS -DC_STRUCT=${struct} -DC_MEMBER=${member} -DMARPAESLIFCSHARP_MARPAESLIF_WRAPPER_INTROSPECTION=1
+      CMAKE_FLAGS -DINCLUDE_DIRECTORIES=${CMAKE_CURRENT_SOURCE_DIR}/include
+      COMPILE_OUTPUT_VARIABLE _compile_output
+      LINK_LIBRARIES marpaESLIF::marpaESLIF
+      RUN_OUTPUT_VARIABLE _run_output
+    )
+    if(_compile_result AND (_run_result EQUAL 0))
+      string(REGEX MATCH "^[0-9]+" offsetof ${_run_output})
+      message(STATUS "Looking for offsetof(${struct}, ${member}) gives ${offsetof}")
+      set(${outvar} ${offsetof} PARENT_SCOPE)
+    else()
+      message(STATUS "Compile result: ${_compile_result}")
+      message(STATUS "Compile output:\n${_compile_output}")
+      message(STATUS "Run result: ${_run_result}")
+      message(STATUS "Run output:\n${_run_output}")
+      message(FATAL_ERROR "Looking for offsetof(${struct}, ${member}) failure")
+    endif()
+    set(${_singleton} TRUE CACHE BOOL "${outvar} try_run singleton" FORCE)
+    mark_as_advanced(${_singleton})
   endif()
 endfunction()
 

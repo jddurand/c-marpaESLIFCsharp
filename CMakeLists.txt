@@ -42,12 +42,6 @@ cmake_helpers_library(marpaESLIF_wrapper
   TARGETS_OUTVAR targets
 )
 #
-# Our cmake helpers
-#
-list(PREPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-include(get_SIZEOF_MARPAESLIF_LONG_LONG)
-include(get_marpaESLIF_offsetof)
-#
 # Types sizes
 #
 include(CheckTypeSize)
@@ -55,8 +49,10 @@ block()
   #
   # We said FILE FALSE when checking marpaESLIF, so per def it is installed there ;)
   #
-  include_directories(SYSTEM ${CMAKE_HELPERS_INSTALL_PATH}/${CMAKE_HELPERS_INSTALL_INCLUDEDIR} ${CMAKE_CURRENT_SOURCE_DIR}/include)
-  set(CMAKE_EXTRA_INCLUDE_FILES "marpaESLIF_wrapper.h")
+  list(APPEND CMAKE_REQUIRED_DEFINITIONS -DMARPAESLIFCSHARP_MARPAESLIF_WRAPPER_INTROSPECTION=1)
+  list(APPEND CMAKE_REQUIRED_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/include)
+  list(APPEND CMAKE_REQUIRED_LIBRARIES marpaESLIF::marpaESLIF)
+  list(APPEND CMAKE_EXTRA_INCLUDE_FILES "marpaESLIF_wrapper.h")
   check_type_size("int" SIZEOF_int LANGUAGE C)
   check_type_size("size_t" SIZEOF_size_t LANGUAGE C)
   check_type_size("short" SIZEOF_short LANGUAGE C)
@@ -97,6 +93,13 @@ block()
   check_type_size("marpaESLIFOption_t" SIZEOF_marpaESLIFOption_t LANGUAGE C)
   check_type_size("marpaESLIFGrammarOption_t" SIZEOF_marpaESLIFGrammarOption_t LANGUAGE C)
   check_type_size("marpaESLIFSymbolOption_t" SIZEOF_marpaESLIFSymbolOption_t LANGUAGE C)
+  check_type_size("marpaESLIFValueResultFlat_t" SIZEOF_marpaESLIFValueResultFlat_t LANGUAGE C)
 endblock()
+#
+# Our cmake helpers
+#
+list(PREPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+include(get_SIZEOF_MARPAESLIF_LONG_LONG)
+include(get_marpaESLIF_offsetof)
 
 add_library(${PROJECT_NAME} SHARED src/marpaESLIF.cs)
