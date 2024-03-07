@@ -52,10 +52,11 @@ include(get_marpaESLIF_offsetof)
 #
 include(CheckTypeSize)
 block()
-  get_target_property(MARPAESLIF_INCLUDE_DIRECTORIES marpaESLIF::marpaESLIF INCLUDE_DIRECTORIES)
-  message(STATUS "marpaESLIF include directories: ${MARPAESLIF_INCLUDE_DIRECTORIES}")
-  list(APPEND CMAKE_C_IMPLICIT_INCLUDE_DIRECTORIES ${MARPAESLIF_INCLUDE_DIRECTORIES})
-  set(CMAKE_EXTRA_INCLUDE_FILES "marpaESLIF.h")
+  #
+  # We said FILE FALSE when checking marpaESLIF, so per def it is installed there ;)
+  #
+  include_directories(SYSTEM ${CMAKE_HELPERS_INSTALL_PATH}/${CMAKE_HELPERS_INSTALL_INCLUDEDIR} ${CMAKE_CURRENT_SOURCE_DIR}/include)
+  set(CMAKE_EXTRA_INCLUDE_FILES "marpaESLIF_wrapper.h")
   check_type_size("int" SIZEOF_int LANGUAGE C)
   check_type_size("size_t" SIZEOF_size_t LANGUAGE C)
   check_type_size("short" SIZEOF_short LANGUAGE C)

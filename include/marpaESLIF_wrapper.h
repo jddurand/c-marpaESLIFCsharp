@@ -5,7 +5,11 @@
 #ifndef MARPAESLIFCSHARP_MARPAESLIF_WRAPPER
 #define MARPAESLIFCSHARP_MARPAESLIF_WRAPPER
 
+#ifndef MARPAESLIFCSHARP_MARPAESLIF_WRAPPER_INTROSPECTION
 #include <marpaESLIF_wrapper/export.h>
+#else
+#define marpaESLIF_wrapper_EXPORT
+#endif /* MARPAESLIFCSHARP_MARPAESLIF_WRAPPER_INTROSPECTION */
 #include <marpaESLIF.h>
 
 typedef struct marpaESLIFValueResultFlat {

@@ -4,6 +4,7 @@ function(get_marpaESLIF_offsetof struct member outvar)
 #include <stdio.h>
 #include <stdlib.h>
 #include <marpaESLIF.h>
+#include <marpaESLIF_wrapper.h>
 
 /* We do not bother to check if offsetof is available */
 #define _my_offsetof(st, m) ((size_t)((char *)&((st *)0)->m - (char *)0))
@@ -23,7 +24,8 @@ int main(int argc, char **argv) {
     _run_result
     _compile_result
     SOURCE_FROM_FILE _try.c ${try_input}
-    COMPILE_DEFINITIONS -DC_STRUCT=${struct} -DC_MEMBER=${member}
+    COMPILE_DEFINITIONS -DC_STRUCT=${struct} -DC_MEMBER=${member} -DMARPAESLIFCSHARP_MARPAESLIF_WRAPPER_INTROSPECTION=1
+    CMAKE_FLAGS -DINCLUDE_DIRECTORIES=${CMAKE_CURRENT_SOURCE_DIR}/include
     COMPILE_OUTPUT_VARIABLE _compile_output
     LINK_LIBRARIES marpaESLIF::marpaESLIF
     RUN_OUTPUT_VARIABLE _run_output
@@ -398,3 +400,32 @@ foreach(member
   )
   get_marpaESLIF_offsetof("marpaESLIFSymbolOption_t" ${member} OFFSETOF_marpaESLIFSymbolOption_t_${member})
 endforeach()
+#
+# Our marpaESLIFValueResultFlat_t handy structure
+#
+message(STATUS "Looking at type marpaESLIFValueResultFlat_t")
+foreach(member 
+    contextp
+    representationp
+    type
+    c
+    b
+    i
+    l
+    f
+    d
+    p
+    a
+    y
+    s
+    r
+    t
+    ld
+    o
+  )
+  get_marpaESLIF_offsetof("marpaESLIFValueResultFlat_t" ${member} OFFSETOF_marpaESLIFValueResultFlat_t_${member})
+endforeach()
+if(SIZEOF_MARPAESLIF_LONG_LONG)
+  set(member ll)
+  get_marpaESLIF_offsetof("marpaESLIFValueResultFlat_t" ${member} OFFSETOF_marpaESLIFValueResultFlat_t_${member})
+endif()
