@@ -6,46 +6,47 @@ namespace marpaESLIFCsharp
 {
     public class genericLoggerIface : IDisposable
     {
-        private static readonly ILog log = LogManager.GetLogger("marpaESLIFCsharp");
+        private readonly ILog logger;
         private IntPtr genericLoggerp = IntPtr.Zero;
         private bool disposed = false;
 
-        private static void callback(IntPtr userDatavp, genericLoggerLevel_t logLeveli, string msgs)
+        private void callback(IntPtr userDatavp, genericLoggerLevel_t logLeveli, string msgs)
         {
             switch (logLeveli)
             {
                 case genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_TRACE:
-                    log.Debug(msgs);
+                    this.logger.Debug(msgs);
                     break;
                 case genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_DEBUG:
-                    log.Debug(msgs);
+                    this.logger.Debug(msgs);
                     break;
                 case genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_INFO:
-                    log.Info(msgs);
+                    this.logger.Info(msgs);
                     break;
                 case genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_NOTICE:
-                    log.Info(msgs);
+                    this.logger.Info(msgs);
                     break;
                 case genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_WARNING:
-                    log.Warn(msgs);
+                    this.logger.Warn(msgs);
                     break;
                 case genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_ERROR:
-                    log.Error(msgs);
+                    this.logger.Error(msgs);
                     break;
                 case genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_CRITICAL:
-                    log.Warn(msgs);
+                    this.logger.Warn(msgs);
                     break;
                 case genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_ALERT:
-                    log.Warn(msgs);
+                    this.logger.Warn(msgs);
                     break;
                 case genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_EMERGENCY:
-                    log.Warn(msgs);
+                    this.logger.Warn(msgs);
                     break;
             }
         }
 
-        public genericLoggerIface()
+        public genericLoggerIface(ILog logger)
         {
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.genericLoggerp = genericLoggershr.genericLogger_newp(callback, IntPtr.Zero, genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_INFO);
         }
 
@@ -65,12 +66,16 @@ namespace marpaESLIFCsharp
             // Check to see if Dispose has already been called.
             if (!this.disposed)
             {
-                genericLoggershr.genericLogger_freev(this.genericLoggerp);
-                this.genericLoggerp = IntPtr.Zero;
+                genericLoggershr.genericLogger_freev(ref this.genericLoggerp);
 
                 // Note disposing has been done.
                 disposed = true;
             }
+        }
+
+        public void Info(string msgs)
+        {
+            genericLoggershr.genericLogger_logv(this.genericLoggerp, genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_INFO, "%s", msgs);
         }
     }
 }

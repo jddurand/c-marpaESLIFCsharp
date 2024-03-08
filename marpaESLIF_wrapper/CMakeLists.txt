@@ -84,4 +84,4 @@ include(get_marpaESLIF_offsetof)
 #
 # Our wrapper to ease life with structures having unions
 #
-cmake_helpers_library(marpaESLIF_wrapper DEPENDS_EXT PUBLIC BUILD_LOCAL_INTERFACE marpaESLIF)
+cmake_helpers_library(marpaESLIF_wrapper DEPENDS PUBLIC marpaESLIF::marpaESLIF)

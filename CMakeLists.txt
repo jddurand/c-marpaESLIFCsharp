@@ -62,7 +62,6 @@ add_subdirectory(genericLoggerCopy)
 # The thin interface to generigLogger shared library
 # ps: why, if generated in CMAKE_CURRENT_BINARY_DIR, does it not show in Visual Studio ?
 #
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/genericLoggerShr.cs.in ${CMAKE_CURRENT_SOURCE_DIR}/src/genericLoggerShr.cs @ONLY)
 add_library(genericLoggerShr SHARED src/genericLoggerShr.cs)
 set_property(TARGET genericLoggerShr PROPERTY VS_DOTNET_REFERENCES "System;System.Runtime.InteropServices")
 add_dependencies(genericLoggerShr genericLoggerCopy)

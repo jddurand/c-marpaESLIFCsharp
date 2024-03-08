@@ -18,38 +18,39 @@ namespace marpaESLIFCsharp
             GENERICLOGGER_LOGLEVEL_EMERGENCY
         }
 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void genericLoggerCallback_t(IntPtr userDatavp, genericLoggerLevel_t logLeveli, string msgs);
 
-        [DllImport("genericLogger.dll")]
+        [DllImport("genericLogger.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern string genericLogger_versions();
 
-        [DllImport("genericLogger.dll")]
+        [DllImport("genericLogger.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern genericLoggerCallback_t genericLogger_defaultLogCallbackp();
 
-        [DllImport("genericLogger.dll")]
+        [DllImport("genericLogger.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr genericLogger_userDatavp_setp(IntPtr genericLoggerp, IntPtr userDatavp);
 
-        [DllImport("genericLogger.dll")]
+        [DllImport("genericLogger.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr genericLogger_userDatavp_getp(IntPtr genericLoggerp);
 
-        [DllImport("genericLogger.dll")]
+        [DllImport("genericLogger.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern genericLoggerLevel_t genericLogger_logLevel_seti(IntPtr genericLoggerp, genericLoggerLevel_t logLeveli);
 
-        [DllImport("genericLogger.dll")]
+        [DllImport("genericLogger.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern genericLoggerLevel_t genericLogger_logLevel_geti(IntPtr genericLoggerp);
 
-        [DllImport("genericLogger.dll")]
+        [DllImport("genericLogger.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr genericLogger_newp(genericLoggerCallback_t logCallbackp, IntPtr userDatavp, genericLoggerLevel_t genericLoggerLeveli);
 
-        [DllImport("genericLogger.dll")]
+        [DllImport("genericLogger.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr genericLogger_clonep(IntPtr genericLoggerp);
 
-        [DllImport("genericLogger.dll")]
-        public static extern void genericLogger_freev(IntPtr genericLoggerpp);
+        [DllImport("genericLogger.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void genericLogger_freev(ref IntPtr genericLoggerpp);
 
-        // Voluntarilly skipped
-        // [DllImport("genericLogger.dll")]
-        // public static extern void genericLogger_logv(IntPtr genericLoggerp, genericLoggerLevel_t genericLoggerLeveli, string fmts, __arglist);
+        // __arglist voluntarilly skipped to a single member
+        [DllImport("genericLogger.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void genericLogger_logv(IntPtr genericLoggerp, genericLoggerLevel_t genericLoggerLeveli, string fmts, string msgs);
 
         // Voluntarilly skipped
         // [DllImport("genericLogger.dll")]
