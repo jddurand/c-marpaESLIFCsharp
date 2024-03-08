@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.26.0 FATAL_ERROR)
 #
 # Version must be kept in sync BY HAND with marpaESLIF
 #
-project(marpaESLIFCsharp VERSION 6.0.33 LANGUAGES CSharp)
+project(marpaESLIFCsharp VERSION 6.0.33 LANGUAGES C CXX CSharp)
 #
 # This version MUST be in sync with marpaESLIF version
 #
@@ -22,25 +22,44 @@ include(FetchContent)
 FetchContent_Declare(cmake-helpers GIT_REPOSITORY https://github.com/jddurand/cmake-helpers.git GIT_SHALLOW TRUE)
 FetchContent_MakeAvailable(cmake-helpers)
 #
-# marpaESLIF dependency:
+# genericLogger local target
+#
+set(genericLogger_git https://github.com/jddurand/c-genericLogger.git)
+cmake_helpers_depend(genericLogger
+  EXTERNALPROJECT_ADD_ARGS GIT_REPOSITORY ${genericLogger_git} GIT_SHALLOW TRUE
+  FIND                     FALSE
+  # CONFIGURE                FALSE
+  # BUILD                    FALSE
+  # INSTALL                  FALSE
+  # MAKEAVAILABLE            TRUE
+  # EXCLUDE_FROM_ALL         FALSE
+)
+#
+# marpaESLIF local target
 #
 set(marpaESLIF_git https://github.com/jddurand/c-marpaESLIF.git)
 cmake_helpers_depend(marpaESLIF
   EXTERNALPROJECT_ADD_ARGS GIT_REPOSITORY ${marpaESLIF_git} GIT_SHALLOW TRUE
-  FIND FALSE
+  FIND                     FALSE
+  # CONFIGURE                FALSE
+  # BUILD                    FALSE
+  # INSTALL                  FALSE
+  # MAKEAVAILABLE            TRUE
+  # EXCLUDE_FROM_ALL         FALSE
 )
+#
+# Find/import the dependencies
 list(PREPEND CMAKE_PREFIX_PATH ${CMAKE_HELPERS_INSTALL_PATH}/${CMAKE_HELPERS_INSTALL_CMAKEDIR})
 message(STATUS "CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
 set(CMAKE_FIND_USE_CMAKE_PATH TRUE)
 find_package(marpaESLIF REQUIRED)
 message(STATUS "marpaESLIF version: ${marpaESLIF_VERSION}")
+find_package(genericLogger REQUIRED)
+message(STATUS "genericLogger version: ${genericLogger_VERSION}")
 #
 # Our wrapper to ease life with structures having unions
 #
-cmake_helpers_library(marpaESLIF_wrapper
-  DEPENDS        PUBLIC marpaESLIF::marpaESLIF
-  TARGETS_OUTVAR targets
-)
+cmake_helpers_library(marpaESLIF_wrapper DEPENDS_EXT PUBLIC BUILD_LOCAL_INTERFACE marpaESLIF)
 #
 # Types sizes
 #
@@ -51,7 +70,7 @@ block()
   #
   list(APPEND CMAKE_REQUIRED_DEFINITIONS -DMARPAESLIFCSHARP_MARPAESLIF_WRAPPER_INTROSPECTION=1)
   list(APPEND CMAKE_REQUIRED_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/include)
-  list(APPEND CMAKE_REQUIRED_LIBRARIES marpaESLIF::marpaESLIF)
+  list(APPEND CMAKE_REQUIRED_LIBRARIES marpaESLIF)
   list(APPEND CMAKE_EXTRA_INCLUDE_FILES "marpaESLIF_wrapper.h")
   check_type_size("int" SIZEOF_int LANGUAGE C)
   check_type_size("size_t" SIZEOF_size_t LANGUAGE C)
@@ -101,5 +120,55 @@ endblock()
 list(PREPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 include(get_SIZEOF_MARPAESLIF_LONG_LONG)
 include(get_marpaESLIF_offsetof)
-
-add_library(${PROJECT_NAME} SHARED src/marpaESLIF.cs)
+#
+# To have something clean with our dll dependencies, for the runtime output directory
+#
+set(OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/csharp_build)
+foreach(_type DEBUG RELEASE RELWITHDEBINFO MINSIZEREL)
+  SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${_type} "${OUTPUT_DIRECTORY}")
+  SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY_${_type} "${OUTPUT_DIRECTORY}")
+  SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${_type} "${OUTPUT_DIRECTORY}")
+endforeach()
+#
+# The thin interface to generigLogger shared library
+# ps: why, if generated in CMAKE_CURRENT_BINARY_DIR, does it not show in Visual Studio ?
+#
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/genericLoggerShr.cs.in ${CMAKE_CURRENT_SOURCE_DIR}/src/genericLoggerShr.cs @ONLY)
+add_library(genericLoggerShr SHARED src/genericLoggerShr.cs)
+set_target_properties(genericLoggerShr PROPERTIES VS_DOTNET_REFERENCES "System;System.Runtime.InteropServices")
+#
+# A custom target that will copy genericLogger dll to runtime output directory. Note that I do not know a default property to get pdb location.
+#
+get_target_property(genericLogger_imported_location genericLogger::genericLogger LOCATION)
+string(REGEX REPLACE "dll$" "pdb" genericLogger_imported_pdb_location ${genericLogger_imported_location})
+if(EXISTS ${genericLogger_imported_pdb_location})
+  add_custom_target(genericLoggerCopy
+    COMMAND ${CMAKE_COMMAND} -E copy ${genericLogger_imported_location}     ${OUTPUT_DIRECTORY}
+    COMMAND ${CMAKE_COMMAND} -E copy ${genericLogger_imported_pdb_location} ${OUTPUT_DIRECTORY}
+    COMMENT "Copying genericLogger dll and pdb"
+  )
+else()
+  add_custom_target(genericLoggerCopy
+    COMMAND ${CMAKE_COMMAND} -E copy ${genericLogger_imported_location}     ${OUTPUT_DIRECTORY}
+    COMMENT "Copying genericLogger dll"
+  )
+endif()
+add_dependencies(genericLoggerShr genericLoggerCopy)
+#
+# The interface to generigLogger
+#
+add_library(genericLoggerIface SHARED src/genericLoggerIface.cs)
+set_target_properties(genericLoggerIface PROPERTIES VS_DOTNET_REFERENCES "log4net;genericLoggerShr")
+#
+# C.f. https://gitlab.kitware.com/cmake/cmake/-/issues/23573
+#
+foreach(_target genericLoggerShr genericLoggerIface)
+  target_compile_options(${_target} PRIVATE $<IF:$<STREQUAL:"win32",$<LOWER_CASE:"${CMAKE_GENERATOR_PLATFORM}">>,/platform:x86,/platform:x64>)
+endforeach()
+#
+# The thin interface to marpaESLIF
+#
+# configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/marpaESLIFshr.cs.in ${CMAKE_CURRENT_BINARY_DIR}/marpaESLIFshr.cs @ONLY)
+#
+# Our P/Invoke libraries
+#

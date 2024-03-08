@@ -131,7 +131,7 @@ foreach(member
     freeCallbackp
     sizel
   )
-  get_marpaESLIF_offsetof("marpaESLIFValueResultString_t" ${member} OFFSETOF_marpaESLIFValueResultString_t_${member})
+  get_marpaESLIF_offsetof("marpaESLIFValueResultRow_t" ${member} OFFSETOF_marpaESLIFValueResultRow_t_${member})
 endforeach()
 #
 # marpaESLIFValueResultTable_t type
