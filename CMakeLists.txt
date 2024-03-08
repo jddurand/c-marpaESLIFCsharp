@@ -135,7 +135,7 @@ endforeach()
 #
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/genericLoggerShr.cs.in ${CMAKE_CURRENT_SOURCE_DIR}/src/genericLoggerShr.cs @ONLY)
 add_library(genericLoggerShr SHARED src/genericLoggerShr.cs)
-set_target_properties(genericLoggerShr PROPERTIES VS_DOTNET_REFERENCES "System;System.Runtime.InteropServices")
+set_property(TARGET genericLoggerShr PROPERTY VS_DOTNET_REFERENCES "System;System.Runtime.InteropServices")
 #
 # A custom target that will copy genericLogger dll to runtime output directory. Note that I do not know a default property to get pdb location.
 #
@@ -158,7 +158,8 @@ add_dependencies(genericLoggerShr genericLoggerCopy)
 # The interface to generigLogger
 #
 add_library(genericLoggerIface SHARED src/genericLoggerIface.cs)
-set_target_properties(genericLoggerIface PROPERTIES VS_DOTNET_REFERENCES "log4net;genericLoggerShr")
+set_property(TARGET genericLoggerIface PROPERTY VS_DOTNET_REFERENCES "System;genericLoggerShr")
+set_property(TARGET genericLoggerIface PROPERTY VS_PACKAGE_REFERENCES "log4net_2.0.15;")
 #
 # C.f. https://gitlab.kitware.com/cmake/cmake/-/issues/23573
 #
