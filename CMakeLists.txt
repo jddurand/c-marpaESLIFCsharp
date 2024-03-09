@@ -36,10 +36,6 @@ foreach(_type DEBUG RELEASE RELWITHDEBINFO MINSIZEREL)
   SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${_type} "${OUTPUT_DIRECTORY}")
 endforeach()
 #
-# Our marpaESLIF wrapper just to easy the use of struct with unions
-#
-add_subdirectory(marpaESLIF_wrapper)
-#
 # genericLogger local target
 #
 set(genericLogger_git https://github.com/jddurand/c-genericLogger.git)
@@ -59,23 +55,60 @@ message(STATUS "genericLogger version: ${genericLogger_VERSION}")
 #
 add_subdirectory(genericLoggerCopy)
 #
+# marpaESLIF local target
+#
+set(marpaESLIF_git https://github.com/jddurand/c-marpaESLIF.git)
+cmake_helpers_depend(marpaESLIF
+  EXTERNALPROJECT_ADD_ARGS GIT_REPOSITORY ${marpaESLIF_git} GIT_SHALLOW TRUE
+  FIND                     FALSE
+  # CONFIGURE                FALSE
+  # BUILD                    FALSE
+  # INSTALL                  FALSE
+  # MAKEAVAILABLE            TRUE
+  # EXCLUDE_FROM_ALL         FALSE
+)
+find_package(marpaESLIF REQUIRED)
+message(STATUS "marpaESLIF version: ${marpaESLIF_VERSION}")
+#
+# A custom target that will copy genericLogger dll to runtime output directory. Note that I do not know a default property to get pdb location.
+#
+add_subdirectory(marpaESLIFCopy)
+#
+# Our marpaESLIF wrapper just to easy the use of struct with unions
+#
+add_subdirectory(marpaESLIF_wrapper)
+#
+# Remember C# targets because of https://gitlab.kitware.com/cmake/cmake/-/issues/23573
+#
+set(csharp_targets)
+#
 # The thin interface to generigLogger shared library
-# ps: why, if generated in CMAKE_CURRENT_BINARY_DIR, does it not show in Visual Studio ?
 #
 add_library(genericLoggerShr SHARED src/genericLoggerShr.cs)
 set_property(TARGET genericLoggerShr PROPERTY VS_DOTNET_REFERENCES "System;System.Runtime.InteropServices")
 add_dependencies(genericLoggerShr genericLoggerCopy)
+list(APPEND csharp_targets genericLoggerShr)
+#
+# The thin interface to marpaESLIF shared library
+#
+add_library(marpaESLIFShr SHARED src/marpaESLIFShr.cs)
+set_property(TARGET marpaESLIFShr PROPERTY VS_DOTNET_REFERENCES "System;System.Runtime.InteropServices")
+add_dependencies(marpaESLIFShr marpaESLIFCopy)
+list(APPEND csharp_targets marpaESLIFShr)
+#
+# The thin interface to marpaESLIF
+#
 #
 # The interface to generigLogger
 #
-add_library(genericLoggerIface SHARED src/genericLoggerIface.cs)
-add_dependencies(genericLoggerIface genericLoggerShr)
-set_property(TARGET genericLoggerIface PROPERTY VS_DOTNET_REFERENCES "System;genericLoggerShr")
-set_property(TARGET genericLoggerIface PROPERTY VS_PACKAGE_REFERENCES "log4net_2.0.15")
+# add_library(genericLoggerIface SHARED src/genericLoggerIface.cs)
+# add_dependencies(genericLoggerIface genericLoggerShr)
+#set_property(TARGET genericLoggerIface PROPERTY VS_DOTNET_REFERENCES "System;genericLoggerShr")
+# set_property(TARGET genericLoggerIface PROPERTY VS_PACKAGE_REFERENCES "log4net_2.0.15")
 #
 # C.f. https://gitlab.kitware.com/cmake/cmake/-/issues/23573
-#
-foreach(_target genericLoggerShr genericLoggerIface)
+
+foreach(_target IN LISTS csharp_targets)
   target_compile_options(${_target} PRIVATE $<IF:$<STREQUAL:"win32",$<LOWER_CASE:"${CMAKE_GENERATOR_PLATFORM}">>,/platform:x86,/platform:x64>)
 endforeach()
 #

@@ -7,21 +7,6 @@ include(FetchContent)
 FetchContent_Declare(cmake-helpers GIT_REPOSITORY https://github.com/jddurand/cmake-helpers.git GIT_SHALLOW TRUE)
 FetchContent_MakeAvailable(cmake-helpers)
 #
-# marpaESLIF local target
-#
-set(marpaESLIF_git https://github.com/jddurand/c-marpaESLIF.git)
-cmake_helpers_depend(marpaESLIF
-  EXTERNALPROJECT_ADD_ARGS GIT_REPOSITORY ${marpaESLIF_git} GIT_SHALLOW TRUE
-  FIND                     FALSE
-  # CONFIGURE                FALSE
-  # BUILD                    FALSE
-  # INSTALL                  FALSE
-  # MAKEAVAILABLE            TRUE
-  # EXCLUDE_FROM_ALL         FALSE
-)
-find_package(marpaESLIF REQUIRED)
-message(STATUS "marpaESLIF version: ${marpaESLIF_VERSION}")
-#
 # Types sizes
 #
 include(CheckTypeSize)
@@ -82,6 +67,12 @@ list(PREPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 include(get_SIZEOF_MARPAESLIF_LONG_LONG)
 include(get_marpaESLIF_offsetof)
 #
-# Our wrapper to ease life with structures having unions
+# Our wrapper to ease life with structures having unions.
+# We want only the shared library.
 #
-cmake_helpers_library(marpaESLIF_wrapper DEPENDS PUBLIC marpaESLIF::marpaESLIF)
+cmake_helpers_library(marpaESLIF_wrapper
+  TYPE_AUTO          FALSE
+  TYPE_SHARED        TRUE
+  TARGET_NAME_SHARED marpaESLIF_wrapper
+  DEPENDS            PUBLIC marpaESLIF::marpaESLIF
+)
