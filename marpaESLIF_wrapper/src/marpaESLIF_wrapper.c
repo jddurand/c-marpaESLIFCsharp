@@ -63,10 +63,10 @@ void marpaESLIFActionConvertv(marpaESLIFActionFlat_t *marpaESLIFActionFlatp, mar
 void marpaESLIFActionFlatConvertv(marpaESLIFAction_t *marpaESLIFActionp, marpaESLIFActionFlat_t *marpaESLIFActionFlatp)
 {
   /* We do NOT really mind if everything has a meaning. We just assign and this remains correct. */
-  marpaESLIFActionp->type        = marpaESLIFActionFlatp->type;
-  marpaESLIFActionp->names       = marpaESLIFActionFlatp->u.names;
-  marpaESLIFActionp->stringp     = marpaESLIFActionFlatp->u.stringp;
-  marpaESLIFActionp->luas        = marpaESLIFActionFlatp->u.luas;
-  marpaESLIFActionp->luaFunction = marpaESLIFActionFlatp->u.luaFunction;
+  marpaESLIFActionp->type          = marpaESLIFActionFlatp->type;
+  marpaESLIFActionp->u.names       = marpaESLIFActionFlatp->names;
+  marpaESLIFActionp->u.stringp     = marpaESLIFActionFlatp->stringp;
+  marpaESLIFActionp->u.luas        = marpaESLIFActionFlatp->luas;
+  marpaESLIFActionp->u.luaFunction = marpaESLIFActionFlatp->luaFunction;
 }
 
