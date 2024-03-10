@@ -676,13 +676,13 @@ namespace org.parser.marpa
         public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_isEofb(IntPtr marpaESLIFRecognizerp, ref @C2CSHARP_TYPE_SHORT@ eofbp);
 
         [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_isStartCompleteb(IntPTr marpaESLIFRecognizerp, ref @C2CSHARP_TYPE_SHORT@ completebp);
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_isStartCompleteb(IntPtr marpaESLIFRecognizerp, ref @C2CSHARP_TYPE_SHORT@ completebp);
 
         [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_event_onoffb(IntPTr marpaESLIFRecognizerp, IntPtr symbols, marpaESLIFEventType_t eventSeti, @C2CSHARP_TYPE_SHORT@ onoffb);
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_event_onoffb(IntPtr marpaESLIFRecognizerp, IntPtr symbols, marpaESLIFEventType_t eventSeti, @C2CSHARP_TYPE_SHORT@ onoffb);
 
         [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_eventb(IntPtr marpaESLIFRecognizerp, ref @C2CSHARP_TYPE_SIZE_T@ eventArraylp, IntPTr eventArraypp);
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_eventb(IntPtr marpaESLIFRecognizerp, ref @C2CSHARP_TYPE_SIZE_T@ eventArraylp, IntPtr eventArraypp);
 
         [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_progressLogb(IntPtr marpaESLIFRecognizerp, @C2CSHARP_TYPE_INT@ starti, @C2CSHARP_TYPE_INT@ endi, genericLoggerLevel_t logleveli);
