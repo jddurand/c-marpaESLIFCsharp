@@ -490,23 +490,235 @@ namespace org.parser.marpa
         public static extern IntPtr marpaESLIF_newp(marpaESLIFOption_t marpaESLIFOptionp);
 
         [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void marpaESLIF_freev(IntPtr marpaESLIFp);
-
-        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
-        // marpaESLIF returns a static address so ref string is always correct even out of scope
         public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIF_versionb(IntPtr marpaESLIFp, ref IntPtr versionsp);
 
         [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
-        // marpaESLIF returns a static address so ref string is always correct even out of scope
         public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIF_versionMajorb(IntPtr marpaESLIFp, ref @C2CSHARP_TYPE_INT@ versionMajorip);
 
         [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
-        // marpaESLIF returns a static address so ref string is always correct even out of scope
         public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIF_versionMinorb(IntPtr marpaESLIFp, ref @C2CSHARP_TYPE_INT@ versionMinorip);
 
         [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
-        // marpaESLIF returns a static address so ref string is always correct even out of scope
         public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIF_versionPatchb(IntPtr marpaESLIFp, ref @C2CSHARP_TYPE_INT@ versionPatchip);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr marpaESLIF_optionp(IntPtr marpaESLIFp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr marpaESLIF_grammarp(IntPtr marpaESLIFp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIF_numberb(IntPtr marpaESLIFp, IntPtr s, @C2CSHARP_TYPE_SIZE_T@ sizel, IntPtr marpaESLIFValueResultp, ref @C2CSHARP_TYPE_SHORT@ confidencebp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr marpaESLIFGrammar_newp(IntPtr marpaESLIFp, marpaESLIFGrammarOption_t marpaESLIFGrammarOptionp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr marpaESLIFGrammar_eslifp(IntPtr marpaESLIFGrammarp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr marpaESLIFGrammar_optionp(IntPtr marpaESLIFGrammarp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_ngrammarib(IntPtr marpaESLIFGrammarp, ref @C2CSHARP_TYPE_SHORT@ ngrammarip);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_defaultsb(IntPtr marpaESLIFGrammarp, ref IntPtr marpaESLIFGrammarDefaultsp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_defaults_by_levelb(IntPtr marpaESLIFGrammarp, ref IntPtr marpaESLIFGrammarDefaultsp, @C2CSHARP_TYPE_INT@ leveli, ref IntPtr descp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_defaults_setb(IntPtr marpaESLIFGrammarp, IntPtr marpaESLIFGrammarDefaultsp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_defaults_by_level_setb(IntPtr marpaESLIFGrammarp, IntPtr marpaESLIFGrammarDefaultsp, @C2CSHARP_TYPE_INT@ leveli, IntPtr descp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_grammar_currentb(IntPtr marpaESLIFGrammarp, ref @C2CSHARP_TYPE_INT@ levelip, IntPtr descpp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_grammar_by_levelb(IntPtr marpaESLIFGrammarp, @C2CSHARP_TYPE_INT@ leveli, IntPtr descp, ref @C2CSHARP_TYPE_INT@ levelip, IntPtr descpp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_grammarproperty_currentb(IntPtr marpaESLIFGrammarp, IntPtr grammarPropertyp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_grammarproperty_by_levelb(IntPtr marpaESLIFGrammarp, IntPtr grammarPropertyp, @C2CSHARP_TYPE_INT@ leveli, IntPtr descp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_rulearray_currentb(IntPtr marpaESLIFGrammarp, ref IntPtr ruleipp, ref @C2CSHARP_TYPE_SIZE_T@ rulelp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_rulearray_by_levelb(IntPtr marpaESLIFGrammarp, ref IntPtr ruleipp, ref @C2CSHARP_TYPE_SIZE_T@ rulelp, @C2CSHARP_TYPE_INT@ leveli, IntPtr descp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_ruleproperty_currentb(IntPtr marpaESLIFGrammarp, @C2CSHARP_TYPE_INT@ rulei, IntPtr rulePropertyp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_ruleproperty_by_levelb(IntPtr marpaESLIFGrammarp, @C2CSHARP_TYPE_INT@ rulei, IntPtr rulePropertyp, @C2CSHARP_TYPE_INT@ leveli, IntPtr descp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_ruledisplayform_currentb(IntPtr marpaESLIFGrammarp, @C2CSHARP_TYPE_INT@ rulei, IntPtr ruledisplaysp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_ruledisplayform_by_levelb(IntPtr marpaESLIFGrammarp, @C2CSHARP_TYPE_INT@ rulei, IntPtr ruledisplaysp, @C2CSHARP_TYPE_INT@ leveli, IntPtr descp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_symbolarray_currentb(IntPtr marpaESLIFGrammarp, IntPtr symbolipp, ref @C2CSHARP_TYPE_SIZE_T@ symbollp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_symbolarray_by_levelb(IntPtr marpaESLIFGrammarp, IntPtr symbolipp, ref @C2CSHARP_TYPE_SIZE_T@ symbollp, @C2CSHARP_TYPE_INT@ leveli, IntPtr descp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_symbolproperty_currentb(IntPtr marpaESLIFGrammarp, @C2CSHARP_TYPE_INT@ symboli, IntPtr marpaESLIFSymbolPropertyp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_symbolproperty_by_levelb(IntPtr marpaESLIFGrammarp, @C2CSHARP_TYPE_INT@ symboli, IntPtr marpaESLIFSymbolPropertyp, @C2CSHARP_TYPE_INT@ leveli, IntPtr descp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_symboldisplayform_currentb(IntPtr marpaESLIFGrammarp, @C2CSHARP_TYPE_INT@ symboli, IntPtr symboldisplaysp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_symboldisplayform_by_levelb(IntPtr marpaESLIFGrammarp, @C2CSHARP_TYPE_INT@ symboli, IntPtr symboldisplaysp, @C2CSHARP_TYPE_INT@ leveli, IntPtr descp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_ruleshowform_currentb(IntPtr marpaESLIFGrammarp, @C2CSHARP_TYPE_INT@ rulei, IntPtr ruleshowsp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_ruleshowform_by_levelb(IntPtr marpaESLIFGrammarp, @C2CSHARP_TYPE_INT@ rulei, IntPtr ruleshowsp, @C2CSHARP_TYPE_INT@ leveli, IntPtr descp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_grammarshowform_currentb(IntPtr marpaESLIFGrammarp, IntPtr grammarshowsp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_grammarshowform_by_levelb(IntPtr marpaESLIFGrammarp, IntPtr grammarshowsp, @C2CSHARP_TYPE_INT@ leveli, IntPtr descp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_grammarshowscriptb(IntPtr marpaESLIFGrammarp, IntPtr grammarscriptsp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_parseb(IntPtr marpaESLIFGrammarp, IntPtr marpaESLIFRecognizerOptionp, IntPtr marpaESLIFValueOptionp, ref @C2CSHARP_TYPE_SHORT@ exhaustedbp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_parse_by_levelb(IntPtr marpaESLIFGrammarp, IntPtr marpaESLIFRecognizerOptionp, IntPtr marpaESLIFValueOptionp, ref @C2CSHARP_TYPE_SHORT@ exhaustedbp, @C2CSHARP_TYPE_INT@ leveli, IntPtr descp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void marpaESLIFGrammar_freev(IntPtr marpaESLIFGrammarp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr marpaESLIFRecognizer_newp(IntPtr marpaESLIFGrammarp, IntPtr marpaESLIFRecognizerOptionp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr marpaESLIFRecognizer_newFromp(IntPtr marpaESLIFGrammarp, IntPtr marpaESLIFRecognizerSharedp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_set_exhausted_flagb(IntPtr marpaESLIFRecognizerp, @C2CSHARP_TYPE_SHORT@ exhaustedb);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_isExhaustedb(IntPtr marpaESLIFRecognizerp, ref @C2CSHARP_TYPE_SHORT@ exhaustedbp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_isCanContinueb(IntPtr marpaESLIFRecognizerp, ref @C2CSHARP_TYPE_SHORT@ isCanContinuebp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_shareb(IntPtr marpaESLIFRecognizerp, IntPtr marpaESLIFRecognizerSharedp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_peekb(IntPtr marpaESLIFRecognizerp, IntPtr marpaESLIFRecognizerPeekedp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr marpaESLIFRecognizer_grammarp(IntPtr marpaESLIFRecognizerp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr marpaESLIFRecognizer_optionp(IntPtr marpaESLIFRecognizerp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_scanb(IntPtr marpaESLIFRecognizerp, @C2CSHARP_TYPE_SHORT@ initialEventsb, ref @C2CSHARP_TYPE_SHORT@ continuebp, ref @C2CSHARP_TYPE_SHORT@ exhaustedbp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_resumeb(IntPtr marpaESLIFRecognizerp, @C2CSHARP_TYPE_SIZE_T@ deltaLengthl, ref @C2CSHARP_TYPE_SHORT@ continuebp, ref @C2CSHARP_TYPE_SHORT@ exhaustedbp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_alternativeb(IntPtr marpaESLIFRecognizerp, IntPtr marpaESLIFAlternativep);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_alternative_completeb(IntPtr marpaESLIFRecognizerp, @C2CSHARP_TYPE_SIZE_T@ lengthl);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_alternative_readb(IntPtr marpaESLIFRecognizerp, IntPtr marpaESLIFAlternativep, @C2CSHARP_TYPE_SIZE_T@ lengthl);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_name_tryb(IntPtr marpaESLIFRecognizerp, IntPtr names, ref @C2CSHARP_TYPE_SHORT@ matchbp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_discardb(IntPtr marpaESLIFRecognizerp, ref @C2CSHARP_TYPE_SIZE_T@ discardlp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_discard_tryb(IntPtr marpaESLIFRecognizerp, ref @C2CSHARP_TYPE_SHORT@ matchbp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_name_expectedb(IntPtr marpaESLIFRecognizerp, ref @C2CSHARP_TYPE_SIZE_T@ nNamelp, ref IntPtr namesArraypp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_name_last_pauseb(IntPtr marpaESLIFRecognizerp, IntPtr names, ref IntPtr pausesp, ref @C2CSHARP_TYPE_SIZE_T@ pauselp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_name_last_tryb(IntPtr marpaESLIFRecognizerp, IntPtr names, ref IntPtr trysp, ref @C2CSHARP_TYPE_SIZE_T@ trylp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_discard_last_tryb(IntPtr marpaESLIFRecognizerp, ref IntPtr trysp, ref @C2CSHARP_TYPE_SIZE_T@ trylp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_discard_lastb(IntPtr marpaESLIFRecognizerp, ref IntPtr lastsp, ref @C2CSHARP_TYPE_SIZE_T@ lastlp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_isEofb(IntPtr marpaESLIFRecognizerp, ref @C2CSHARP_TYPE_SHORT@ eofbp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_isStartCompleteb(IntPTr marpaESLIFRecognizerp, ref @C2CSHARP_TYPE_SHORT@ completebp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_event_onoffb(IntPTr marpaESLIFRecognizerp, IntPtr symbols, marpaESLIFEventType_t eventSeti, @C2CSHARP_TYPE_SHORT@ onoffb);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_eventb(IntPtr marpaESLIFRecognizerp, ref @C2CSHARP_TYPE_SIZE_T@ eventArraylp, IntPTr eventArraypp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_progressLogb(IntPtr marpaESLIFRecognizerp, @C2CSHARP_TYPE_INT@ starti, @C2CSHARP_TYPE_INT@ endi, genericLoggerLevel_t logleveli);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_progressb(IntPtr marpaESLIFRecognizerp, @C2CSHARP_TYPE_INT@ starti, @C2CSHARP_TYPE_INT@ endi, ref @C2CSHARP_TYPE_SIZE_T@ progresslp, IntPtr progresspp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_inputb(IntPtr marpaESLIFRecognizerp, IntPtr inputsp, ref @C2CSHARP_TYPE_SIZE_T@ inputlp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_errorb(IntPtr marpaESLIFRecognizerp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_locationb(IntPtr marpaESLIFRecognizerp, ref @C2CSHARP_TYPE_SIZE_T@ linelp, ref @C2CSHARP_TYPE_SIZE_T@ columnlp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_readb(IntPtr marpaESLIFRecognizerp, IntPtr inputsp, ref @C2CSHARP_TYPE_SIZE_T@ inputlp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_last_completedb(IntPtr marpaESLIFRecognizerp, IntPtr names, ref IntPtr offsetpp, ref @C2CSHARP_TYPE_SIZE_T@ lengthlp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_hook_discardb(IntPtr marpaESLIFRecognizerp, @C2CSHARP_TYPE_SHORT@ discardOnOffb);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_hook_discard_switchb(IntPtr marpaESLIFRecognizerp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_symbol_tryb(IntPtr marpaESLIFRecognizerp, IntPtr marpaESLIFSymbolp, ref @C2CSHARP_TYPE_SHORT@ matchbp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void marpaESLIFRecognizer_freev(IntPtr marpaESLIFRecognizerp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void marpaESLIF_freev(IntPtr marpaESLIFp);
 
 #endregion Thin_Interface
 
