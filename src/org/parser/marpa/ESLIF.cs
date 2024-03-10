@@ -7,7 +7,6 @@ namespace org.parser.marpa
 {
     public sealed class ESLIF : IDisposable
     {
-        private readonly ILogger<ESLIF> _logger;
         private static readonly ConcurrentDictionary<ILogger, ESLIF> Multitons = new ConcurrentDictionary<ILogger, ESLIF>();
         private readonly genericLogger genericLogger;
         private readonly IntPtr marpaESLIFp;
@@ -15,7 +14,7 @@ namespace org.parser.marpa
 
         public ESLIF(ILogger logger = null)
         {
-            this.genericLogger = new genericLogger(logger ?? _logger);
+            this.genericLogger = new genericLogger(logger);
             this.marpaESLIFp = marpaESLIFShr.marpaESLIF_newp(
                     new marpaESLIFShr.marpaESLIFOption_t
                     {
