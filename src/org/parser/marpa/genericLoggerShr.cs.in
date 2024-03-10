@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace marpaESLIFCsharp
+namespace org.parser.marpa
 {
-    public class genericLoggershr
+    public class genericLoggerShr
     {
-        public enum genericLoggerLevel_t
+#region Thin_Interface
+        public enum genericLoggerLevel_t : @C2CSHARP_TYPE_ENUM@
         {
             GENERICLOGGER_LOGLEVEL_TRACE = 0,
             GENERICLOGGER_LOGLEVEL_DEBUG,
@@ -19,9 +20,11 @@ namespace marpaESLIFCsharp
         }
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void genericLoggerCallback_t(IntPtr userDatavp, genericLoggerLevel_t logLeveli, string msgs);
+        public delegate void genericLoggerCallback_t(IntPtr userDatavp, genericLoggerLevel_t logLeveli, [MarshalAs(UnmanagedType.LPStr)] string msgs);
 
         [DllImport("genericLogger.dll", CallingConvention = CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.LPStr)]
+        // It return a static string, no need to free it in unmanaged code
         public static extern string genericLogger_versions();
 
         [DllImport("genericLogger.dll", CallingConvention = CallingConvention.Cdecl)]
@@ -50,10 +53,17 @@ namespace marpaESLIFCsharp
 
         // __arglist voluntarilly skipped to a single member
         [DllImport("genericLogger.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void genericLogger_logv(IntPtr genericLoggerp, genericLoggerLevel_t genericLoggerLeveli, string fmts, string msgs);
+        public static extern void genericLogger_logv(IntPtr genericLoggerp, genericLoggerLevel_t genericLoggerLeveli, [MarshalAs(UnmanagedType.LPStr)] string fmts, [MarshalAs(UnmanagedType.LPStr)] string msgs);
 
-        // Voluntarilly skipped
+        // Voluntarily skipped
         // [DllImport("genericLogger.dll")]
         // void genericLogger_logapv(genericLogger_t* genericLoggerp, genericLoggerLevel_t genericLoggerLeveli, const char* fmts, va_list ap);
+
+#endregion Thin_Interface
+
+#region Thin_Interface_Mapping_To_External_Interface
+
+
+#endregion Thin_Interface_Mapping_To_External_Interface
     }
 }

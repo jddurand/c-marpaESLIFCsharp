@@ -1,0 +1,518 @@
+#cmakedefine MARPAESLIF_HAVE_LONG_LONG
+using System;
+using System.Runtime.InteropServices;
+
+namespace org.parser.marpa
+{
+    public class marpaESLIFShr
+    {
+#region Thin_Interface
+
+        public enum marpaESLIFValueResultBool_t : @C2CSHARP_TYPE_ENUM@
+        {
+            MARPAESLIFVALUERESULTBOOL_FALSE = 0,
+            MARPAESLIFVALUERESULTBOOL_TRUE = 1
+        }
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void marpaESLIFValueResultFreeCallback_t(IntPtr userDatavp, IntPtr marpaESLIFValueResultp);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void marpaESLIFReaderDispose_t(IntPtr userDatavp, IntPtr inputcp, @C2CSHARP_TYPE_SIZE_T@ inputl, @C2CSHARP_TYPE_SHORT@ eofb, @C2CSHARP_TYPE_SHORT@ characterStreamb, IntPtr encodings, @C2CSHARP_TYPE_SIZE_T@ encodingl);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate @C2CSHARP_TYPE_SHORT@ marpaESLIFReader_t(IntPtr userDatavp, ref IntPtr inputcpp, ref @C2CSHARP_TYPE_SIZE_T@ inputlp, ref @C2CSHARP_TYPE_SHORT@ eofbp, ref @C2CSHARP_TYPE_SHORT@ characterStreambp, ref IntPtr encodingsp, ref @C2CSHARP_TYPE_SIZE_T@ encodinglp, ref marpaESLIFReaderDispose_t disposeCallbackpp);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizerIfCallback_t(IntPtr userDatavp, IntPtr marpaESLIFRecognizerp, IntPtr marpaESLIFValueResultp, ref marpaESLIFValueResultBool_t marpaESLIFValueResultBoolp);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate marpaESLIFRecognizerIfCallback_t marpaESLIFRecognizerIfActionResolver_t(IntPtr userDatavp, IntPtr marpaESLIFRecognizerp, IntPtr actions);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizerEventCallback_t(IntPtr userDatavp, IntPtr marpaESLIFRecognizerp, IntPtr eventArrayp, @C2CSHARP_TYPE_SIZE_T@ eventArrayl, ref marpaESLIFValueResultBool_t marpaESLIFValueResultBoolp);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate marpaESLIFRecognizerEventCallback_t marpaESLIFRecognizerEventActionResolver_t(IntPtr userDatavp, IntPtr marpaESLIFRecognizerp, IntPtr actions);
+
+        public enum marpaESLIFCalloutBlockEnum_t : @C2CSHARP_TYPE_ENUM@
+        {
+            MARPAESLIFCALLOUTBLOCK_CALLOUT_NUMBER = 0,
+            MARPAESLIFCALLOUTBLOCK_CALLOUT_STRING,
+            MARPAESLIFCALLOUTBLOCK_SUBJECT,
+            MARPAESLIFCALLOUTBLOCK_PATTERN,
+            MARPAESLIFCALLOUTBLOCK_CAPTURE_TOP,
+            MARPAESLIFCALLOUTBLOCK_CAPTURE_LAST,
+            MARPAESLIFCALLOUTBLOCK_OFFSET_VECTOR,
+            MARPAESLIFCALLOUTBLOCK_MARK,
+            MARPAESLIFCALLOUTBLOCK_START_MATCH,
+            MARPAESLIFCALLOUTBLOCK_CURRENT_POSITION,
+            MARPAESLIFCALLOUTBLOCK_NEXT_ITEM,
+            MARPAESLIFCALLOUTBLOCK_GRAMMAR_LEVEL,
+            MARPAESLIFCALLOUTBLOCK_SYMBOL_ID,
+            _MARPAESLIFCALLOUTBLOCK_SIZE,
+        }
+
+        public string[] marpaESLIFCalloutKeysp = {
+            "callout_number",
+            "callout_string",
+            "subject",
+            "pattern",
+            "capture_top",
+            "capture_last",
+            "offset_vector",
+            "mark",
+            "start_match",
+            "current_position",
+            "next_item",
+            "grammar_level",
+            "symbol_id"
+        };
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizerRegexCallback_t(IntPtr userDatavp, IntPtr marpaESLIFRecognizerp, IntPtr marpaESLIFCalloutBlockp, ref IntPtr marpaESLIFValueResultOutp);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate marpaESLIFRecognizerRegexCallback_t marpaESLIFRecognizerRegexActionResolver_t(IntPtr userDatavp, IntPtr marpaESLIFRecognizerp, IntPtr actions);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizerGeneratorCallback_t(IntPtr userDatavp, IntPtr marpaESLIFRecognizerp, IntPtr contextp, ref IntPtr marpaESLIFValueResultOutp);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate marpaESLIFRecognizerGeneratorCallback_t marpaESLIFRecognizerGeneratorActionResolver_t(IntPtr userDatavp, IntPtr marpaESLIFRecognizerp, IntPtr actions);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizerImport_t(IntPtr marpaESLIFRecognizerp, IntPtr userDatavp, IntPtr marpaESLIFValueResultp, @C2CSHARP_TYPE_SHORT@ haveUndefb);
+
+        [StructLayout(LayoutKind.Explicit, Size = @SIZEOF_marpaESLIFRecognizerOption_t@)]
+        public class marpaESLIFRecognizerOption_t
+        {
+            [FieldOffset(@OFFSETOF_marpaESLIFRecognizerOption_t_userDatavp@)] public IntPtr userDatavp;          /* User specific context */
+            [FieldOffset(@OFFSETOF_marpaESLIFRecognizerOption_t_readerCallbackp@)] public marpaESLIFReader_t readerCallbackp;     /* Reader */
+            [FieldOffset(@OFFSETOF_marpaESLIFRecognizerOption_t_disableThresholdb@)] public @C2CSHARP_TYPE_SHORT@ disableThresholdb;   /* Default: 0 */
+            [FieldOffset(@OFFSETOF_marpaESLIFRecognizerOption_t_exhaustedb@)] public @C2CSHARP_TYPE_SHORT@ exhaustedb;          /* Exhaustion event. Default: 0 */
+            [FieldOffset(@OFFSETOF_marpaESLIFRecognizerOption_t_newlineb@)] public @C2CSHARP_TYPE_SHORT@ newlineb;            /* Count line/column numbers. Default: 0 */
+            [FieldOffset(@OFFSETOF_marpaESLIFRecognizerOption_t_trackb@)] public @C2CSHARP_TYPE_SHORT@ trackb;              /* Track absolute position. Default: 0 */
+            [FieldOffset(@OFFSETOF_marpaESLIFRecognizerOption_t_bufsizl@)] public @C2CSHARP_TYPE_SIZE_T@ bufsizl;             /* Minimum stream buffer size: Recommended: 0 (publicly, a system default will apply) */
+            [FieldOffset(@OFFSETOF_marpaESLIFRecognizerOption_t_buftriggerperci@)] public @C2CSHARP_TYPE_UNSIGNED_INT@ buftriggerperci;     /* Excess number of bytes, in percentage of bufsizl, where stream buffer size is reduced. Recommended: 50 */
+            [FieldOffset(@OFFSETOF_marpaESLIFRecognizerOption_t_bufaddperci@)] public @C2CSHARP_TYPE_UNSIGNED_INT@ bufaddperci;         /* Policy of minimum of bytes for increase, in percentage of current allocated size, when stream buffer size need to augment. Recommended: 50 */
+            [FieldOffset(@OFFSETOF_marpaESLIFRecognizerOption_t_ifActionResolverp@)] public marpaESLIFRecognizerIfActionResolver_t ifActionResolverp;   /* Will return the function doing the wanted if action */
+            [FieldOffset(@OFFSETOF_marpaESLIFRecognizerOption_t_eventActionResolverp@)] public marpaESLIFRecognizerEventActionResolver_t eventActionResolverp; /* Will return the function doing the wanted event action */
+            [FieldOffset(@OFFSETOF_marpaESLIFRecognizerOption_t_regexActionResolverp@)] public marpaESLIFRecognizerRegexActionResolver_t regexActionResolverp; /* Will return the function doing the wanted regex callout action */
+            [FieldOffset(@OFFSETOF_marpaESLIFRecognizerOption_t_generatorActionResolverp@)] public marpaESLIFRecognizerGeneratorActionResolver_t generatorActionResolverp; /* Will return the function doing the wanted symbol generation action */
+            [FieldOffset(@OFFSETOF_marpaESLIFRecognizerOption_t_importerp@)] public marpaESLIFRecognizerImport_t importerp;           /* If end-user want to import a marpaESLIFValueResult */
+        }
+
+        public enum marpaESLIFEventType_t
+        {
+            MARPAESLIF_EVENTTYPE_NONE = 0x00,
+            MARPAESLIF_EVENTTYPE_COMPLETED = 0x01, /* Grammar event */
+            MARPAESLIF_EVENTTYPE_NULLED = 0x02, /* Grammar event */
+            MARPAESLIF_EVENTTYPE_PREDICTED = 0x04, /* Grammar event */
+            MARPAESLIF_EVENTTYPE_BEFORE = 0x08, /* Just before symbol is commited */
+            MARPAESLIF_EVENTTYPE_AFTER = 0x10, /* Just after symbol is commited */
+            MARPAESLIF_EVENTTYPE_EXHAUSTED = 0x20, /* Exhaustion */
+            MARPAESLIF_EVENTTYPE_DISCARD = 0x40,  /* Discard */
+        }
+
+        [StructLayout(LayoutKind.Explicit, Size = @SIZEOF_marpaESLIFEvent_t@)]
+        public class marpaESLIFEvent_t {
+            [FieldOffset(@OFFSETOF_marpaESLIFEvent_t_type@)] public marpaESLIFEventType_t type;
+            [FieldOffset(@OFFSETOF_marpaESLIFEvent_t_symbols@)] public IntPtr symbols; /* Symbol name, always NULL if exhausted event, always ':discard' if discard event */
+            [FieldOffset(@OFFSETOF_marpaESLIFEvent_t_events@)] public IntPtr events;  /* Event name, always NULL if exhaustion eent */
+        }
+
+        public enum marpaESLIFValueType_t
+        {
+            MARPAESLIF_VALUE_TYPE_UNDEF = 0,
+            MARPAESLIF_VALUE_TYPE_CHAR,
+            MARPAESLIF_VALUE_TYPE_SHORT,
+            MARPAESLIF_VALUE_TYPE_INT,
+            MARPAESLIF_VALUE_TYPE_LONG,
+            MARPAESLIF_VALUE_TYPE_FLOAT,
+            MARPAESLIF_VALUE_TYPE_DOUBLE,
+            MARPAESLIF_VALUE_TYPE_PTR,
+            MARPAESLIF_VALUE_TYPE_ARRAY,
+            MARPAESLIF_VALUE_TYPE_BOOL,
+            MARPAESLIF_VALUE_TYPE_STRING,
+            MARPAESLIF_VALUE_TYPE_ROW,
+            MARPAESLIF_VALUE_TYPE_TABLE,
+            MARPAESLIF_VALUE_TYPE_LONG_DOUBLE,
+#if MARPAESLIF_HAVE_LONG_LONG
+            MARPAESLIF_VALUE_TYPE_LONG_LONG,
+#endif
+            MARPAESLIF_VALUE_TYPE_OFFSET_AND_LENGTH,
+        }
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate @C2CSHARP_TYPE_SHORT@ marpaESLIFValueRuleCallback_t(IntPtr userDatavp, IntPtr marpaESLIFValuep, @C2CSHARP_TYPE_INT@ arg0i, @C2CSHARP_TYPE_INT@ argni, @C2CSHARP_TYPE_INT@ resulti, @C2CSHARP_TYPE_SHORT@ nullableb);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate @C2CSHARP_TYPE_SHORT@ marpaESLIFValueSymbolCallback_t(IntPtr userDatavp, IntPtr marpaESLIFValuep, IntPtr marpaESLIFValueResult, @C2CSHARP_TYPE_INT@ resulti);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate marpaESLIFValueRuleCallback_t marpaESLIFValueRuleActionResolver_t(IntPtr userDatavp, IntPtr marpaESLIFValuep, IntPtr actions);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate marpaESLIFValueSymbolCallback_t marpaESLIFValueSymbolActionResolver_t(IntPtr userDatavp, IntPtr marpaESLIFValuep, IntPtr actions);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void marpaESLIFRepresentationDispose_t(IntPtr userDatavp, IntPtr inputcp, @C2CSHARP_TYPE_SIZE_T@ inputl, IntPtr encodingasciis);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate @C2CSHARP_TYPE_SHORT@ marpaESLIFRepresentation_t(IntPtr userDatavp, IntPtr marpaESLIFValueResultp, ref IntPtr inputcpp, ref @C2CSHARP_TYPE_SIZE_T@ inputlp, ref IntPtr encodingasciisp, ref marpaESLIFRepresentationDispose_t disposeCallbackpp, ref @C2CSHARP_TYPE_SHORT@ stringbp);
+
+        [StructLayout(LayoutKind.Explicit, Size = @SIZEOF_marpaESLIFValueResultPtr_t@)]
+        public class marpaESLIFValueResultPtr_t
+        {
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultPtr_t_p@)] public IntPtr p;
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultPtr_t_shallowb@)] public @C2CSHARP_TYPE_SHORT@ shallowb;
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultPtr_t_freeUserDatavp@)] public IntPtr freeUserDatavp;
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultPtr_t_freeCallbackp@)] public marpaESLIFValueResultFreeCallback_t freeCallbackp;
+        }
+
+        [StructLayout(LayoutKind.Explicit, Size = @SIZEOF_marpaESLIFValueResultArray_t@)]
+        public class marpaESLIFValueResultArray_t
+        {
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultArray_t_p@)] public IntPtr p;
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultArray_t_shallowb@)] public @C2CSHARP_TYPE_SHORT@ shallowb;
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultArray_t_freeUserDatavp@)] public IntPtr freeUserDatavp;
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultArray_t_freeCallbackp@)] public marpaESLIFValueResultFreeCallback_t freeCallbackp;
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultArray_t_sizel@)] public @C2CSHARP_TYPE_SIZE_T@ sizel;
+        }
+
+        [StructLayout(LayoutKind.Explicit, Size = @SIZEOF_marpaESLIFValueResultString_t@)]
+        public class marpaESLIFValueResultString_t
+        {
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultString_t_p@)] public IntPtr p;
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultString_t_shallowb@)] public @C2CSHARP_TYPE_SHORT@ shallowb;
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultString_t_freeUserDatavp@)] public IntPtr freeUserDatavp;
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultString_t_freeCallbackp@)] public marpaESLIFValueResultFreeCallback_t freeCallbackp;
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultString_t_sizel@)] public @C2CSHARP_TYPE_SIZE_T@ sizel;
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultString_t_encodingasciis@)] public IntPtr encodingasciis;
+        }
+
+        [StructLayout(LayoutKind.Explicit, Size = @SIZEOF_marpaESLIFValueResultRow_t@)]
+        public class marpaESLIFValueResultRow_t
+        {
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultRow_t_p@)] public IntPtr p;
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultRow_t_shallowb@)] public @C2CSHARP_TYPE_SHORT@ shallowb;
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultRow_t_freeUserDatavp@)] public IntPtr freeUserDatavp;
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultRow_t_freeCallbackp@)] public marpaESLIFValueResultFreeCallback_t freeCallbackp;
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultRow_t_sizel@)] public @C2CSHARP_TYPE_SIZE_T@ sizel;
+        }
+
+        [StructLayout(LayoutKind.Explicit, Size = @SIZEOF_marpaESLIFValueResultTable_t@)]
+        public class marpaESLIFValueResultTable_t
+        {
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultTable_t_p@)] public IntPtr p;
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultTable_t_shallowb@)] public @C2CSHARP_TYPE_SHORT@ shallowb;
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultTable_t_freeUserDatavp@)] public IntPtr freeUserDatavp;
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultTable_t_freeCallbackp@)] public marpaESLIFValueResultFreeCallback_t freeCallbackp;
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultTable_t_sizel@)] public @C2CSHARP_TYPE_SIZE_T@ sizel;
+        }
+
+        [StructLayout(LayoutKind.Explicit, Size = @SIZEOF_marpaESLIFValueResultOffsetAndLength_t@)]
+        public class marpaESLIFValueResultOffsetAndLength_t
+        {
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultOffsetAndLength_t_p@)] public @C2CSHARP_TYPE_PTRDIFF_T@ p;
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultOffsetAndLength_t_sizel@)] public @C2CSHARP_TYPE_SIZE_T@ sizel;
+        }
+
+        [StructLayout(LayoutKind.Explicit, Size = @SIZEOF_marpaESLIFValueResultFlat_t@)]
+        // marpaESLIFValueResult with an union cannot be represented - this is why there is our marpaESLIF_wrapper.dll
+        public class marpaESLIFValueResultFlat_t
+        {
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_contextp@)] public IntPtr contextp;          /* Free value meaningful only to the user */
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_representationp@)] public marpaESLIFRepresentation_t representationp;   /* How a user-land alternative is represented if it was in the input */
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_type@)] public marpaESLIFValueType_t type;              /* Type for tagging the following union */
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_c@)] public @C2CSHARP_TYPE_CHAR@ c; /* Value is a char */
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_b@)] public @C2CSHARP_TYPE_SHORT@ b; /* Value is a short */
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_i@)] public @C2CSHARP_TYPE_INT@ i; /* Value is an int */
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_l@)] public @C2CSHARP_TYPE_LONG@ l; /* Value is a long */
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_f@)] public @C2CSHARP_TYPE_FLOAT@ f; /* Value is a float */
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_d@)] public @C2CSHARP_TYPE_DOUBLE@ d; /* Value is a double */
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_p@)] public IntPtr p; /* Value is a pointer */
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_a@)] public marpaESLIFValueResultArray_t a; /* Value is a byte array */
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_y@)] public marpaESLIFValueResultBool_t y; /* Value is a boolean */
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_s@)] public marpaESLIFValueResultString_t s; /* Value is a string */
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_r@)] public marpaESLIFValueResultRow_t r; /* Value is a row of values */
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_t@)] public marpaESLIFValueResultTable_t t; /* Value is a row of values, where sizel is even */
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_ld@)] public @C2CSHARP_TYPE_LONG_DOUBLE@ ld; /* Value is a long double */
+#if MARPAESLIF_HAVE_LONG_LONG
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_ll@)] public @C2CSHARP_TYPE_MARPAESLIF_LONG_LONG@ ll; /* Value is a long long */
+#endif
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_o@)] public marpaESLIFValueResultOffsetAndLength_t o; /* Value is an offset and length */
+        }
+
+        [StructLayout(LayoutKind.Explicit, Size = @SIZEOF_marpaESLIFAlternative_t@)]
+        public class marpaESLIFAlternative_t
+        {
+            [FieldOffset(@OFFSETOF_marpaESLIFAlternative_t_names@)] public IntPtr names;       /* Symbol name (from automatic description or explicit name adverb) */
+            [FieldOffset(@OFFSETOF_marpaESLIFAlternative_t_value@)] [MarshalAs(UnmanagedType.ByValArray, SizeConst = @SIZEOF_marpaESLIFValueResult_t@)] public byte[] value;       /* Value */
+            [FieldOffset(@OFFSETOF_marpaESLIFAlternative_t_grammarLengthl@)] public @C2CSHARP_TYPE_SIZE_T@ grammarLengthl; /* Length within the grammar (1 in the token-stream model) */
+        }
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate @C2CSHARP_TYPE_SHORT@ marpaESLIFValueImport_t(IntPtr marpaESLIFValuep, IntPtr userDatavp, IntPtr marpaESLIFValueResultp, @C2CSHARP_TYPE_SHORT@ haveUndefb);
+
+        [StructLayout(LayoutKind.Explicit, Size = @SIZEOF_marpaESLIFValueOption_t@)]
+        public class marpaESLIFValueOption_t
+        {
+            [FieldOffset(@OFFSETOF_marpaESLIFValueOption_t_userDatavp@)] public IntPtr userDatavp;            /* User specific context */
+            [FieldOffset(@OFFSETOF_marpaESLIFValueOption_t_ruleActionResolverp@)] public marpaESLIFValueRuleActionResolver_t ruleActionResolverp;   /* Will return the function doing the wanted rule action */
+            [FieldOffset(@OFFSETOF_marpaESLIFValueOption_t_symbolActionResolverp@)] public marpaESLIFValueSymbolActionResolver_t symbolActionResolverp; /* Will return the function doing the wanted symbol action */
+            [FieldOffset(@OFFSETOF_marpaESLIFValueOption_t_importerp@)] public marpaESLIFValueImport_t importerp;             /* Will ask end-user to import a marpaESLIFValueResult */
+            [FieldOffset(@OFFSETOF_marpaESLIFValueOption_t_highRankOnlyb@)] public @C2CSHARP_TYPE_SHORT@ highRankOnlyb;         /* Default: 1 */
+            [FieldOffset(@OFFSETOF_marpaESLIFValueOption_t_orderByRankb@)] public @C2CSHARP_TYPE_SHORT@ orderByRankb;          /* Default: 1 */
+            [FieldOffset(@OFFSETOF_marpaESLIFValueOption_t_ambiguousb@)] public @C2CSHARP_TYPE_SHORT@ ambiguousb;            /* Default: 0 */
+            [FieldOffset(@OFFSETOF_marpaESLIFValueOption_t_nullb@)] public @C2CSHARP_TYPE_SHORT@ nullb;                 /* Default: 0 */
+            [FieldOffset(@OFFSETOF_marpaESLIFValueOption_t_maxParsesi@)] public @C2CSHARP_TYPE_INT@ maxParsesi;            /* Default: 0 */
+        }
+
+        [StructLayout(LayoutKind.Explicit, Size = @SIZEOF_marpaESLIFRecognizerProgress_t@)]
+        public class marpaESLIFRecognizerProgress_t
+        {
+            [FieldOffset(@OFFSETOF_marpaESLIFRecognizerProgress_t_earleySetIdi@)] public @C2CSHARP_TYPE_INT@ earleySetIdi;
+            [FieldOffset(@OFFSETOF_marpaESLIFRecognizerProgress_t_earleySetOrigIdi@)] public @C2CSHARP_TYPE_INT@ earleySetOrigIdi;
+            [FieldOffset(@OFFSETOF_marpaESLIFRecognizerProgress_t_rulei@)] public @C2CSHARP_TYPE_INT@ rulei;
+            [FieldOffset(@OFFSETOF_marpaESLIFRecognizerProgress_t_positioni@)] public @C2CSHARP_TYPE_INT@ positioni;
+        }
+
+        public enum marpaESLIFActionType_t : @C2CSHARP_TYPE_ENUM@
+        {
+            MARPAESLIF_ACTION_TYPE_NAME = 0,
+            MARPAESLIF_ACTION_TYPE_STRING,
+            MARPAESLIF_ACTION_TYPE_LUA,
+            MARPAESLIF_ACTION_TYPE_LUA_FUNCTION
+        }
+
+        [StructLayout(LayoutKind.Explicit, Size = @SIZEOF_marpaESLIFString_t@)]
+        public class marpaESLIFString_t
+        {
+            [FieldOffset(@OFFSETOF_marpaESLIFString_t_bytep@)] public IntPtr bytep;            /* pointer bytes */
+            [FieldOffset(@OFFSETOF_marpaESLIFString_t_bytel@)] public @C2CSHARP_TYPE_SIZE_T@ bytel;            /* number of bytes */
+            [FieldOffset(@OFFSETOF_marpaESLIFString_t_encodingasciis@)] public IntPtr encodingasciis;   /* Encoding of bytes, itself being writen in ASCII encoding, NUL byte terminated */
+            [FieldOffset(@OFFSETOF_marpaESLIFString_t_asciis@)] public IntPtr asciis;           /* ASCII (un-translatable bytes are changed to a replacement character) translation of previous bytes, NUL byte terminated - never NULL if bytep is not NULL */
+            /*
+             * Remark: the encodings and asciis pointers are not NULL only when ESLIF know that the buffer is associated to a "description". I.e.
+             * this is happening ONLY when parsing the grammar. Raw data never have non-NULL asciis or encodings.
+             */
+        }
+
+        [StructLayout(LayoutKind.Explicit, Size = @SIZEOF_marpaESLIFLuaFunction_t@)]
+        public class marpaESLIFLuaFunction_t
+        {
+            [FieldOffset(@OFFSETOF_marpaESLIFLuaFunction_t_luas@)] public IntPtr luas;       /* Original action as per the grammar */
+            [FieldOffset(@OFFSETOF_marpaESLIFLuaFunction_t_actions@)] public IntPtr actions;    /* The action injected into lua */
+            [FieldOffset(@OFFSETOF_marpaESLIFLuaFunction_t_luacb@)] public @C2CSHARP_TYPE_SHORT@ luacb;      /* True if action was in the form ::luac->function */
+            [FieldOffset(@OFFSETOF_marpaESLIFLuaFunction_t_luacp@)] public IntPtr luacp;      /* Precompiled chunk. Not NULL only when luacb is true and action as been used at least once */
+            [FieldOffset(@OFFSETOF_marpaESLIFLuaFunction_t_luacl@)] public @C2CSHARP_TYPE_SIZE_T@ luacl;      /* Precompiled chunk length */
+            [FieldOffset(@OFFSETOF_marpaESLIFLuaFunction_t_luacstripp@)] public IntPtr luacstripp; /* Precompiled stripped chunk - never NULL (it is done during grammar validation) */
+            [FieldOffset(@OFFSETOF_marpaESLIFLuaFunction_t_luacstripl@)] public @C2CSHARP_TYPE_SIZE_T@ luacstripl; /* Precompiled stripped chunk length */
+        }
+
+        [StructLayout(LayoutKind.Explicit, Size = @SIZEOF_marpaESLIFActionFlat_t@)]
+        public class marpaESLIFActionFlat_t
+        {
+            [FieldOffset(@OFFSETOF_marpaESLIFActionFlat_t_type@)] public marpaESLIFActionType_t type;
+            [FieldOffset(@OFFSETOF_marpaESLIFActionFlat_t_names@)] public IntPtr names;
+            [FieldOffset(@OFFSETOF_marpaESLIFActionFlat_t_stringp@)] public marpaESLIFString_t stringp;
+            [FieldOffset(@OFFSETOF_marpaESLIFActionFlat_t_luas@)] public IntPtr luas;
+            [FieldOffset(@OFFSETOF_marpaESLIFActionFlat_t_luaFunction@)] public marpaESLIFLuaFunction_t luaFunction;
+        }
+
+        [StructLayout(LayoutKind.Explicit, Size = @SIZEOF_marpaESLIFGrammarDefaults_t@)]
+        public class marpaESLIFGrammarDefaults_t
+        {
+            [FieldOffset(@OFFSETOF_marpaESLIFGrammarDefaults_t_defaultRuleActionp@)] public IntPtr defaultRuleActionp;      /* Default action for rules */
+            [FieldOffset(@OFFSETOF_marpaESLIFGrammarDefaults_t_defaultSymbolActionp@)] public IntPtr defaultSymbolActionp;    /* Default action for symbols */
+            [FieldOffset(@OFFSETOF_marpaESLIFGrammarDefaults_t_defaultEventActionp@)] public IntPtr defaultEventActionp;     /* Default action for events */
+            [FieldOffset(@OFFSETOF_marpaESLIFGrammarDefaults_t_defaultRegexActionp@)] public IntPtr defaultRegexActionp;     /* Default action for regex */
+            [FieldOffset(@OFFSETOF_marpaESLIFGrammarDefaults_t_defaultEncodings@)] public IntPtr defaultEncodings;        /* Default encoding */
+            [FieldOffset(@OFFSETOF_marpaESLIFGrammarDefaults_t_fallbackEncodings@)] public IntPtr fallbackEncodings;       /* Fallback encoding */
+        }
+
+        public enum marpaESLIFRulePropertyBit_t : @C2CSHARP_TYPE_ENUM@
+        {
+            MARPAESLIF_RULE_IS_ACCESSIBLE = 0x01,
+            MARPAESLIF_RULE_IS_NULLABLE = 0x02,
+            MARPAESLIF_RULE_IS_NULLING = 0x04,
+            MARPAESLIF_RULE_IS_LOOP = 0x08,
+            MARPAESLIF_RULE_IS_PRODUCTIVE = 0x10,
+        }
+
+        public enum marpaESLIFSymbolPropertyBit_t : @C2CSHARP_TYPE_ENUM@
+        {
+            MARPAESLIF_SYMBOL_IS_ACCESSIBLE = 0x01,
+            MARPAESLIF_SYMBOL_IS_NULLABLE = 0x02,
+            MARPAESLIF_SYMBOL_IS_NULLING = 0x04,
+            MARPAESLIF_SYMBOL_IS_PRODUCTIVE = 0x08,
+            MARPAESLIF_SYMBOL_IS_START = 0x10,
+            MARPAESLIF_SYMBOL_IS_TERMINAL = 0x20,
+        }
+
+        public enum marpaESLIFSymbolEventBit_t : @C2CSHARP_TYPE_ENUM@
+        {
+            MARPAESLIF_SYMBOL_EVENT_COMPLETION = 0x01,
+            MARPAESLIF_SYMBOL_EVENT_NULLED = 0x02,
+            MARPAESLIF_SYMBOL_EVENT_PREDICTION = 0x04,
+        }
+
+        [StructLayout(LayoutKind.Explicit, Size = @SIZEOF_marpaESLIFGrammarProperty_t@)]
+        public class marpaESLIFGrammarProperty_t
+        {
+            [FieldOffset(@OFFSETOF_marpaESLIFGrammarProperty_t_leveli@)] public @C2CSHARP_TYPE_INT@ leveli;                  /* Grammar level */
+            [FieldOffset(@OFFSETOF_marpaESLIFGrammarProperty_t_maxLeveli@)] public @C2CSHARP_TYPE_INT@ maxLeveli;               /* Maximum grammar level */
+            [FieldOffset(@OFFSETOF_marpaESLIFGrammarProperty_t_descp@)] public IntPtr descp;                   /* Grammar description (auto-generated if none) */
+            [FieldOffset(@OFFSETOF_marpaESLIFGrammarProperty_t_latmb@)] public @C2CSHARP_TYPE_SHORT@ latmb;                   /* LATM ? */
+            [FieldOffset(@OFFSETOF_marpaESLIFGrammarProperty_t_discardIsFallbackb@)] public @C2CSHARP_TYPE_SHORT@ discardIsFallbackb;      /* Discard is fallback ? */
+            [FieldOffset(@OFFSETOF_marpaESLIFGrammarProperty_t_defaultSymbolActionp@)] public IntPtr defaultSymbolActionp;    /* Default action for symbols - never NULL */
+            [FieldOffset(@OFFSETOF_marpaESLIFGrammarProperty_t_defaultRuleActionp@)] public IntPtr defaultRuleActionp;      /* Default action for rules - never NULL */
+            [FieldOffset(@OFFSETOF_marpaESLIFGrammarProperty_t_defaultEventActionp@)] public IntPtr defaultEventActionp;     /* Default action for event - can be NULL */
+            [FieldOffset(@OFFSETOF_marpaESLIFGrammarProperty_t_defaultRegexActionp@)] public IntPtr defaultRegexActionp;     /* Default action for regex - can be NULL */
+            [FieldOffset(@OFFSETOF_marpaESLIFGrammarProperty_t_starti@)] public @C2CSHARP_TYPE_INT@ starti;                  /* Start symbol Id - always >= 0 */
+            [FieldOffset(@OFFSETOF_marpaESLIFGrammarProperty_t_discardi@)] public @C2CSHARP_TYPE_INT@ discardi;                /* Discard symbol Id (-1 if none) */
+            [FieldOffset(@OFFSETOF_marpaESLIFGrammarProperty_t_nsymboll@)] public @C2CSHARP_TYPE_SIZE_T@ nsymboll;                /* Number of symbols - always > 0*/
+            [FieldOffset(@OFFSETOF_marpaESLIFGrammarProperty_t_symbolip@)] public IntPtr symbolip;                /* Array of symbols Ids - never NULL */
+            [FieldOffset(@OFFSETOF_marpaESLIFGrammarProperty_t_nrulel@)] public @C2CSHARP_TYPE_SIZE_T@ nrulel;                  /* Number of rules - always > 0*/
+            [FieldOffset(@OFFSETOF_marpaESLIFGrammarProperty_t_ruleip@)] public IntPtr ruleip;                  /* Array of rule Ids - never NULL */
+            [FieldOffset(@OFFSETOF_marpaESLIFGrammarProperty_t_defaultEncodings@)] public IntPtr defaultEncodings;        /* Default encoding */
+            [FieldOffset(@OFFSETOF_marpaESLIFGrammarProperty_t_fallbackEncodings@)] public IntPtr fallbackEncodings;       /* Fallback encoding */
+        }
+
+        [StructLayout(LayoutKind.Explicit, Size = @SIZEOF_marpaESLIFRuleProperty_t@)]
+        public class marpaESLIFRuleProperty_t
+        {
+            [FieldOffset(@OFFSETOF_marpaESLIFRuleProperty_t_idi@)] public @C2CSHARP_TYPE_INT@ idi;                          /* Rule Id */
+            [FieldOffset(@OFFSETOF_marpaESLIFRuleProperty_t_descp@)] public IntPtr descp;                        /* Rule alternative name (auto-generated if none) */
+            [FieldOffset(@OFFSETOF_marpaESLIFRuleProperty_t_asciishows@)] public IntPtr asciishows;                   /* Rule show (ASCII) */
+            [FieldOffset(@OFFSETOF_marpaESLIFRuleProperty_t_lhsi@)] public @C2CSHARP_TYPE_INT@ lhsi;                         /* LHS symbol Id */
+            [FieldOffset(@OFFSETOF_marpaESLIFRuleProperty_t_separatori@)] public @C2CSHARP_TYPE_INT@ separatori;                   /* Eventual separator symbol Id (-1 if none) */
+            [FieldOffset(@OFFSETOF_marpaESLIFRuleProperty_t_nrhsl@)] public @C2CSHARP_TYPE_SIZE_T@ nrhsl;                        /* Number of RHS, 0 in case of a nullable */
+            [FieldOffset(@OFFSETOF_marpaESLIFRuleProperty_t_rhsip@)] public IntPtr rhsip;                        /* Array of RHS Ids, NULL in case of a nullable */
+            [FieldOffset(@OFFSETOF_marpaESLIFRuleProperty_t_skipbp@)] public IntPtr skipbp;                       /* Skip flags per RHS, first RHS is at indice 0 and so on, NULL in case of a nullable or a sequence */
+            [FieldOffset(@OFFSETOF_marpaESLIFRuleProperty_t_exceptioni@)] public @C2CSHARP_TYPE_INT@ exceptioni;                   /* Exception symbol Id (-1 if none) */
+            [FieldOffset(@OFFSETOF_marpaESLIFRuleProperty_t_actionp@)] public IntPtr actionp;                      /* Action */
+            [FieldOffset(@OFFSETOF_marpaESLIFRuleProperty_t_discardEvents@)] public IntPtr discardEvents;                /* Discard event name - shallowed with its RHS */
+            [FieldOffset(@OFFSETOF_marpaESLIFRuleProperty_t_discardEventb@)] public @C2CSHARP_TYPE_SHORT@ discardEventb;                /* Discard event initial state: 0: off, 1: on */
+            [FieldOffset(@OFFSETOF_marpaESLIFRuleProperty_t_ranki@)] public @C2CSHARP_TYPE_INT@ ranki;                        /* Rank */
+            [FieldOffset(@OFFSETOF_marpaESLIFRuleProperty_t_nullRanksHighb@)] public @C2CSHARP_TYPE_SHORT@ nullRanksHighb;               /* Null ranks high ? */
+            [FieldOffset(@OFFSETOF_marpaESLIFRuleProperty_t_sequenceb@)] public @C2CSHARP_TYPE_SHORT@ sequenceb;                    /* Sequence ? */
+            [FieldOffset(@OFFSETOF_marpaESLIFRuleProperty_t_properb@)] public @C2CSHARP_TYPE_SHORT@ properb;                      /* Proper ? */
+            [FieldOffset(@OFFSETOF_marpaESLIFRuleProperty_t_minimumi@)] public @C2CSHARP_TYPE_INT@ minimumi;                     /* minimum in case of sequence ? */
+            [FieldOffset(@OFFSETOF_marpaESLIFRuleProperty_t_propertyBitSet@)] public @C2CSHARP_TYPE_INT@ propertyBitSet;               /* C.f. marpaESLIFRulePropertyBit_t */
+            [FieldOffset(@OFFSETOF_marpaESLIFRuleProperty_t_hideseparatorb@)] public @C2CSHARP_TYPE_SHORT@ hideseparatorb;               /* Separator hiden from arguments ? */
+        }
+
+        public enum marpaESLIFSymbolType_t : @C2CSHARP_TYPE_ENUM@
+        {
+            MARPAESLIF_SYMBOLTYPE_TERMINAL = 0,
+            MARPAESLIF_SYMBOLTYPE_META,
+        }
+
+        [StructLayout(LayoutKind.Explicit, Size = @SIZEOF_marpaESLIFSymbolProperty_t@)]
+        public class marpaESLIFSymbolProperty_t
+        {
+            [FieldOffset(@OFFSETOF_marpaESLIFSymbolProperty_t_type@)] public marpaESLIFSymbolType_t type;                   /* Symbol type */
+            [FieldOffset(@OFFSETOF_marpaESLIFSymbolProperty_t_startb@)] public @C2CSHARP_TYPE_SHORT@ startb;                 /* Start symbol ? */
+            [FieldOffset(@OFFSETOF_marpaESLIFSymbolProperty_t_discardb@)] public @C2CSHARP_TYPE_SHORT@ discardb;               /* Discard LHS symbol (i.e. :discard) ? */
+            [FieldOffset(@OFFSETOF_marpaESLIFSymbolProperty_t_discardRhsb@)] public @C2CSHARP_TYPE_SHORT@ discardRhsb;            /* Discard RHS symbol ? */
+            [FieldOffset(@OFFSETOF_marpaESLIFSymbolProperty_t_lhsb@)] public @C2CSHARP_TYPE_SHORT@ lhsb;                   /* Is an LHS somewhere in its grammar ? */
+            [FieldOffset(@OFFSETOF_marpaESLIFSymbolProperty_t_topb@)] public @C2CSHARP_TYPE_SHORT@ topb;                   /* Is a top-level symbol in its grammar - implies lhsb */
+            [FieldOffset(@OFFSETOF_marpaESLIFSymbolProperty_t_idi@)] public @C2CSHARP_TYPE_INT@ idi;                    /* Marpa ID */
+            [FieldOffset(@OFFSETOF_marpaESLIFSymbolProperty_t_descp@)] public IntPtr descp;                  /* Symbol description */
+            [FieldOffset(@OFFSETOF_marpaESLIFSymbolProperty_t_eventBefores@)] public IntPtr eventBefores;           /* Pause before */
+            [FieldOffset(@OFFSETOF_marpaESLIFSymbolProperty_t_eventBeforeb@)] public @C2CSHARP_TYPE_SHORT@ eventBeforeb;           /* Pause before initial state: 0: off, 1: on */
+            [FieldOffset(@OFFSETOF_marpaESLIFSymbolProperty_t_eventAfters@)] public IntPtr eventAfters;            /* Pause after */
+            [FieldOffset(@OFFSETOF_marpaESLIFSymbolProperty_t_eventAfterb@)] public @C2CSHARP_TYPE_SHORT@ eventAfterb;            /* Pause after initial state: 0: off, 1: on */
+            [FieldOffset(@OFFSETOF_marpaESLIFSymbolProperty_t_eventPredicteds@)] public IntPtr eventPredicteds;        /* Event name for prediction */
+            [FieldOffset(@OFFSETOF_marpaESLIFSymbolProperty_t_eventPredictedb@)] public @C2CSHARP_TYPE_SHORT@ eventPredictedb;        /* Prediction initial state: 0: off, 1: on */
+            [FieldOffset(@OFFSETOF_marpaESLIFSymbolProperty_t_eventNulleds@)] public IntPtr eventNulleds;           /* Event name for nulled */
+            [FieldOffset(@OFFSETOF_marpaESLIFSymbolProperty_t_eventNulledb@)] public @C2CSHARP_TYPE_SHORT@ eventNulledb;           /* Nulled initial state: 0: off, 1: on */
+            [FieldOffset(@OFFSETOF_marpaESLIFSymbolProperty_t_eventCompleteds@)] public IntPtr eventCompleteds;        /* Event name for completion */
+            [FieldOffset(@OFFSETOF_marpaESLIFSymbolProperty_t_eventCompletedb@)] public @C2CSHARP_TYPE_SHORT@ eventCompletedb;        /* Completion initial state: 0: off, 1: on */
+            [FieldOffset(@OFFSETOF_marpaESLIFSymbolProperty_t_discardEvents@)] public IntPtr discardEvents;          /* Discard event name - shallow pointer to a :discard rule's discardEvents */
+            [FieldOffset(@OFFSETOF_marpaESLIFSymbolProperty_t_discardEventb@)] public @C2CSHARP_TYPE_SHORT@ discardEventb;          /* Discard event initial state: 0: off, 1: on - copy of :discard's rule value */
+            [FieldOffset(@OFFSETOF_marpaESLIFSymbolProperty_t_lookupResolvedLeveli@)] public @C2CSHARP_TYPE_INT@ lookupResolvedLeveli;   /* Resolved grammar level */
+            [FieldOffset(@OFFSETOF_marpaESLIFSymbolProperty_t_priorityi@)] public @C2CSHARP_TYPE_INT@ priorityi;              /* Symbol priority */
+            [FieldOffset(@OFFSETOF_marpaESLIFSymbolProperty_t_nullableActionp@)] public IntPtr nullableActionp;        /* Nullable semantic */
+            [FieldOffset(@OFFSETOF_marpaESLIFSymbolProperty_t_propertyBitSet@)] public @C2CSHARP_TYPE_INT@ propertyBitSet;
+            [FieldOffset(@OFFSETOF_marpaESLIFSymbolProperty_t_eventBitSet@)] public @C2CSHARP_TYPE_INT@ eventBitSet;
+            [FieldOffset(@OFFSETOF_marpaESLIFSymbolProperty_t_symbolActionp@)] public IntPtr symbolActionp;          /* symbol-action */
+            [FieldOffset(@OFFSETOF_marpaESLIFSymbolProperty_t_ifActionp@)] public IntPtr ifActionp;              /* if-action */
+            [FieldOffset(@OFFSETOF_marpaESLIFSymbolProperty_t_generatorActionp@)] public IntPtr generatorActionp;       /* generator-action */
+            [FieldOffset(@OFFSETOF_marpaESLIFSymbolProperty_t_verboseb@)] public @C2CSHARP_TYPE_SHORT@ verboseb;               /* Symbol is verbose */
+        }
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate @C2CSHARP_TYPE_SHORT@ marpaESLIFJSONProposalAction_t(IntPtr userDatavp, IntPtr strings, @C2CSHARP_TYPE_SIZE_T@ stringl, IntPtr marpaESLIFValueResultp, short confidenceb);
+
+        [StructLayout(LayoutKind.Explicit, Size = @SIZEOF_marpaESLIFJSONDecodeOption_t@)]
+        public class marpaESLIFJSONDecodeOption_t
+        {
+            [FieldOffset(@OFFSETOF_marpaESLIFJSONDecodeOption_t_disallowDupkeysb@)] public @C2CSHARP_TYPE_SHORT@ disallowDupkeysb;                /* Do not allow duplicate key in an object */
+            [FieldOffset(@OFFSETOF_marpaESLIFJSONDecodeOption_t_maxDepthl@)] public @C2CSHARP_TYPE_SIZE_T@ maxDepthl;                       /* Maximum depth - 0 if no maximum */
+            [FieldOffset(@OFFSETOF_marpaESLIFJSONDecodeOption_t_noReplacementCharacterb@)] public @C2CSHARP_TYPE_SHORT@ noReplacementCharacterb;         /* No replacement character for invalid UTF-16 surrogates */
+            [FieldOffset(@OFFSETOF_marpaESLIFJSONDecodeOption_t_positiveInfinityActionp@)] public marpaESLIFJSONProposalAction_t positiveInfinityActionp;         /* +Infinity action */
+            [FieldOffset(@OFFSETOF_marpaESLIFJSONDecodeOption_t_negativeInfinityActionp@)] public marpaESLIFJSONProposalAction_t negativeInfinityActionp;         /* -Infinity action */
+            [FieldOffset(@OFFSETOF_marpaESLIFJSONDecodeOption_t_positiveNanActionp@)] public marpaESLIFJSONProposalAction_t positiveNanActionp;              /* +Nan action */
+            [FieldOffset(@OFFSETOF_marpaESLIFJSONDecodeOption_t_negativeNanActionp@)] public marpaESLIFJSONProposalAction_t negativeNanActionp;              /* -Nan action */
+            [FieldOffset(@OFFSETOF_marpaESLIFJSONDecodeOption_t_numberActionp@)] public marpaESLIFJSONProposalAction_t numberActionp;                   /* Number action */
+        }
+
+        [StructLayout(LayoutKind.Explicit, Size = @SIZEOF_marpaESLIFOption_t@)]
+        public class marpaESLIFOption_t
+        {
+            [FieldOffset(@OFFSETOF_marpaESLIFOption_t_genericLoggerp@)] public IntPtr genericLoggerp;  /* Logger. Default: NULL */
+        }
+
+        [StructLayout(LayoutKind.Explicit, Size = @SIZEOF_marpaESLIFGrammarOption_t@)]
+        public class marpaESLIFGrammarOption_t
+        {
+            [FieldOffset(@OFFSETOF_marpaESLIFGrammarOption_t_bytep@)] public IntPtr bytep;               /* Input */
+            [FieldOffset(@OFFSETOF_marpaESLIFGrammarOption_t_bytel@)] public @C2CSHARP_TYPE_SIZE_T@ bytel;               /* Input length in byte unit */
+            [FieldOffset(@OFFSETOF_marpaESLIFGrammarOption_t_encodings@)] public IntPtr encodings;           /* Input encoding. Default: NULL */
+            [FieldOffset(@OFFSETOF_marpaESLIFGrammarOption_t_encodingl@)] public @C2CSHARP_TYPE_SIZE_T@ encodingl;           /* Length of encoding itself. Default: 0 */
+        }
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate @C2CSHARP_TYPE_SHORT@ marpaESLIFSymbolImport_t(IntPtr marpaESLIFSymbolp, IntPtr userDatavp, IntPtr marpaESLIFValueResultp, @C2CSHARP_TYPE_SHORT@ haveUndefb);
+
+        [StructLayout(LayoutKind.Explicit, Size = @SIZEOF_marpaESLIFSymbolOption_t@)]
+        public class marpaESLIFSymbolOption_t
+        {
+            [FieldOffset(@OFFSETOF_marpaESLIFSymbolOption_t_userDatavp@)] public IntPtr userDatavp;          /* User specific context */
+            [FieldOffset(@OFFSETOF_marpaESLIFSymbolOption_t_importerp@)] public marpaESLIFSymbolImport_t importerp;           /* If end-user want to import a marpaESLIFValueResult */
+        }
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr marpaESLIF_newp(marpaESLIFOption_t marpaESLIFOptionp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void marpaESLIF_freev(IntPtr marpaESLIFp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        // marpaESLIF returns a static address so ref string is always correct even out of scope
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIF_versionb(IntPtr marpaESLIFp, ref IntPtr versionsp);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        // marpaESLIF returns a static address so ref string is always correct even out of scope
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIF_versionMajorb(IntPtr marpaESLIFp, ref @C2CSHARP_TYPE_INT@ versionMajorip);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        // marpaESLIF returns a static address so ref string is always correct even out of scope
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIF_versionMinorb(IntPtr marpaESLIFp, ref @C2CSHARP_TYPE_INT@ versionMinorip);
+
+        [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
+        // marpaESLIF returns a static address so ref string is always correct even out of scope
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIF_versionPatchb(IntPtr marpaESLIFp, ref @C2CSHARP_TYPE_INT@ versionPatchip);
+
+#endregion Thin_Interface
+
+#region Thin_Interface_Mapping_To_External_Interface
+
+
+#endregion Thin_Interface_Mapping_To_External_Interface
+    }
+}

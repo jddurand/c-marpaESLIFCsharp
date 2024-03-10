@@ -35,7 +35,8 @@ int main(int argc, char **argv) {
     if(_compile_result AND (_run_result EQUAL 0))
       string(REGEX MATCH "^[0-9]+" offsetof ${_run_output})
       message(STATUS "Looking for offsetof(${struct}, ${member}) gives ${offsetof}")
-      set(${outvar} ${offsetof} PARENT_SCOPE)
+      set(${outvar} ${offsetof} CACHE INTERNAL "offsetof(${struct}, ${member}" FORCE)
+      mark_as_advanced(${outvar})
     else()
       message(STATUS "Compile result: ${_compile_result}")
       message(STATUS "Compile output:\n${_compile_output}")
@@ -434,3 +435,16 @@ if(SIZEOF_MARPAESLIF_LONG_LONG)
   set(member ll)
   get_marpaESLIF_offsetof("marpaESLIFValueResultFlat_t" ${member} OFFSETOF_marpaESLIFValueResultFlat_t_${member})
 endif()
+#
+# Our marpaESLIFActionFlat_t handy structure
+#
+message(STATUS "Looking at type marpaESLIFActionFlat_t")
+foreach(member 
+    type
+    names
+    stringp
+    luas
+    luaFunction
+  )
+  get_marpaESLIF_offsetof("marpaESLIFActionFlat_t" ${member} OFFSETOF_marpaESLIFActionFlat_t_${member})
+endforeach()

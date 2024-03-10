@@ -49,3 +49,24 @@ void marpaESLIFValueResultFlatConvertv(marpaESLIFValueResult_t *marpaESLIFValueR
 #endif
   marpaESLIFValueResultp->u.o             = marpaESLIFValueResultFlatp->o;
 }
+
+void marpaESLIFActionConvertv(marpaESLIFActionFlat_t *marpaESLIFActionFlatp, marpaESLIFAction_t *marpaESLIFActionp)
+{
+  /* We do NOT really mind if everything has a meaning. We just assign and this remains correct. */
+  marpaESLIFActionFlatp->type        = marpaESLIFActionp->type;
+  marpaESLIFActionFlatp->names       = marpaESLIFActionp->u.names;
+  marpaESLIFActionFlatp->stringp     = marpaESLIFActionp->u.stringp;
+  marpaESLIFActionFlatp->luas        = marpaESLIFActionp->u.luas;
+  marpaESLIFActionFlatp->luaFunction = marpaESLIFActionp->u.luaFunction;
+}
+
+void marpaESLIFActionFlatConvertv(marpaESLIFAction_t *marpaESLIFActionp, marpaESLIFActionFlat_t *marpaESLIFActionFlatp)
+{
+  /* We do NOT really mind if everything has a meaning. We just assign and this remains correct. */
+  marpaESLIFActionp->type        = marpaESLIFActionFlatp->type;
+  marpaESLIFActionp->names       = marpaESLIFActionFlatp->u.names;
+  marpaESLIFActionp->stringp     = marpaESLIFActionFlatp->u.stringp;
+  marpaESLIFActionp->luas        = marpaESLIFActionFlatp->u.luas;
+  marpaESLIFActionp->luaFunction = marpaESLIFActionFlatp->u.luaFunction;
+}
+

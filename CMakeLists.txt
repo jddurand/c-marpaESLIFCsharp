@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.26.0 FATAL_ERROR)
-project(marpaESLIFCsharp VERSION 6.0.33 LANGUAGES CSharp)
+project(marpaESLIFCsharp VERSION 6.0.33 LANGUAGES C CSharp)
 #
 # Note: C.f. https://gitlab.kitware.com/cmake/cmake/-/issues/25579 to know why there are different subdirectories
 # 
@@ -42,11 +42,6 @@ set(genericLogger_git https://github.com/jddurand/c-genericLogger.git)
 cmake_helpers_depend(genericLogger
   EXTERNALPROJECT_ADD_ARGS GIT_REPOSITORY ${genericLogger_git} GIT_SHALLOW TRUE
   FIND                     FALSE
-  # CONFIGURE                FALSE
-  # BUILD                    FALSE
-  # INSTALL                  FALSE
-  # MAKEAVAILABLE            TRUE
-  # EXCLUDE_FROM_ALL         FALSE
 )
 find_package(genericLogger REQUIRED)
 message(STATUS "genericLogger version: ${genericLogger_VERSION}")
@@ -61,11 +56,6 @@ set(marpaESLIF_git https://github.com/jddurand/c-marpaESLIF.git)
 cmake_helpers_depend(marpaESLIF
   EXTERNALPROJECT_ADD_ARGS GIT_REPOSITORY ${marpaESLIF_git} GIT_SHALLOW TRUE
   FIND                     FALSE
-  # CONFIGURE                FALSE
-  # BUILD                    FALSE
-  # INSTALL                  FALSE
-  # MAKEAVAILABLE            TRUE
-  # EXCLUDE_FROM_ALL         FALSE
 )
 find_package(marpaESLIF REQUIRED)
 message(STATUS "marpaESLIF version: ${marpaESLIF_VERSION}")
@@ -78,43 +68,37 @@ add_subdirectory(marpaESLIFCopy)
 #
 add_subdirectory(marpaESLIF_wrapper)
 #
-# Remember C# targets because of https://gitlab.kitware.com/cmake/cmake/-/issues/23573
+# Thin interfaces
 #
-set(csharp_targets)
+configure_file(
+  src/org/parser/marpa/genericLoggerShr.cs.in
+  # Should be without CMAKE_CURRENT_SOURCE_DIR but does not show up in Visual Studio - a CMake bug ?
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/genericLoggerShr.cs @ONLY
+)
+configure_file(
+  src/org/parser/marpa/marpaESLIFShr.cs.in
+  # Should be without CMAKE_CURRENT_SOURCE_DIR but does not show up in Visual Studio - a CMake bug ?
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/marpaESLIFShr.cs @ONLY
+)
 #
-# The thin interface to generigLogger shared library
+# The C# package itself
 #
-add_library(genericLoggerShr SHARED src/genericLoggerShr.cs)
-set_property(TARGET genericLoggerShr PROPERTY VS_DOTNET_REFERENCES "System;System.Runtime.InteropServices")
-add_dependencies(genericLoggerShr genericLoggerCopy)
-list(APPEND csharp_targets genericLoggerShr)
-#
-# The thin interface to marpaESLIF shared library
-#
-add_library(marpaESLIFShr SHARED src/marpaESLIFShr.cs)
-set_property(TARGET marpaESLIFShr PROPERTY VS_DOTNET_REFERENCES "System;System.Runtime.InteropServices")
-add_dependencies(marpaESLIFShr marpaESLIFCopy)
-list(APPEND csharp_targets marpaESLIFShr)
-#
-# The thin interface to marpaESLIF
-#
-#
-# The interface to generigLogger
-#
-# add_library(genericLoggerIface SHARED src/genericLoggerIface.cs)
-# add_dependencies(genericLoggerIface genericLoggerShr)
-#set_property(TARGET genericLoggerIface PROPERTY VS_DOTNET_REFERENCES "System;genericLoggerShr")
-# set_property(TARGET genericLoggerIface PROPERTY VS_PACKAGE_REFERENCES "log4net_2.0.15")
+add_library(marpaESLIFCSharp SHARED
+  src/org/parser/marpa/genericLoggerShr.cs
+  src/org/parser/marpa/genericLogger.cs
+  src/org/parser/marpa/marpaESLIFShr.cs
+  src/org/parser/marpa/marpaESLIF.cs
+  src/org/parser/marpa/ESLIF.cs
+  src/org/parser/marpa/ESLIFLoggerInterface.cs
+  src/org/parser/marpa/ESLIFGrammarProperties.cs
+  src/org/parser/marpa/ESLIFJSONDecoderOption.cs
+  src/org/parser/marpa/ESLIFProgress.cs
+  src/org/parser/marpa/ESLIFSymbol.cs
+)
+add_dependencies(marpaESLIFCSharp genericLoggerCopy marpaESLIFCopy)
+set_property(TARGET marpaESLIFCSharp PROPERTY VS_DOTNET_REFERENCES "System;System.Runtime.InteropServices")
+set_property(TARGET marpaESLIFCSharp PROPERTY VS_PACKAGE_REFERENCES "Microsoft.Extensions.Logging_8.0.0")
 #
 # C.f. https://gitlab.kitware.com/cmake/cmake/-/issues/23573
-
-foreach(_target IN LISTS csharp_targets)
-  target_compile_options(${_target} PRIVATE $<IF:$<STREQUAL:"win32",$<LOWER_CASE:"${CMAKE_GENERATOR_PLATFORM}">>,/platform:x86,/platform:x64>)
-endforeach()
 #
-# The thin interface to marpaESLIF
-#
-# configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/marpaESLIFshr.cs.in ${CMAKE_CURRENT_BINARY_DIR}/marpaESLIFshr.cs @ONLY)
-#
-# Our P/Invoke libraries
-#
+target_compile_options(marpaESLIFCSharp PRIVATE $<IF:$<STREQUAL:"win32",$<LOWER_CASE:"${CMAKE_GENERATOR_PLATFORM}">>,/platform:x86,/platform:x64>)

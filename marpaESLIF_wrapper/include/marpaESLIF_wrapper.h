@@ -35,6 +35,13 @@ typedef struct marpaESLIFValueResultFlat {
   marpaESLIFValueResultOffsetAndLength_t  o; /* Value is an offset and length */
 } marpaESLIFValueResultFlat_t;
 
+typedef struct marpaESLIFActionFlat {
+  marpaESLIFActionType_t type;
+  char                          *names;
+  marpaESLIFString_t            *stringp;
+  char                          *luas;
+  marpaESLIFLuaFunction_t        luaFunction;
+} marpaESLIFActionFlat_t;
 
 #ifdef __cplusplus
 extern "C" {
@@ -44,6 +51,8 @@ extern "C" {
   /* ===================== */
   marpaESLIF_wrapper_EXPORT void marpaESLIFValueResultConvertv(marpaESLIFValueResultFlat_t *marpaESLIFValueResultFlatp, marpaESLIFValueResult_t *marpaESLIFValueResultp);
   marpaESLIF_wrapper_EXPORT void marpaESLIFValueResultFlatConvertv(marpaESLIFValueResult_t *marpaESLIFValueResultp, marpaESLIFValueResultFlat_t *marpaESLIFValueResultFlatp);
+  marpaESLIF_wrapper_EXPORT void marpaESLIFActionConvertv(marpaESLIFActionFlat_t *marpaESLIFActionFlatp, marpaESLIFAction_t *marpaESLIFActionp);
+  marpaESLIF_wrapper_EXPORT void marpaESLIFActionFlatConvertv(marpaESLIFAction_t *marpaESLIFActionp, marpaESLIFActionFlat_t *marpaESLIFActionFlatp);
 #ifdef __cplusplus
 }
 #endif
