@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using System;
+using static org.parser.marpa.genericLoggerShr;
 
 namespace org.parser.marpa
 {
@@ -14,38 +15,39 @@ namespace org.parser.marpa
         {
             this.disposedValue = false;
             this.logger = logger ?? NullLogger.Instance;
-            this.genericLoggerp = genericLoggerShr.genericLogger_newp(genericLoggerCallback, IntPtr.Zero, genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_INFO);
+            // Logging level is left to logger, so we say to genericLogger to open everything
+            this.genericLoggerp = genericLogger_newp(genericLoggerCallback, IntPtr.Zero, genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_TRACE);
         }
 
-        private void genericLoggerCallback(IntPtr userDatavp, genericLoggerShr.genericLoggerLevel_t logLeveli, string msgs)
+        private void genericLoggerCallback(IntPtr userDatavp, genericLoggerLevel_t logLeveli, string msgs)
         {
             switch (logLeveli)
             {
-                case genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_TRACE:
+                case genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_TRACE:
                     this.Trace(msgs);
                     break;
-                case genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_DEBUG:
+                case genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_DEBUG:
                     this.Debug(msgs);
                     break;
-                case genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_INFO:
+                case genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_INFO:
                     this.Info(msgs);
                     break;
-                case genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_NOTICE:
+                case genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_NOTICE:
                     this.Notice(msgs);
                     break;
-                case genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_WARNING:
+                case genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_WARNING:
                     this.Warning(msgs);
                     break;
-                case genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_ALERT:
+                case genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_ALERT:
                     this.Alert(msgs);
                     break;
-                case genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_EMERGENCY:
+                case genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_EMERGENCY:
                     this.Emergency(msgs);
                     break;
-                case genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_ERROR:
+                case genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_ERROR:
                     this.Error(msgs);
                     break;
-                case genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_CRITICAL:
+                case genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_CRITICAL:
                     this.Critical(msgs);
                     break;
             }
@@ -55,9 +57,9 @@ namespace org.parser.marpa
         {
             if (!disposedValue)
             {
-                if (this.genericLoggerp != null)
+                if (this.genericLoggerp != IntPtr.Zero)
                 {
-                    genericLoggerShr.genericLogger_freev(ref this.genericLoggerp);
+                    genericLogger_freev(ref this.genericLoggerp);
                 }
                 this.disposedValue = true;
             }
@@ -76,47 +78,74 @@ namespace org.parser.marpa
 
         public void Trace(string message)
         {
-            this.logger.LogTrace(message);
+            if (this.logger.IsEnabled(LogLevel.Trace))
+            {
+                this.logger.LogTrace(message);
+            }
         }
 
         public void Debug(string message)
         {
-            this.logger.LogDebug(message);
+            if (this.logger.IsEnabled(LogLevel.Debug))
+            {
+                this.logger.LogDebug(message);
+            }
         }
 
         public void Info(string message)
         {
-            this.logger.LogInformation(message);
+            if (this.logger.IsEnabled(LogLevel.Information))
+            {
+                this.logger.LogInformation(message);
+            }
         }
 
         public void Notice(string message)
         {
-            this.logger.LogInformation(message);
+            if (this.logger.IsEnabled(LogLevel.Information))
+            {
+                this.logger.LogInformation(message);
+            }
         }
 
         public void Warning(string message)
         {
-            this.logger.LogWarning(message);
+            if (this.logger.IsEnabled(LogLevel.Warning))
+            {
+                this.logger.LogWarning(message);
+            }
         }
 
         public void Error(string message)
         {
-            this.logger.LogError(message);
+            if (this.logger.IsEnabled(LogLevel.Error))
+            {
+                this.logger.LogError(message);
+            }
         }
 
         public void Critical(string message)
         {
-            this.logger.LogCritical(message);
+            if (this.logger.IsEnabled(LogLevel.Critical))
+            {
+                this.logger.LogCritical(message);
+            }
         }
 
         public void Alert(string message)
         {
-            this.logger.LogWarning(message);
+            if (this.logger.IsEnabled(LogLevel.Warning))
+            {
+                this.logger.LogWarning(message);
+            }
         }
 
         public void Emergency(string message)
         {
-            this.logger.LogWarning(message);
+            if (this.logger.IsEnabled(LogLevel.Warning))
+            {
+                this.logger.LogWarning(message);
+            }
         }
     }
 }
