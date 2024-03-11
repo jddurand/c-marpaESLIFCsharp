@@ -69,16 +69,19 @@ add_subdirectory(marpaESLIFCopy)
 add_subdirectory(marpaESLIF_wrapper)
 #
 # Thin interfaces
+# (should be without CMAKE_CURRENT_SOURCE_DIR but does not show up in Visual Studio - a CMake bug ?)
 #
 configure_file(
   src/org/parser/marpa/genericLoggerShr.cs.in
-  # Should be without CMAKE_CURRENT_SOURCE_DIR but does not show up in Visual Studio - a CMake bug ?
   ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/genericLoggerShr.cs @ONLY
 )
 configure_file(
   src/org/parser/marpa/marpaESLIFShr.cs.in
-  # Should be without CMAKE_CURRENT_SOURCE_DIR but does not show up in Visual Studio - a CMake bug ?
   ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/marpaESLIFShr.cs @ONLY
+)
+configure_file(
+  src/org/parser/marpa/marpaESLIF_wrapperShr.cs.in
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/marpaESLIF_wrapperShr.cs @ONLY
 )
 #
 # The C# package itself
@@ -88,6 +91,7 @@ add_library(marpaESLIFCSharp SHARED
   src/org/parser/marpa/genericLogger.cs
   src/org/parser/marpa/marpaESLIFShr.cs
   src/org/parser/marpa/marpaESLIF.cs
+  src/org/parser/marpa/marpaESLIF_wrapperShr.cs
   src/org/parser/marpa/ESLIF.cs
   src/org/parser/marpa/ESLIFLoggerInterface.cs
   src/org/parser/marpa/ESLIFGrammarProperties.cs

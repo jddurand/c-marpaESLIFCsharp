@@ -49,10 +49,16 @@ extern "C" {
   /* ===================== */
   /* marpaESLIFValueResult */
   /* ===================== */
-  marpaESLIF_wrapper_EXPORT void marpaESLIFValueResultConvertv(marpaESLIFValueResultFlat_t *marpaESLIFValueResultFlatp, marpaESLIFValueResult_t *marpaESLIFValueResultp);
-  marpaESLIF_wrapper_EXPORT void marpaESLIFValueResultFlatConvertv(marpaESLIFValueResult_t *marpaESLIFValueResultp, marpaESLIFValueResultFlat_t *marpaESLIFValueResultFlatp);
-  marpaESLIF_wrapper_EXPORT void marpaESLIFActionConvertv(marpaESLIFActionFlat_t *marpaESLIFActionFlatp, marpaESLIFAction_t *marpaESLIFActionp);
-  marpaESLIF_wrapper_EXPORT void marpaESLIFActionFlatConvertv(marpaESLIFAction_t *marpaESLIFActionp, marpaESLIFActionFlat_t *marpaESLIFActionFlatp);
+  marpaESLIF_wrapper_EXPORT marpaESLIFValueResultFlat_t *marpaESLIFValueResultConvertp(marpaESLIFValueResult_t *marpaESLIFValueResultp);
+  marpaESLIF_wrapper_EXPORT marpaESLIFValueResult_t     *marpaESLIFValueResultFlatConvertp(marpaESLIFValueResultFlat_t *marpaESLIFValueResultFlatp);
+  marpaESLIF_wrapper_EXPORT marpaESLIFActionFlat_t      *marpaESLIFActionConvertp(marpaESLIFAction_t *marpaESLIFActionp);
+  marpaESLIF_wrapper_EXPORT marpaESLIFAction_t          *marpaESLIFActionFlatConvertp(marpaESLIFActionFlat_t *marpaESLIFActionFlatp);
+  /* ============================= */
+  /* Acces to CLR memory functions */
+  /* ============================= */
+  marpaESLIF_wrapper_EXPORT void *marpaESLIF_malloc(size_t sizel);
+  marpaESLIF_wrapper_EXPORT void *marpaESLIF_realloc(void *p, size_t sizel);
+  marpaESLIF_wrapper_EXPORT void  marpaESLIF_free(void *p);
 #ifdef __cplusplus
 }
 #endif

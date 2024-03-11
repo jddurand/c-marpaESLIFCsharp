@@ -1,0 +1,81 @@
+﻿#cmakedefine MARPAESLIF_HAVE_LONG_LONG
+using System;
+using System.Runtime.InteropServices;
+
+namespace org.parser.marpa
+{
+    public class marpaESLIF_wrapperShr
+    {
+#region Thin_Interface
+        [StructLayout(LayoutKind.Explicit, Size = @SIZEOF_marpaESLIFValueResultFlat_t@)]
+        // marpaESLIFValueResult with an union cannot be represented - this is why there is our marpaESLIF_wrapper.dll
+        public class marpaESLIFValueResultFlat_t
+        {
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_contextp@)] public IntPtr contextp;          /* Free value meaningful only to the user */
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_representationp@)] public marpaESLIFShr.marpaESLIFRepresentation_t representationp;   /* How a user-land alternative is represented if it was in the input */
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_type@)] public marpaESLIFShr.marpaESLIFValueType_t type;              /* Type for tagging the following union */
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_c@)] public @C2CSHARP_TYPE_CHAR@ c; /* Value is a char */
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_b@)] public @C2CSHARP_TYPE_SHORT@ b; /* Value is a short */
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_i@)] public @C2CSHARP_TYPE_INT@ i; /* Value is an int */
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_l@)] public @C2CSHARP_TYPE_LONG@ l; /* Value is a long */
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_f@)] public @C2CSHARP_TYPE_FLOAT@ f; /* Value is a float */
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_d@)] public @C2CSHARP_TYPE_DOUBLE@ d; /* Value is a double */
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_p@)] public IntPtr p; /* Value is a pointer */
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_a@)] public marpaESLIFShr.marpaESLIFValueResultArray_t a; /* Value is a byte array */
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_y@)] public marpaESLIFShr.marpaESLIFValueResultBool_t y; /* Value is a boolean */
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_s@)] public marpaESLIFShr.marpaESLIFValueResultString_t s; /* Value is a string */
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_r@)] public marpaESLIFShr.marpaESLIFValueResultRow_t r; /* Value is a row of values */
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_t@)] public marpaESLIFShr.marpaESLIFValueResultTable_t t; /* Value is a row of values, where sizel is even */
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_ld@)] public @C2CSHARP_TYPE_LONG_DOUBLE@ ld; /* Value is a long double */
+#if MARPAESLIF_HAVE_LONG_LONG
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_ll@)] public @C2CSHARP_TYPE_MARPAESLIF_LONG_LONG@ ll; /* Value is a long long */
+#endif
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_o@)] public marpaESLIFShr.marpaESLIFValueResultOffsetAndLength_t o; /* Value is an offset and length */
+        }
+
+        [StructLayout(LayoutKind.Explicit, Size = @SIZEOF_marpaESLIFActionFlat_t@)]
+        public class marpaESLIFActionFlat_t
+        {
+            [FieldOffset(@OFFSETOF_marpaESLIFActionFlat_t_type@)] public marpaESLIFShr.marpaESLIFActionType_t type;
+            [FieldOffset(@OFFSETOF_marpaESLIFActionFlat_t_names@)] public IntPtr names;
+            [FieldOffset(@OFFSETOF_marpaESLIFActionFlat_t_stringp@)] public marpaESLIFShr.marpaESLIFString_t stringp;
+            [FieldOffset(@OFFSETOF_marpaESLIFActionFlat_t_luas@)] public IntPtr luas;
+            [FieldOffset(@OFFSETOF_marpaESLIFActionFlat_t_luaFunction@)] public marpaESLIFShr.marpaESLIFLuaFunction_t luaFunction;
+        }
+
+        [DllImport("marpaESLIF_wrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        // marpaESLIFValueResult -> marpaESLIFValueResultFlat
+        public static extern IntPtr marpaESLIFValueResultConvertp(IntPtr marpaESLIFValueResultp);
+
+        [DllImport("marpaESLIF_wrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        // marpaESLIFValueResultFlat -> marpaESLIFValueResult
+        public static extern IntPtr marpaESLIFValueResultFlatConvertp(IntPtr marpaESLIFValueResultFlatp);
+
+        [DllImport("marpaESLIF_wrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        // marpaESLIFAction -> marpaESLIFActionFlat
+        public static extern IntPtr marpaESLIFActionConvertp(IntPtr marpaESLIFActionp);
+
+        [DllImport("marpaESLIF_wrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        // marpaESLIFActionFlat -> marpaESLIFAction
+        public static extern IntPtr marpaESLIFActionFlatConvertp(IntPtr marpaESLIFActionFlatp);
+
+        [DllImport("marpaESLIF_wrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        // System malloc()
+        public static extern IntPtr marpaESLIF_malloc(@C2CSHARP_TYPE_SIZE_T@ sizel);
+
+        [DllImport("marpaESLIF_wrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        // System realloc()
+        public static extern IntPtr marpaESLIF_realloc(IntPtr p, @C2CSHARP_TYPE_SIZE_T@ sizel);
+
+        [DllImport("marpaESLIF_wrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        // System free()
+        public static extern void marpaESLIF_free(IntPtr p);
+
+#endregion Thin_Interface
+
+#region Thin_Interface_Mapping_To_External_Interface
+
+
+#endregion Thin_Interface_Mapping_To_External_Interface
+    }
+}
