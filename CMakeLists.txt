@@ -98,6 +98,33 @@ add_library(marpaESLIFCSharp SHARED
   src/org/parser/marpa/ESLIFJSONDecoderOption.cs
   src/org/parser/marpa/ESLIFProgress.cs
   src/org/parser/marpa/ESLIFSymbol.cs
+
+  src/org/parser/marpa/dev/ESLIF.cs
+  src/org/parser/marpa/dev/ESLIFEvent.cs
+  src/org/parser/marpa/dev/ESLIFEventType.cs
+  src/org/parser/marpa/dev/ESLIFException.cs
+  src/org/parser/marpa/dev/ESLIFGrammar.cs
+  src/org/parser/marpa/dev/ESLIFGrammarProperties.cs
+  src/org/parser/marpa/dev/ESLIFGrammarRuleProperties.cs
+  src/org/parser/marpa/dev/ESLIFGrammarSymbolProperties.cs
+  src/org/parser/marpa/dev/ESLIFJSON.cs
+  src/org/parser/marpa/dev/ESLIFJSONDecoder.cs
+  src/org/parser/marpa/dev/ESLIFJSONDecoderOption.cs
+  src/org/parser/marpa/dev/ESLIFJSONEncoder.cs
+  src/org/parser/marpa/dev/ESLIFLoggerInterface.cs
+  src/org/parser/marpa/dev/ESLIFLoggerLevel.cs
+  src/org/parser/marpa/dev/ESLIFMultitonNullLogger.cs
+  src/org/parser/marpa/dev/ESLIFProgress.cs
+  src/org/parser/marpa/dev/ESLIFRecognizer.cs
+  src/org/parser/marpa/dev/ESLIFRecognizerInterface.cs
+  src/org/parser/marpa/dev/ESLIFRegexCallout.cs
+  src/org/parser/marpa/dev/ESLIFRulePropertyBitSet.cs
+  src/org/parser/marpa/dev/ESLIFSymbol.cs
+  src/org/parser/marpa/dev/ESLIFSymbolEventBitSet.cs
+  src/org/parser/marpa/dev/ESLIFSymbolPropertyBitSet.cs
+  src/org/parser/marpa/dev/ESLIFSymbolType.cs
+  src/org/parser/marpa/dev/ESLIFValue.cs
+  src/org/parser/marpa/dev/ESLIFValueInterface.cs
 )
 add_dependencies(marpaESLIFCSharp genericLoggerCopy marpaESLIFCopy)
 set_property(TARGET marpaESLIFCSharp PROPERTY VS_DOTNET_REFERENCES "System;System.Runtime.InteropServices")

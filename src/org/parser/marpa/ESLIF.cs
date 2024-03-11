@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Concurrent;
 using System.Runtime.InteropServices;
@@ -13,7 +14,7 @@ namespace org.parser.marpa
         private readonly IntPtr marpaESLIFp;
         private bool disposedValue;
 
-        public ESLIF(ILogger logger = null)
+        private ESLIF(ILogger logger)
         {
             this.genericLogger = new genericLogger(logger);
             this.marpaESLIFp = marpaESLIF_newp(
@@ -25,7 +26,12 @@ namespace org.parser.marpa
 
         public static ESLIF GetESLIFInstance(ILogger logger)
         {
-            return Multitons.GetOrAdd(logger, key => new ESLIF(key));
+            if (logger == null)
+            {
+                logger = NullLogger.Instance;
+            }
+
+            return Multitons.GetOrAdd(logger, (key) => new ESLIF(key));
         }
 
         private void Dispose(bool disposing)
