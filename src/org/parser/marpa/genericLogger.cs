@@ -102,10 +102,8 @@ namespace org.parser.marpa
 
         public void Notice(string message)
         {
-            if (this.logger.IsEnabled(LogLevel.Information))
-            {
-                this.logger.LogInformation(message);
-            }
+            // No explicit Notice level, we map it to Information
+            this.Info(message);
         }
 
         public void Warning(string message)
@@ -134,18 +132,14 @@ namespace org.parser.marpa
 
         public void Alert(string message)
         {
-            if (this.logger.IsEnabled(LogLevel.Warning))
-            {
-                this.logger.LogWarning(message);
-            }
+            // No explicit Alert level, we map it to Warning
+            this.Warning(message);
         }
 
         public void Emergency(string message)
         {
-            if (this.logger.IsEnabled(LogLevel.Warning))
-            {
-                this.logger.LogWarning(message);
-            }
+            // No explicit Emergency level, we map it to Warning
+            this.Warning(message);
         }
     }
 }
