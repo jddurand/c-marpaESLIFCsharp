@@ -2,6 +2,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Runtime.InteropServices;
+using static org.parser.marpa.marpaESLIFShr;
 
 namespace org.parser.marpa
 {
@@ -15,8 +16,8 @@ namespace org.parser.marpa
         public ESLIF(ILogger logger = null)
         {
             this.genericLogger = new genericLogger(logger);
-            this.marpaESLIFp = marpaESLIFShr.marpaESLIF_newp(
-                    new marpaESLIFShr.marpaESLIFOption_t
+            this.marpaESLIFp = marpaESLIF_newp(
+                    new marpaESLIFOption_t
                     {
                         genericLoggerp = genericLogger.genericLoggerp
                     });
@@ -36,32 +37,34 @@ namespace org.parser.marpa
                     genericLogger.Dispose();
                 }
 
-                marpaESLIFShr.marpaESLIF_freev(this.marpaESLIFp);
+                marpaESLIF_freev(this.marpaESLIFp);
                 disposedValue = true;
             }
         }
 
         public string Version()
         {
-            IntPtr versions = IntPtr.Zero;
-            if (marpaESLIFShr.marpaESLIF_versionb(this.marpaESLIFp, ref versions) == 0)
+            IntPtr versionPtr = IntPtr.Zero;
+
+            if (marpaESLIF_versionb(this.marpaESLIFp, ref versionPtr) == 0)
             {
                 throw new Exception("marpaESLIF_versionb failure");
             }
+
             // It returns a pointer to a static string in the library
+            return Marshal.PtrToStringAnsi(versionPtr);
+        }
 
-            string version = Marshal.PtrToStringAnsi(versions);
-            genericLoggerShr.genericLogger_logv(this.genericLogger.genericLoggerp, genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_TRACE, "%s", $"Version: {version}");
-            genericLoggerShr.genericLogger_logv(this.genericLogger.genericLoggerp, genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_DEBUG, "%s", $"Version: {version}");
-            genericLoggerShr.genericLogger_logv(this.genericLogger.genericLoggerp, genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_INFO, "%s", $"Version: {version}");
-            genericLoggerShr.genericLogger_logv(this.genericLogger.genericLoggerp, genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_NOTICE, "%s", $"Version: {version}");
-            genericLoggerShr.genericLogger_logv(this.genericLogger.genericLoggerp, genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_WARNING, "%s", $"Version: {version}");
-            genericLoggerShr.genericLogger_logv(this.genericLogger.genericLoggerp, genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_ERROR, "%s", $"Version: {version}");
-            genericLoggerShr.genericLogger_logv(this.genericLogger.genericLoggerp, genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_CRITICAL, "%s", $"Version: {version}");
-            genericLoggerShr.genericLogger_logv(this.genericLogger.genericLoggerp, genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_ALERT, "%s", $"Version: {version}");
-            genericLoggerShr.genericLogger_logv(this.genericLogger.genericLoggerp, genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_EMERGENCY, "%s", $"Version: {version}");
+        public int Major()
+        {
+            int major = 0;
 
-            return Marshal.PtrToStringAnsi(versions);
+            if (marpaESLIF_versionMajorb(this.marpaESLIFp, ref major) == 0)
+            {
+                throw new Exception("marpaESLIF_versionMajorb failure");
+            }
+
+            return major;
         }
 
         ~ESLIF()
