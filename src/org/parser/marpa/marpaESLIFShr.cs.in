@@ -451,7 +451,7 @@ namespace org.parser.marpa
         }
 
         [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr marpaESLIF_newp(marpaESLIFOption_t marpaESLIFOptionp);
+        public static extern IntPtr marpaESLIF_newp(IntPtr marpaESLIFOptionp);
 
         [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIF_versionb(IntPtr marpaESLIFp, ref IntPtr versionsp);
@@ -475,7 +475,7 @@ namespace org.parser.marpa
         public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIF_numberb(IntPtr marpaESLIFp, IntPtr s, @C2CSHARP_TYPE_SIZE_T@ sizel, IntPtr marpaESLIFValueResultp, ref @C2CSHARP_TYPE_SHORT@ confidencebp);
 
         [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr marpaESLIFGrammar_newp(IntPtr marpaESLIFp, marpaESLIFGrammarOption_t marpaESLIFGrammarOptionp);
+        public static extern IntPtr marpaESLIFGrammar_newp(IntPtr marpaESLIFp, IntPtr marpaESLIFGrammarOptionp);
 
         [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr marpaESLIFGrammar_eslifp(IntPtr marpaESLIFGrammarp);
@@ -484,7 +484,7 @@ namespace org.parser.marpa
         public static extern IntPtr marpaESLIFGrammar_optionp(IntPtr marpaESLIFGrammarp);
 
         [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_ngrammarib(IntPtr marpaESLIFGrammarp, ref @C2CSHARP_TYPE_SHORT@ ngrammarip);
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_ngrammarib(IntPtr marpaESLIFGrammarp, ref @C2CSHARP_TYPE_INT@ ngrammarip);
 
         [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_defaultsb(IntPtr marpaESLIFGrammarp, ref IntPtr marpaESLIFGrammarDefaultsp);

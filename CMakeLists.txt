@@ -99,6 +99,7 @@ add_library(marpaESLIFCSharp SHARED
   src/org/parser/marpa/ESLIFProgress.cs
   src/org/parser/marpa/ESLIFSymbol.cs
 
+  src/org/parser/marpa/dev/InstanceHelper.cs
   src/org/parser/marpa/dev/ESLIF.cs
   src/org/parser/marpa/dev/ESLIFEvent.cs
   src/org/parser/marpa/dev/ESLIFEventType.cs
