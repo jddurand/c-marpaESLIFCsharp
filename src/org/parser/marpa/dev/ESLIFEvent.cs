@@ -11,12 +11,15 @@ namespace org.parser.marpa.dev
         private readonly string symbol;
         private readonly string @event;
 
-        /**
-	     * 
-	     * @param type the event type
-	     * @param symbol the symbol name
-	     * @param event the event name
-	     */
+        /// <summary>
+        /// Creation of an ESLIFEvent instance
+        /// </summary>
+        ///
+        /// <param name="type">Event type</param>
+        /// <param name="symbol">Symbol name</param>
+        /// <param name="event">Event name</param>
+        /// 
+        /// <returns>An ESLIFEvent instance</returns>
         public ESLIFEvent(ESLIFEventType type, string symbol, string @event) {
             this.type = type;
             this.symbol = symbol;
@@ -28,29 +31,26 @@ namespace org.parser.marpa.dev
             return $"ESLIFEvent [type={this.type}, symbol={this.symbol}, event={this.@event}]";
         }
 
-        /**
-         * 
-         * @return the event type
-         */
+        ///
+        /// <returns>the event type</returns>
+        ///
         public ESLIFEventType getType()
         {
             return this.type;
         }
 
-        /**
-         * 
-         * @return the symbol name, null only when this the exhaustion event
-         */
-        public String getSymbol()
+        ///
+        /// <returns>the symbol name, null only when this the exhaustion event</returns>
+        ///
+        public string getSymbol()
         {
             return this.symbol;
         }
 
-        /**
-         * 
-         * @return the event name, null only when this the exhaustion event
-         */
-        public String getEvent()
+        ///
+        /// <returns>the event name, null only when this the exhaustion event</returns>
+        ///
+        public string getEvent()
         {
             return this.@event;
         }
