@@ -1,6 +1,6 @@
 namespace org.parser.marpa.dev
 {
-    public class ESLIF
+    public interface ESLIFRecognizerInterface
     {
     }
 }

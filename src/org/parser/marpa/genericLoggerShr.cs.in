@@ -1,12 +1,13 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace org.parser.marpa
 {
     public class genericLoggerShr
     {
-#region Thin_Interface
         public enum genericLoggerLevel_t : @C2CSHARP_TYPE_ENUM@
         {
             GENERICLOGGER_LOGLEVEL_TRACE = 0,
@@ -19,138 +20,155 @@ namespace org.parser.marpa
             GENERICLOGGER_LOGLEVEL_ALERT,
             GENERICLOGGER_LOGLEVEL_EMERGENCY
         }
-
+    
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void genericLoggerCallback_t(IntPtr userDatavp, genericLoggerLevel_t logLeveli, [MarshalAs(UnmanagedType.LPStr)] string msgs);
-
+    
         [DllImport("genericLogger.dll", CallingConvention = CallingConvention.Cdecl)]
         [return: MarshalAs(UnmanagedType.LPStr)]
         // It return a static string, no need to free it in unmanaged code
         public static extern string genericLogger_versions();
-
+    
         [DllImport("genericLogger.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern genericLoggerCallback_t genericLogger_defaultLogCallbackp();
-
+    
         [DllImport("genericLogger.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr genericLogger_userDatavp_setp(IntPtr genericLoggerp, IntPtr userDatavp);
-
+    
         [DllImport("genericLogger.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr genericLogger_userDatavp_getp(IntPtr genericLoggerp);
-
+    
         [DllImport("genericLogger.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern genericLoggerLevel_t genericLogger_logLevel_seti(IntPtr genericLoggerp, genericLoggerLevel_t logLeveli);
-
+    
         [DllImport("genericLogger.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern genericLoggerLevel_t genericLogger_logLevel_geti(IntPtr genericLoggerp);
-
+    
         [DllImport("genericLogger.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr genericLogger_newp(genericLoggerCallback_t logCallbackp, IntPtr userDatavp, genericLoggerLevel_t genericLoggerLeveli);
-
+    
         [DllImport("genericLogger.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr genericLogger_clonep(IntPtr genericLoggerp);
-
+    
         [DllImport("genericLogger.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void genericLogger_freev(ref IntPtr genericLoggerpp);
-
+    
         // __arglist voluntarilly skipped to a single member
         [DllImport("genericLogger.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void genericLogger_logv(IntPtr genericLoggerp, genericLoggerLevel_t genericLoggerLeveli, [MarshalAs(UnmanagedType.LPStr)] string fmts, [MarshalAs(UnmanagedType.LPStr)] string msgs);
-
+    
         // Voluntarily skipped
         // [DllImport("genericLogger.dll")]
         // void genericLogger_logapv(genericLogger_t* genericLoggerp, genericLoggerLevel_t genericLoggerLeveli, const char* fmts, va_list ap);
+    }
 
-#endregion Thin_Interface
-
-#region Thin_Interface_Mapping_To_External_Interface
-
-        public class genericLogger : IDisposable
+    public class genericLogger : IDisposable
+    {
+        private void logCallback(IntPtr userDatavp, genericLoggerShr.genericLoggerLevel_t logLeveli, [MarshalAs(UnmanagedType.LPStr)] string msgs)
         {
-            private void logCallback(IntPtr userDatavp, genericLoggerLevel_t logLeveli, [MarshalAs(UnmanagedType.LPStr)] string msgs)
+            if (this.logger == null)
             {
-                if (this.logger == null)
-                {
-                    return;
-                }
-
-                switch (logLeveli)
-                {
-                    case genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_TRACE:
-                        this.logger.LogTrace(msgs);
-                        break;
-                    case genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_DEBUG:
-                        this.logger.LogDebug(msgs);
-                        break;
-                    case genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_INFO:
-                        this.logger.LogInformation(msgs);
-                        break;
-                    case genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_NOTICE:
-                        this.logger.LogInformation(msgs);
-                        break;
-                    case genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_WARNING:
-                        this.logger.LogWarning(msgs);
-                        break;
-                    case genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_ALERT:
-                        this.logger.LogWarning(msgs);
-                        break;
-                    case genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_EMERGENCY:
-                        this.logger.LogWarning(msgs);
-                        break;
-                    case genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_ERROR:
-                        this.logger.LogError(msgs);
-                        break;
-                    case genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_CRITICAL:
-                        this.logger.LogCritical(msgs);
-                        break;
-                }
+                return;
             }
-
-            public IntPtr genericLoggerp;
-            private bool disposedValue;
-            private readonly ILogger logger;
-
-            public genericLogger(ILogger logger = null)
+    
+            switch (logLeveli)
             {
-                this.logger = logger; // null is ok
-                this.genericLoggerp = genericLogger_newp(logCallback, IntPtr.Zero, genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_TRACE);
-                if (this.genericLoggerp == IntPtr.Zero)
-                {
-                    throw new Exception("genericLogger_newp failure");
-                }
-            }
-
-            protected virtual void Dispose(bool disposing)
-            {
-                if (!disposedValue)
-                {
-                    if (disposing)
-                    {
-                        // DONE: dispose managed state (managed objects)
-                    }
-
-                    // DONE: free unmanaged resources (unmanaged objects) and override finalizer
-                    genericLogger_freev(ref this.genericLoggerp);
-                    // DONE: set large fields to null
-                    this.genericLoggerp = IntPtr.Zero;
-                    disposedValue = true;
-                }
-            }
-
-            // DONE: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-            ~genericLogger()
-            {
-                // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-                Dispose(disposing: false);
-            }
-
-            public void Dispose()
-            {
-                // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-                Dispose(disposing: true);
-                GC.SuppressFinalize(this);
+                case genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_TRACE:
+                    this.logger.LogTrace(msgs);
+                    break;
+                case genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_DEBUG:
+                    this.logger.LogDebug(msgs);
+                    break;
+                case genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_INFO:
+                    this.logger.LogInformation(msgs);
+                    break;
+                case genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_NOTICE:
+                    this.logger.LogInformation(msgs);
+                    break;
+                case genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_WARNING:
+                    this.logger.LogWarning(msgs);
+                    break;
+                case genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_ALERT:
+                    this.logger.LogWarning(msgs);
+                    break;
+                case genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_EMERGENCY:
+                    this.logger.LogWarning(msgs);
+                    break;
+                case genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_ERROR:
+                    this.logger.LogError(msgs);
+                    break;
+                case genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_CRITICAL:
+                    this.logger.LogCritical(msgs);
+                    break;
             }
         }
 
-#endregion Thin_Interface_Mapping_To_External_Interface
+        private static readonly object Lock = new object();
+        private static readonly Dictionary<IntPtr,genericLogger> Multitons =new Dictionary<IntPtr, genericLogger>();
+        public IntPtr genericLoggerp;
+        private bool disposedValue;
+        private readonly ILogger logger;
+    
+        private genericLogger(ILogger logger = null)
+        {
+            this.logger = logger; // null is ok
+            this.genericLoggerp = genericLoggerShr.genericLogger_newp(logCallback, IntPtr.Zero, genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_TRACE);
+            if (this.genericLoggerp == IntPtr.Zero)
+            {
+                throw new Exception("genericLogger_newp failure");
+            }
+        }
+
+        public static genericLogger GetGenericLoggerInstance(ILogger logger = null)
+        {
+            lock (Lock)
+            {
+                // Multiton key is genericLoggerp (always != IntPtr.Zero), value is the instance, test is on logger instance.
+                genericLogger genericLogger;
+                KeyValuePair<IntPtr, genericLogger> keyPair = Multitons.FirstOrDefault(m => m.Value.logger == logger); // Ok if m.Value.logger or logger are null
+                if (keyPair.Key != IntPtr.Zero)
+                {
+                    genericLogger = keyPair.Value;
+                }
+                else
+                {
+                    genericLogger = new genericLogger(logger);
+                    Multitons.Add(genericLogger.genericLoggerp, genericLogger);
+                }
+
+                return genericLogger;
+            }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // DONE: dispose managed state (managed objects)
+                }
+    
+                // DONE: free unmanaged resources (unmanaged objects) and override finalizer
+                genericLoggerShr.genericLogger_freev(ref this.genericLoggerp);
+                // DONE: set large fields to null
+                this.genericLoggerp = IntPtr.Zero;
+                disposedValue = true;
+            }
+        }
+    
+        // DONE: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        ~genericLogger()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: false);
+        }
+    
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
     }
 }
