@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Runtime.InteropServices;
 
 namespace org.parser.marpa
@@ -63,6 +64,92 @@ namespace org.parser.marpa
 
 #region Thin_Interface_Mapping_To_External_Interface
 
+        public class genericLogger : IDisposable
+        {
+            private void logCallback(IntPtr userDatavp, genericLoggerLevel_t logLeveli, [MarshalAs(UnmanagedType.LPStr)] string msgs)
+            {
+                if (this.logger == null)
+                {
+                    return;
+                }
+
+                switch (logLeveli)
+                {
+                    case genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_TRACE:
+                        this.logger.LogTrace(msgs);
+                        break;
+                    case genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_DEBUG:
+                        this.logger.LogDebug(msgs);
+                        break;
+                    case genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_INFO:
+                        this.logger.LogInformation(msgs);
+                        break;
+                    case genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_NOTICE:
+                        this.logger.LogInformation(msgs);
+                        break;
+                    case genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_WARNING:
+                        this.logger.LogWarning(msgs);
+                        break;
+                    case genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_ALERT:
+                        this.logger.LogWarning(msgs);
+                        break;
+                    case genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_EMERGENCY:
+                        this.logger.LogWarning(msgs);
+                        break;
+                    case genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_ERROR:
+                        this.logger.LogError(msgs);
+                        break;
+                    case genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_CRITICAL:
+                        this.logger.LogCritical(msgs);
+                        break;
+                }
+            }
+
+            public IntPtr genericLoggerp;
+            private bool disposedValue;
+            private readonly ILogger logger;
+
+            public genericLogger(ILogger logger = null)
+            {
+                this.logger = logger; // null is ok
+                this.genericLoggerp = genericLogger_newp(logCallback, IntPtr.Zero, genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_TRACE);
+                if (this.genericLoggerp == IntPtr.Zero)
+                {
+                    throw new Exception("genericLogger_newp failure");
+                }
+            }
+
+            protected virtual void Dispose(bool disposing)
+            {
+                if (!disposedValue)
+                {
+                    if (disposing)
+                    {
+                        // DONE: dispose managed state (managed objects)
+                    }
+
+                    // DONE: free unmanaged resources (unmanaged objects) and override finalizer
+                    genericLogger_freev(ref this.genericLoggerp);
+                    // DONE: set large fields to null
+                    this.genericLoggerp = IntPtr.Zero;
+                    disposedValue = true;
+                }
+            }
+
+            // DONE: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+            ~genericLogger()
+            {
+                // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+                Dispose(disposing: false);
+            }
+
+            public void Dispose()
+            {
+                // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+                Dispose(disposing: true);
+                GC.SuppressFinalize(this);
+            }
+        }
 
 #endregion Thin_Interface_Mapping_To_External_Interface
     }

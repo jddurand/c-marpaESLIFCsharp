@@ -88,9 +88,7 @@ configure_file(
 #
 add_library(marpaESLIFCSharp SHARED
   src/org/parser/marpa/genericLoggerShr.cs
-  src/org/parser/marpa/genericLogger.cs
   src/org/parser/marpa/marpaESLIFShr.cs
-  src/org/parser/marpa/marpaESLIF.cs
   src/org/parser/marpa/marpaESLIF_wrapperShr.cs
   src/org/parser/marpa/ESLIF.cs
   src/org/parser/marpa/ESLIFLoggerInterface.cs
@@ -99,7 +97,6 @@ add_library(marpaESLIFCSharp SHARED
   src/org/parser/marpa/ESLIFProgress.cs
   src/org/parser/marpa/ESLIFSymbol.cs
 
-  src/org/parser/marpa/dev/InstanceHelper.cs
   src/org/parser/marpa/dev/ESLIF.cs
   src/org/parser/marpa/dev/ESLIFEvent.cs
   src/org/parser/marpa/dev/ESLIFEventType.cs

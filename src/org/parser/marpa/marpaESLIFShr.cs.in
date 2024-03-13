@@ -1,6 +1,7 @@
-#cmakedefine MARPAESLIF_HAVE_LONG_LONG
+#define MARPAESLIF_HAVE_LONG_LONG
 using System;
 using System.Runtime.InteropServices;
+using static org.parser.marpa.genericLoggerShr;
 
 namespace org.parser.marpa
 {
@@ -451,7 +452,7 @@ namespace org.parser.marpa
         }
 
         [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr marpaESLIF_newp(IntPtr marpaESLIFOptionp);
+        public static extern IntPtr marpaESLIF_newp(ref marpaESLIFOption_t marpaESLIFOptionp);
 
         [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIF_versionb(IntPtr marpaESLIFp, ref IntPtr versionsp);
@@ -790,6 +791,66 @@ namespace org.parser.marpa
 
 #region Thin_Interface_Mapping_To_External_Interface
 
+        public class marpaESLIF : IDisposable
+        {
+            public IntPtr marpaESLIFp;
+            private bool disposedValue;
+            private readonly genericLogger genericLogger;
+            public marpaESLIF(genericLogger genericLogger)
+            {
+                this.genericLogger = genericLogger;
+                marpaESLIFOption_t marpaESLIFOption;
+
+                if (this.genericLogger != null)
+                {
+                    marpaESLIFOption = new marpaESLIFOption_t
+                    {
+                        genericLoggerp = this.genericLogger.genericLoggerp,
+                    };
+                }
+                else
+                {
+                    marpaESLIFOption = null;
+                }
+
+                this.marpaESLIFp = marpaESLIF_newp(ref marpaESLIFOption);
+                if (this.marpaESLIFp == IntPtr.Zero)
+                {
+                    throw new Exception("marpaESLIF_newp failure");
+                }
+            }
+
+            protected virtual void Dispose(bool disposing)
+            {
+                if (!disposedValue)
+                {
+                    if (disposing)
+                    {
+                        // DONE: dispose managed state (managed objects)
+                    }
+
+                    // DONE: free unmanaged resources (unmanaged objects) and override finalizer
+                    marpaESLIF_freev(this.marpaESLIFp);
+                    // DONE: set large fields to null
+                    this.marpaESLIFp = IntPtr.Zero;
+                    disposedValue = true;
+                }
+            }
+
+            // DONE: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+            ~marpaESLIF()
+            {
+                // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+                Dispose(disposing: false);
+            }
+
+            public void Dispose()
+            {
+                // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+                Dispose(disposing: true);
+                GC.SuppressFinalize(this);
+            }
+        }
 
 #endregion Thin_Interface_Mapping_To_External_Interface
     }
