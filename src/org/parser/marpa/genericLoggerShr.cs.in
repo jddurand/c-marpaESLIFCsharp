@@ -22,7 +22,7 @@ namespace org.parser.marpa
         }
     
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void genericLoggerCallback_t(IntPtr userDatavp, genericLoggerLevel_t logLeveli, [MarshalAs(UnmanagedType.LPStr)] string msgs);
+        public delegate void genericLoggerCallback_t(IntPtr userDatavp, genericLoggerLevel_t logLeveli, IntPtr msgs);
     
         [DllImport("genericLogger.dll", CallingConvention = CallingConvention.Cdecl)]
         [return: MarshalAs(UnmanagedType.LPStr)]
@@ -64,9 +64,9 @@ namespace org.parser.marpa
 
     public class genericLogger : IDisposable
     {
-        private static void logCallback(IntPtr userDatavp, genericLoggerShr.genericLoggerLevel_t logLeveli, [MarshalAs(UnmanagedType.LPStr)] string msgs)
+        private static void logCallback(IntPtr userDatavp, genericLoggerShr.genericLoggerLevel_t logLeveli, IntPtr msgs)
         {
-            if (userDatavp == IntPtr.Zero)
+            if (userDatavp == IntPtr.Zero || msgs == IntPtr.Zero)
             {
                 return;
             }
@@ -77,35 +77,36 @@ namespace org.parser.marpa
             {
                 return;
             }
-    
+
+            string message = Marshal.PtrToStringAnsi(msgs);
             switch (logLeveli)
             {
                 case genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_TRACE:
-                    logger.LogTrace(msgs);
+                    logger.LogTrace(message);
                     break;
                 case genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_DEBUG:
-                    logger.LogDebug(msgs);
+                    logger.LogDebug(message);
                     break;
                 case genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_INFO:
-                    logger.LogInformation(msgs);
+                    logger.LogInformation(message);
                     break;
                 case genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_NOTICE:
-                    logger.LogInformation(msgs);
+                    logger.LogInformation(message);
                     break;
                 case genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_WARNING:
-                    logger.LogWarning(msgs);
+                    logger.LogWarning(message);
                     break;
                 case genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_ALERT:
-                    logger.LogWarning(msgs);
+                    logger.LogWarning(message);
                     break;
                 case genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_EMERGENCY:
-                    logger.LogWarning(msgs);
+                    logger.LogWarning(message);
                     break;
                 case genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_ERROR:
-                    logger.LogError(msgs);
+                    logger.LogError(message);
                     break;
                 case genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_CRITICAL:
-                    logger.LogCritical(msgs);
+                    logger.LogCritical(message);
                     break;
             }
         }
