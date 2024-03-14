@@ -14,7 +14,7 @@ namespace org.parser.marpa
         private readonly IntPtr marpaESLIFp;
         private readonly ILogger logger;
         protected IntPtr genericLoggerp;
-        private readonly GCHandle loggerHandle;
+        private GCHandle loggerHandle;
         private IntPtr loggerHandlePtr;
         private bool disposedValue;
 
@@ -27,8 +27,9 @@ namespace org.parser.marpa
             {
                 this.loggerHandle = GCHandle.Alloc(logger, GCHandleType.Normal);
                 this.loggerHandlePtr = GCHandle.ToIntPtr(this.loggerHandle);
+
                 // Log level is driven by logger, so we put GENERICLOGGER_LOGLEVEL_TRACE to filter nothing
-                this.genericLoggerp = genericLoggerShr.genericLogger_newp(logCallback, this.loggerHandlePtr, genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_TRACE);
+                this.genericLoggerp = genericLoggerShr.genericLogger_newp(LogCallback, this.loggerHandlePtr, genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_TRACE);
                 if (this.genericLoggerp == IntPtr.Zero)
                 {
                     DisposeUnmanagedResources();
@@ -78,7 +79,7 @@ namespace org.parser.marpa
             }
         }
 
-        private static void logCallback(IntPtr userDatavp, genericLoggerShr.genericLoggerLevel_t logLeveli, IntPtr msgs)
+        private static void LogCallback(IntPtr userDatavp, genericLoggerShr.genericLoggerLevel_t logLeveli, IntPtr msgs)
         {
             if (userDatavp == IntPtr.Zero || msgs == IntPtr.Zero)
             {
