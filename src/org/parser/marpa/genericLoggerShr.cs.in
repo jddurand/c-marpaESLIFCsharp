@@ -64,9 +64,16 @@ namespace org.parser.marpa
 
     public class genericLogger : IDisposable
     {
-        private void logCallback(IntPtr userDatavp, genericLoggerShr.genericLoggerLevel_t logLeveli, [MarshalAs(UnmanagedType.LPStr)] string msgs)
+        private static void logCallback(IntPtr userDatavp, genericLoggerShr.genericLoggerLevel_t logLeveli, [MarshalAs(UnmanagedType.LPStr)] string msgs)
         {
-            if (this.logger == null)
+            if (userDatavp == IntPtr.Zero)
+            {
+                return;
+            }
+
+            GCHandle loggerHandlePtr = GCHandle.FromIntPtr(userDatavp);
+            ILogger logger = (ILogger) loggerHandlePtr.Target;
+            if (logger == null)
             {
                 return;
             }
@@ -74,31 +81,31 @@ namespace org.parser.marpa
             switch (logLeveli)
             {
                 case genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_TRACE:
-                    this.logger.LogTrace(msgs);
+                    logger.LogTrace(msgs);
                     break;
                 case genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_DEBUG:
-                    this.logger.LogDebug(msgs);
+                    logger.LogDebug(msgs);
                     break;
                 case genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_INFO:
-                    this.logger.LogInformation(msgs);
+                    logger.LogInformation(msgs);
                     break;
                 case genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_NOTICE:
-                    this.logger.LogInformation(msgs);
+                    logger.LogInformation(msgs);
                     break;
                 case genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_WARNING:
-                    this.logger.LogWarning(msgs);
+                    logger.LogWarning(msgs);
                     break;
                 case genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_ALERT:
-                    this.logger.LogWarning(msgs);
+                    logger.LogWarning(msgs);
                     break;
                 case genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_EMERGENCY:
-                    this.logger.LogWarning(msgs);
+                    logger.LogWarning(msgs);
                     break;
                 case genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_ERROR:
-                    this.logger.LogError(msgs);
+                    logger.LogError(msgs);
                     break;
                 case genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_CRITICAL:
-                    this.logger.LogCritical(msgs);
+                    logger.LogCritical(msgs);
                     break;
             }
         }
@@ -106,13 +113,22 @@ namespace org.parser.marpa
         private static readonly object Lock = new object();
         private static readonly Dictionary<IntPtr,genericLogger> Multitons =new Dictionary<IntPtr, genericLogger>();
         public IntPtr genericLoggerp;
+        private GCHandle loggerHandle;
+        private IntPtr loggerHandlePtr;
         private bool disposedValue;
         private readonly ILogger logger;
     
         private genericLogger(ILogger logger = null)
         {
             this.logger = logger; // null is ok
-            this.genericLoggerp = genericLoggerShr.genericLogger_newp(logCallback, IntPtr.Zero, genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_TRACE);
+            // Callback context is a handle to the logger
+            if (this.logger != null)
+            {
+                this.loggerHandle = GCHandle.Alloc(logger, GCHandleType.Normal);
+                this.loggerHandlePtr = GCHandle.ToIntPtr(this.loggerHandle);
+            }
+
+            this.genericLoggerp = genericLoggerShr.genericLogger_newp(logCallback, this.loggerHandlePtr, genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_TRACE);
             if (this.genericLoggerp == IntPtr.Zero)
             {
                 throw new Exception("genericLogger_newp failure");
@@ -151,6 +167,10 @@ namespace org.parser.marpa
     
                 // DONE: free unmanaged resources (unmanaged objects) and override finalizer
                 genericLoggerShr.genericLogger_freev(ref this.genericLoggerp);
+                if (this.loggerHandle != null)
+                {
+                    this.loggerHandle.Free();
+                }
                 // DONE: set large fields to null
                 this.genericLoggerp = IntPtr.Zero;
                 disposedValue = true;
