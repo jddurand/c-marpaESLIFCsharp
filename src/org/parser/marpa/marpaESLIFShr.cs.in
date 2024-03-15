@@ -787,126 +787,12 @@ namespace org.parser.marpa
         public static extern void marpaESLIFSymbol_freev(IntPtr marpaESLIFSymbolp);
     }
 
-    public class marpaESLIFOption : IDisposable
+    public static class marpaESLIF
     {
-        private static readonly object Lock = new object();
-        private static readonly Dictionary<IntPtr,marpaESLIFOption> Multitons =new Dictionary<IntPtr, marpaESLIFOption>();
-        private bool disposedValue;
-
-        private readonly genericLogger genericLogger;
-        public readonly IntPtr marpaESLIFOptionp;
-
-        private marpaESLIFOption(genericLogger genericLogger = null)
-        {
-            this.genericLogger = genericLogger;
-            if (this.genericLogger != null)
-            {
-                marpaESLIFShr.marpaESLIFOption_t marpaESLIFOption_t = new marpaESLIFShr.marpaESLIFOption_t
-                {
-                    genericLoggerp = this.genericLogger.genericLoggerp,
-                };
-
-                this.marpaESLIFOptionp = Marshal.AllocHGlobal(Marshal.SizeOf(marpaESLIFOption_t));
-                Marshal.StructureToPtr(marpaESLIFOption_t, marpaESLIFOptionp, false);
-            }
-        }
-
-        public static marpaESLIFOption GetMarpaESLIFOptionInstance(genericLogger genericLogger = null)
-        {
-            lock (Lock)
-            {
-                // Multiton key is marpaESLIFOptionp (always != IntPtr.Zero), value is the instance, test is on marpaESLIFOption.genericLogger instance.
-                marpaESLIFOption marpaESLIFOption;
-                KeyValuePair<IntPtr, marpaESLIFOption> keyPair = Multitons.FirstOrDefault(m => genericLogger == m.Value.genericLogger);
-                if (keyPair.Key != IntPtr.Zero)
-                {
-                    marpaESLIFOption = keyPair.Value;
-                }
-                else
-                {
-                    marpaESLIFOption = new marpaESLIFOption(genericLogger);
-                    Multitons.Add(marpaESLIFOption.marpaESLIFOptionp, marpaESLIFOption);
-                }
-
-                return marpaESLIFOption;
-            }
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    // DONE: dispose managed state (managed objects)
-                }
-
-                // DONE: free unmanaged resources (unmanaged objects) and override finalizer
-                Marshal.FreeHGlobal(this.marpaESLIFOptionp); // Already IntPtr.Zero tolerant as per the doc
-                // DONE: set large fields to null
-                disposedValue = true;
-            }
-        }
-
-        // DONE: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-        ~marpaESLIFOption()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: false);
-        }
-
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
-    }
-
-    public class marpaESLIF : IDisposable
-    {
-        private static readonly object Lock = new object();
-        private static readonly Dictionary<IntPtr,marpaESLIF> Multitons =new Dictionary<IntPtr, marpaESLIF>();
-        private bool disposedValue;
-
-        private marpaESLIFOption marpaESLIFOption;
-        public readonly IntPtr marpaESLIFp;
-
-        private marpaESLIF(marpaESLIFOption marpaESLIFOption = null)
-        {
-            this.marpaESLIFOption = marpaESLIFOption; // Can be null
-            this.marpaESLIFp = marpaESLIFShr.marpaESLIF_newp(this.marpaESLIFOption?.marpaESLIFOptionp ?? IntPtr.Zero);
-            if (this.marpaESLIFp == IntPtr.Zero)
-            {
-                throw new Exception("marpaESLIF_newp failure");
-            }
-        }
-    
-        public static marpaESLIF GetMarpaESLIFInstance(marpaESLIFOption marpaESLIFOption = null)
-        {
-            lock (Lock)
-            {
-                // Multiton key is marpaESLIFp (always != IntPtr.Zero), value is the instance, test is on marpaESLIFOption instance
-                marpaESLIF marpaESLIF;
-                KeyValuePair<IntPtr, marpaESLIF> keyPair = Multitons.FirstOrDefault(m => marpaESLIFOption == m.Value.marpaESLIFOption);
-                if (keyPair.Key != IntPtr.Zero)
-                {
-                    marpaESLIF = keyPair.Value;
-                }
-                else
-                {
-                    marpaESLIF = new marpaESLIF(marpaESLIFOption);
-                    Multitons.Add(marpaESLIF.marpaESLIFp, marpaESLIF);
-                }
-
-                return marpaESLIF;
-            }
-        }
-
-        public string Version()
+        public static string Version(IntPtr marpaESLIFp)
         {
             IntPtr versionsp = IntPtr.Zero;
-            if (marpaESLIFShr.marpaESLIF_versionb(this.marpaESLIFp, ref versionsp) == 0)
+            if (marpaESLIFShr.marpaESLIF_versionb(marpaESLIFp, ref versionsp) == 0)
             {
                 throw new Exception("marpaESLIF_versionb failure");
             }
@@ -924,68 +810,38 @@ namespace org.parser.marpa
 
             return version;
         }
-    
-        public @C2CSHARP_TYPE_INT@ VersionMajor()
+
+        public static int VersionMajor(IntPtr marpaESLIFp)
         {
             @C2CSHARP_TYPE_INT@ versionMajor = 0;
-            if (marpaESLIFShr.marpaESLIF_versionMajorb(this.marpaESLIFp, ref versionMajor) == 0)
+            if (marpaESLIFShr.marpaESLIF_versionMajorb(marpaESLIFp, ref versionMajor) == 0)
             {
                 throw new Exception("marpaESLIF_versionMajorb failure");
             }
 
-            return versionMajor;
+            return (int)versionMajor;
         }
-    
-        public @C2CSHARP_TYPE_INT@ VersionMinor()
+
+        public static int VersionMinor(IntPtr marpaESLIFp)
         {
             @C2CSHARP_TYPE_INT@ versionMinor = 0;
-            if (marpaESLIFShr.marpaESLIF_versionMinorb(this.marpaESLIFp, ref versionMinor) == 0)
+            if (marpaESLIFShr.marpaESLIF_versionMinorb(marpaESLIFp, ref versionMinor) == 0)
             {
                 throw new Exception("marpaESLIF_versionMinorb failure");
             }
 
-            return versionMinor;
+            return (int)versionMinor;
         }
-    
-        public @C2CSHARP_TYPE_INT@ VersionPatch()
+
+        public static int VersionPatch(IntPtr marpaESLIFp)
         {
             @C2CSHARP_TYPE_INT@ versionPatch = 0;
-            if (marpaESLIFShr.marpaESLIF_versionPatchb(this.marpaESLIFp, ref versionPatch) == 0)
+            if (marpaESLIFShr.marpaESLIF_versionPatchb(marpaESLIFp, ref versionPatch) == 0)
             {
                 throw new Exception("marpaESLIF_versionPatchb failure");
             }
 
-            return versionPatch;
-        }
-    
-        protected virtual void Dispose(bool disposing)
-        {
-           if (!disposedValue)
-           {
-               if (disposing)
-               {
-                   // DONE: dispose managed state (managed objects)
-               }
-    
-               // DONE: free unmanaged resources (unmanaged objects) and override finalizer
-               marpaESLIFShr.marpaESLIF_freev(this.marpaESLIFp);
-               // DONE: set large fields to null
-               disposedValue = true;
-           }
-        }
-    
-        // DONE: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-        ~marpaESLIF()
-        {
-           // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-           Dispose(disposing: false);
-        }
-    
-        public void Dispose()
-        {
-           // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-           Dispose(disposing: true);
-           GC.SuppressFinalize(this);
+            return (int)versionPatch;
         }
     }
 }

@@ -58,7 +58,7 @@ namespace org.parser.marpa
             }
         }
 
-        public static ESLIF GetESLIFInstance(ILogger logger = null)
+        public static ESLIF Instance(ILogger logger = null)
         {
             lock (Lock)
             {
@@ -128,15 +128,13 @@ namespace org.parser.marpa
 
         private void DisposeUnmanagedResources()
         {
-            if (this.loggerHandlePtr != IntPtr.Zero)
-            {
-                this.loggerHandle.Free();
-                this.loggerHandlePtr = IntPtr.Zero;
-            }
-
             if (this.genericLoggerp != IntPtr.Zero)
             {
                 genericLoggerShr.genericLogger_freev(ref this.genericLoggerp);
+            }
+
+            if (this.loggerHandlePtr != IntPtr.Zero)
+            {
                 this.loggerHandle.Free();
                 this.loggerHandlePtr = IntPtr.Zero;
             }
@@ -174,57 +172,22 @@ namespace org.parser.marpa
 
         public string Version()
         {
-            IntPtr versionsp = IntPtr.Zero;
-            if (marpaESLIFShr.marpaESLIF_versionb(this.marpaESLIFp, ref versionsp) == 0)
-            {
-                throw new Exception("marpaESLIF_versionb failure");
-            }
-
-            string version;
-            if (versionsp != IntPtr.Zero)
-            {
-                version = Marshal.PtrToStringAnsi(versionsp);
-                // No free : this is a pointer to a string owned by marpaESLIF
-            }
-            else
-            {
-                version = null;
-            }
-
-            return version;
+            return marpaESLIF.Version(this.marpaESLIFp);
         }
 
         public int VersionMajor()
         {
-            int versionMajor = 0;
-            if (marpaESLIFShr.marpaESLIF_versionMajorb(this.marpaESLIFp, ref versionMajor) == 0)
-            {
-                throw new Exception("marpaESLIF_versionMajorb failure");
-            }
-
-            return versionMajor;
+            return marpaESLIF.VersionMajor(this.marpaESLIFp);
         }
-    
+
         public int VersionMinor()
         {
-            int versionMinor = 0;
-            if (marpaESLIFShr.marpaESLIF_versionMinorb(this.marpaESLIFp, ref versionMinor) == 0)
-            {
-                throw new Exception("marpaESLIF_versionMinorb failure");
-            }
-
-            return versionMinor;
+            return marpaESLIF.VersionMinor(this.marpaESLIFp);
         }
-    
+
         public int VersionPatch()
         {
-            int versionPatch = 0;
-            if (marpaESLIFShr.marpaESLIF_versionPatchb(this.marpaESLIFp, ref versionPatch) == 0)
-            {
-                throw new Exception("marpaESLIF_versionPatchb failure");
-            }
-
-            return versionPatch;
+            return marpaESLIF.VersionPatch(this.marpaESLIFp);
         }
     }
 }
