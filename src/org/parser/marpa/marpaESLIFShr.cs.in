@@ -960,17 +960,15 @@ namespace org.parser.marpa
     public class marpaESLIFGrammarOption : IDisposable
     {
         public IntPtr marpaESLIFGrammarOptionp { get; protected set; }
+        private readonly string grammar;
         private readonly marpaESLIFShr.marpaESLIFGrammarOption_t marpaESLIFGrammarOption_t;
         private bool disposedValue;
 
         public marpaESLIFGrammarOption(string grammar)
         {
-            if (grammar == null)
-            {
-                throw new ArgumentNullException(nameof(grammar));
-            }
+            this.grammar = grammar ?? throw new ArgumentNullException(nameof(grammar));
 
-            byte[] grammarBytes = Encoding.UTF8.GetBytes(grammar);
+            byte[] grammarBytes = Encoding.UTF8.GetBytes(this.grammar);
             byte[] encodingBytes = Encoding.UTF8.GetBytes("UTF-8");
 
             this.marpaESLIFGrammarOption_t = new marpaESLIFShr.marpaESLIFGrammarOption_t
