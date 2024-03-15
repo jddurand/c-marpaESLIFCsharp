@@ -1,8 +1,7 @@
-#define MARPAESLIF_HAVE_LONG_LONG
+#cmakedefine MARPAESLIF_HAVE_LONG_LONG
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace org.parser.marpa
 {
@@ -787,12 +786,116 @@ namespace org.parser.marpa
         public static extern void marpaESLIFSymbol_freev(IntPtr marpaESLIFSymbolp);
     }
 
-    public static class marpaESLIF
+    public class marpaESLIFOption : IDisposable
     {
-        public static string Version(IntPtr marpaESLIFp)
+        public IntPtr marpaESLIFOptionp { get; protected set; }
+        private readonly genericLogger genericLogger;
+        private marpaESLIFShr.marpaESLIFOption_t marpaESLIFOption_t;
+        private bool disposedValue;
+
+        public marpaESLIFOption(genericLogger genericLogger = null)
+        {
+            this.genericLogger = genericLogger; // Can be null
+
+            this.marpaESLIFOption_t = new marpaESLIFShr.marpaESLIFOption_t
+            {
+                genericLoggerp = this.genericLogger != null ? this.genericLogger.genericLoggerp : IntPtr.Zero,
+            };
+
+            this.marpaESLIFOptionp = Marshal.AllocHGlobal(Marshal.SizeOf(marpaESLIFOption_t));
+            Marshal.StructureToPtr(marpaESLIFOption_t, this.marpaESLIFOptionp, false);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // DONE: dispose managed state (managed objects)
+                }
+
+                // DONE: free unmanaged resources (unmanaged objects) and override finalizer
+                this.DisposeUnmanagedResources();
+                // DONE: set large fields to null
+                disposedValue = true;
+            }
+        }
+
+        // DONE: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        ~marpaESLIFOption()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: false);
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void DisposeUnmanagedResources()
+        {
+            if (this.marpaESLIFOptionp != IntPtr.Zero)
+            {
+                Marshal.FreeHGlobal(this.marpaESLIFOptionp);
+                this.marpaESLIFOptionp = IntPtr.Zero;
+            }
+        }
+    }
+
+    public class marpaESLIF : IDisposable
+    {
+        public IntPtr marpaESLIFp { get; protected set;  }
+        private readonly marpaESLIFOption marpaESLIFOption;
+        private bool disposedValue;
+
+        public marpaESLIF(marpaESLIFOption marpaESLIFOption = null)
+        {
+            this.marpaESLIFOption = marpaESLIFOption; // Can be null
+            this.marpaESLIFp = marpaESLIFShr.marpaESLIF_newp(this.marpaESLIFOption != null ? this.marpaESLIFOption.marpaESLIFOptionp : IntPtr.Zero);
+            if (this.marpaESLIFp == IntPtr.Zero)
+            {
+                throw new Exception("marpaESLIF_newp failure");
+            }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // DONE: dispose managed state (managed objects)
+                }
+
+                // DONE: free unmanaged resources (unmanaged objects) and override finalizer
+                this.DisposeUnmanagedResources();
+                // DONE: set large fields to null
+                disposedValue = true;
+            }
+        }
+
+        // DONE: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        ~marpaESLIF()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: false);
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        public string Version()
         {
             IntPtr versionsp = IntPtr.Zero;
-            if (marpaESLIFShr.marpaESLIF_versionb(marpaESLIFp, ref versionsp) == 0)
+            if (marpaESLIFShr.marpaESLIF_versionb(this.marpaESLIFp, ref versionsp) == 0)
             {
                 throw new Exception("marpaESLIF_versionb failure");
             }
@@ -811,10 +914,10 @@ namespace org.parser.marpa
             return version;
         }
 
-        public static int VersionMajor(IntPtr marpaESLIFp)
+        public int VersionMajor()
         {
             @C2CSHARP_TYPE_INT@ versionMajor = 0;
-            if (marpaESLIFShr.marpaESLIF_versionMajorb(marpaESLIFp, ref versionMajor) == 0)
+            if (marpaESLIFShr.marpaESLIF_versionMajorb(this.marpaESLIFp, ref versionMajor) == 0)
             {
                 throw new Exception("marpaESLIF_versionMajorb failure");
             }
@@ -822,10 +925,10 @@ namespace org.parser.marpa
             return (int)versionMajor;
         }
 
-        public static int VersionMinor(IntPtr marpaESLIFp)
+        public int VersionMinor()
         {
             @C2CSHARP_TYPE_INT@ versionMinor = 0;
-            if (marpaESLIFShr.marpaESLIF_versionMinorb(marpaESLIFp, ref versionMinor) == 0)
+            if (marpaESLIFShr.marpaESLIF_versionMinorb(this.marpaESLIFp, ref versionMinor) == 0)
             {
                 throw new Exception("marpaESLIF_versionMinorb failure");
             }
@@ -833,15 +936,168 @@ namespace org.parser.marpa
             return (int)versionMinor;
         }
 
-        public static int VersionPatch(IntPtr marpaESLIFp)
+        public int VersionPatch()
         {
             @C2CSHARP_TYPE_INT@ versionPatch = 0;
-            if (marpaESLIFShr.marpaESLIF_versionPatchb(marpaESLIFp, ref versionPatch) == 0)
+            if (marpaESLIFShr.marpaESLIF_versionPatchb(this.marpaESLIFp, ref versionPatch) == 0)
             {
-                throw new Exception("marpaESLIF_versionPatchb failure");
+                throw new Exception("marpaESLIF_versionMinorb failure");
             }
 
             return (int)versionPatch;
+        }
+
+        private void DisposeUnmanagedResources()
+        {
+            if (this.marpaESLIFp != IntPtr.Zero)
+            {
+                marpaESLIFShr.marpaESLIF_freev(this.marpaESLIFp);
+                this.marpaESLIFp = IntPtr.Zero;
+            }
+        }
+    }
+
+    public class marpaESLIFGrammarOption : IDisposable
+    {
+        public IntPtr marpaESLIFGrammarOptionp { get; protected set; }
+        private readonly marpaESLIFShr.marpaESLIFGrammarOption_t marpaESLIFGrammarOption_t;
+        private bool disposedValue;
+
+        public marpaESLIFGrammarOption(string grammar)
+        {
+            if (grammar == null)
+            {
+                throw new ArgumentNullException(nameof(grammar));
+            }
+
+            byte[] grammarBytes = Encoding.UTF8.GetBytes(grammar);
+            byte[] encodingBytes = Encoding.UTF8.GetBytes("UTF-8");
+
+            this.marpaESLIFGrammarOption_t = new marpaESLIFShr.marpaESLIFGrammarOption_t
+            {
+                bytep = Marshal.AllocHGlobal(grammarBytes.Length),
+                bytel = (@C2CSHARP_TYPE_SIZE_T@)grammarBytes.Length,
+                encodings = Marshal.AllocHGlobal(encodingBytes.Length),
+                encodingl = (@C2CSHARP_TYPE_SIZE_T@)encodingBytes.Length,
+            };
+
+            Marshal.Copy(grammarBytes, 0, marpaESLIFGrammarOption_t.bytep, grammarBytes.Length);
+            Marshal.Copy(encodingBytes, 0, marpaESLIFGrammarOption_t.encodings, encodingBytes.Length);
+
+            this.marpaESLIFGrammarOptionp = Marshal.AllocHGlobal(Marshal.SizeOf(this.marpaESLIFGrammarOptionp));
+            Marshal.StructureToPtr(marpaESLIFGrammarOption_t, this.marpaESLIFGrammarOptionp, false);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // DONE: dispose managed state (managed objects)
+                }
+
+                // DONE: free unmanaged resources (unmanaged objects) and override finalizer
+                this.DisposeUnmanagedResources();
+
+                // DONE: set large fields to null
+                disposedValue = true;
+            }
+        }
+
+        // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        ~marpaESLIFGrammarOption()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: false);
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void DisposeUnmanagedResources()
+        {
+            if (this.marpaESLIFGrammarOption_t != null)
+            {
+                if (this.marpaESLIFGrammarOption_t.bytep != IntPtr.Zero)
+                {
+                    Marshal.FreeHGlobal(this.marpaESLIFGrammarOption_t.bytep);
+                    this.marpaESLIFGrammarOption_t.bytep = IntPtr.Zero;
+                }
+
+                if (this.marpaESLIFGrammarOption_t.encodings != IntPtr.Zero)
+                {
+                    Marshal.FreeHGlobal(this.marpaESLIFGrammarOption_t.encodings);
+                    this.marpaESLIFGrammarOption_t.encodings = IntPtr.Zero;
+                }
+            }
+
+            if (this.marpaESLIFGrammarOptionp != IntPtr.Zero)
+            {
+                Marshal.FreeHGlobal(this.marpaESLIFGrammarOptionp);
+                this.marpaESLIFGrammarOptionp = IntPtr.Zero;
+            }
+        }
+    }
+
+    public class marpaESLIFGrammar : IDisposable
+    {
+        public IntPtr marpaESLIFGrammarp { get; protected set; }
+        private readonly marpaESLIF marpaESLIF;
+        private readonly marpaESLIFGrammarOption marpaESLIFGrammarOption;
+        private bool disposedValue;
+
+        public marpaESLIFGrammar(marpaESLIF marpaESLIF, marpaESLIFGrammarOption marpaESLIFGrammarOption = null)
+        {
+            this.marpaESLIF = marpaESLIF ?? throw new ArgumentNullException(nameof(marpaESLIF));
+            this.marpaESLIFGrammarOption = marpaESLIFGrammarOption; // Can be null
+            this.marpaESLIFGrammarp = marpaESLIFShr.marpaESLIFGrammar_newp(this.marpaESLIF.marpaESLIFp, this.marpaESLIFGrammarOption != null ? this.marpaESLIFGrammarOption.marpaESLIFGrammarOptionp : IntPtr.Zero);
+            if (this.marpaESLIFGrammarp == IntPtr.Zero)
+            {
+                throw new Exception("marpaESLIFGrammar_newp failure");
+            }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // DONE: dispose managed state (managed objects)
+                }
+
+                // DONE: free unmanaged resources (unmanaged objects) and override finalizer
+                this.DisposeUnmanagedResources();
+                // DONE: set large fields to null
+                disposedValue = true;
+            }
+        }
+
+        // DONE: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        ~marpaESLIFGrammar()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: false);
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void DisposeUnmanagedResources()
+        {
+            if (this.marpaESLIFGrammarp != IntPtr.Zero)
+            {
+                marpaESLIFShr.marpaESLIFGrammar_freev(this.marpaESLIFGrammarp);
+            }
         }
     }
 }

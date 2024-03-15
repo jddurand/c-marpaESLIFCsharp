@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace org.parser.marpa
@@ -64,7 +62,38 @@ namespace org.parser.marpa
 
     public class genericLogger : IDisposable
     {
-        private static void logCallback(IntPtr userDatavp, genericLoggerShr.genericLoggerLevel_t logLeveli, IntPtr msgs)
+        public IntPtr genericLoggerp { get; protected set; }
+        private readonly genericLoggerShr.genericLoggerCallback_t genericLoggerCallback;
+        private readonly GCHandle loggerHandle;
+        private readonly IntPtr userDatavp;
+        private bool disposedValue;
+
+        public genericLogger(ILogger logger = null)
+        {
+            // Callback context is a handle to the logger
+            if (logger != null)
+            {
+                this.loggerHandle = GCHandle.Alloc(logger, GCHandleType.Normal);
+                this.genericLoggerCallback = Callback;
+                this.userDatavp = GCHandle.ToIntPtr(this.loggerHandle);
+            }
+            else
+            {
+                this.genericLoggerCallback = null;
+                this.userDatavp = IntPtr.Zero;
+            }
+
+            // Log level is driven by logger, so we put GENERICLOGGER_LOGLEVEL_TRACE to filter nothing
+            this.genericLoggerp = genericLoggerShr.genericLogger_newp(this.genericLoggerCallback, this.userDatavp, genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_TRACE);
+
+            if (this.genericLoggerp == IntPtr.Zero)
+            {
+                DisposeUnmanagedResources();
+                throw new Exception("genericLogger_newp failure");
+            }
+        }
+
+        private static void Callback(IntPtr userDatavp, genericLoggerShr.genericLoggerLevel_t logLeveli, IntPtr msgs)
         {
             if (userDatavp == IntPtr.Zero || msgs == IntPtr.Zero)
             {
@@ -72,7 +101,7 @@ namespace org.parser.marpa
             }
 
             GCHandle loggerHandlePtr = GCHandle.FromIntPtr(userDatavp);
-            ILogger logger = (ILogger) loggerHandlePtr.Target;
+            ILogger logger = (ILogger)loggerHandlePtr.Target;
             if (logger == null)
             {
                 return;
@@ -111,50 +140,24 @@ namespace org.parser.marpa
             }
         }
 
-        private static readonly object Lock = new object();
-        private static readonly Dictionary<IntPtr,genericLogger> Multitons =new Dictionary<IntPtr, genericLogger>();
-        public IntPtr genericLoggerp;
-        private GCHandle loggerHandle;
-        private IntPtr loggerHandlePtr;
-        private bool disposedValue;
-        private readonly ILogger logger;
-    
-        private genericLogger(ILogger logger = null)
+        private void DisposeUnmanagedResources()
         {
-            this.logger = logger; // null is ok
-            // Callback context is a handle to the logger
-            if (this.logger != null)
+            if (this.genericLoggerp != IntPtr.Zero)
             {
-                this.loggerHandle = GCHandle.Alloc(logger, GCHandleType.Normal);
-                this.loggerHandlePtr = GCHandle.ToIntPtr(this.loggerHandle);
+                IntPtr genericLoggerp = this.genericLoggerp;
+                genericLoggerShr.genericLogger_freev(ref genericLoggerp);
+                this.genericLoggerp = genericLoggerp;
             }
 
-            this.genericLoggerp = genericLoggerShr.genericLogger_newp(logCallback, this.loggerHandlePtr, genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_TRACE);
-            if (this.genericLoggerp == IntPtr.Zero)
+            if (this.userDatavp != IntPtr.Zero)
             {
-                throw new Exception("genericLogger_newp failure");
+                this.loggerHandle.Free();
             }
         }
 
-        public static genericLogger GetGenericLoggerInstance(ILogger logger = null)
+        public string Version()
         {
-            lock (Lock)
-            {
-                // Multiton key is genericLoggerp (always != IntPtr.Zero), value is the instance, test is on logger instance.
-                genericLogger genericLogger;
-                KeyValuePair<IntPtr, genericLogger> keyPair = Multitons.FirstOrDefault(m => m.Value.logger == logger); // Ok if m.Value.logger or logger are null
-                if (keyPair.Key != IntPtr.Zero)
-                {
-                    genericLogger = keyPair.Value;
-                }
-                else
-                {
-                    genericLogger = new genericLogger(logger);
-                    Multitons.Add(genericLogger.genericLoggerp, genericLogger);
-                }
-
-                return genericLogger;
-            }
+            return genericLoggerShr.genericLogger_versions();
         }
 
         protected virtual void Dispose(bool disposing)
@@ -165,26 +168,21 @@ namespace org.parser.marpa
                 {
                     // DONE: dispose managed state (managed objects)
                 }
-    
+
                 // DONE: free unmanaged resources (unmanaged objects) and override finalizer
-                genericLoggerShr.genericLogger_freev(ref this.genericLoggerp);
-                if (this.loggerHandle != null)
-                {
-                    this.loggerHandle.Free();
-                }
+                DisposeUnmanagedResources();
                 // DONE: set large fields to null
-                this.genericLoggerp = IntPtr.Zero;
                 disposedValue = true;
             }
         }
-    
+
         // DONE: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
         ~genericLogger()
         {
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
             Dispose(disposing: false);
         }
-    
+
         public void Dispose()
         {
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method

@@ -119,7 +119,7 @@ add_library(marpaESLIFCSharp SHARED
   src/org/parser/marpa/ESLIFValueInterface.cs
 )
 add_dependencies(marpaESLIFCSharp genericLoggerCopy marpaESLIFCopy)
-set_property(TARGET marpaESLIFCSharp PROPERTY VS_DOTNET_REFERENCES "System;System.Runtime.InteropServices")
+set_property(TARGET marpaESLIFCSharp PROPERTY VS_DOTNET_REFERENCES "System;System.Runtime.InteropServices;System.Text")
 set_property(TARGET marpaESLIFCSharp PROPERTY VS_PACKAGE_REFERENCES "Microsoft.Extensions.Logging_8.0.0")
 #
 # C.f. https://gitlab.kitware.com/cmake/cmake/-/issues/23573
