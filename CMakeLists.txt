@@ -92,10 +92,13 @@ add_library(marpaESLIFCSharp SHARED
   src/org/parser/marpa/marpaESLIF_wrapperShr.cs
   
   src/org/parser/marpa/ESLIF.cs
+  src/org/parser/marpa/ESLIFAction.cs
+  src/org/parser/marpa/ESLIFActionType.cs
   src/org/parser/marpa/ESLIFEvent.cs
   src/org/parser/marpa/ESLIFEventType.cs
   src/org/parser/marpa/ESLIFException.cs
   src/org/parser/marpa/ESLIFGrammar.cs
+  src/org/parser/marpa/ESLIFGrammarDefaults.cs
   src/org/parser/marpa/ESLIFGrammarProperties.cs
   src/org/parser/marpa/ESLIFGrammarRuleProperties.cs
   src/org/parser/marpa/ESLIFGrammarSymbolProperties.cs
@@ -103,6 +106,7 @@ add_library(marpaESLIFCSharp SHARED
   src/org/parser/marpa/ESLIFJSONDecoder.cs
   src/org/parser/marpa/ESLIFJSONDecoderOption.cs
   src/org/parser/marpa/ESLIFJSONEncoder.cs
+  src/org/parser/marpa/ESLIFLuaFunction.cs
   src/org/parser/marpa/ESLIFLoggerInterface.cs
   src/org/parser/marpa/ESLIFLoggerLevel.cs
   src/org/parser/marpa/ESLIFMultitonNullLogger.cs

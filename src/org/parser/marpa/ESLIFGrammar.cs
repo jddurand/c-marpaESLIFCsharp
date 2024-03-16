@@ -39,5 +39,10 @@ namespace org.parser.marpa
                 return ESLIFGrammar;
             }
         }
+
+        public int ngrammar()
+        {
+            return this.marpaESLIFGrammar.ngrammar();
+        }
     }
 }

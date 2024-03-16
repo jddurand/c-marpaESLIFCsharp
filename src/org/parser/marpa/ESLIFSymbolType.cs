@@ -1,4 +1,4 @@
-namespace org.parser.marpa.dev
+namespace org.parser.marpa
 {
     /// <summary>
     /// ESLIFSymbolType is an enumeration to disambiguate symbol types, that can be either a terminal, either a meta-symbol.

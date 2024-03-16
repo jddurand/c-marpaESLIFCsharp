@@ -1,4 +1,4 @@
-namespace org.parser.marpa.dev
+namespace org.parser.marpa
 {
     /// <summary>ESLIFLoggerInterface is listing all required logging methods.</summary>
     /// <remarks>A logger interface may be associated to an <see cref="ESLIF">ESLIF</see> instance. This interface is explicitly reproducing the formalism of the <a href="http://github.com/jddurand/c-genericLogger" target="_top">genericLogger</a> C library. See also <see cref="ESLIFLoggerLevel">ESLIFLoggerLevel</see>.</remarks>

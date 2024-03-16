@@ -1,4 +1,4 @@
-namespace org.parser.marpa.dev
+namespace org.parser.marpa
 {
     /// <summary>
     /// ESLIFEvent is describing an event coming out from the grammar. See <see cref="ESLIFEventType"/> and <see cref="ESLIFRecognizer.events()"/>

@@ -1,4 +1,4 @@
-namespace org.parser.marpa.dev
+namespace org.parser.marpa
 {
     /// <summary>ESLIFLoggerLevel is an enumeration of all ESLIF logging levels. </summary>
     /// <remarks>This class is explicitly reproducing the formalism of the <a href="http://github.com/jddurand/c-genericLogger" target="_top">genericLogger</a> C library.</remarks>

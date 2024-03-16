@@ -1,4 +1,4 @@
-namespace org.parser.marpa.dev
+namespace org.parser.marpa
 {
     /// <summary>Null Logger implementation used in multiton</summary>
     public class ESLIFMultitonNullLogger : ESLIFLoggerInterface

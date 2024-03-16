@@ -260,6 +260,16 @@ namespace org.parser.marpa
             MARPAESLIF_ACTION_TYPE_LUA_FUNCTION
         }
     
+        [StructLayout(LayoutKind.Explicit, Size = @SIZEOF_marpaESLIFAction_t@)]
+        public class marpaESLIFAction_t
+        {
+            [FieldOffset(@OFFSETOF_marpaESLIFAction_t_type@)] public marpaESLIFShr.marpaESLIFAction_t type;
+            [FieldOffset(@OFFSETOF_marpaESLIFAction_t_names@)] public IntPtr names;
+            [FieldOffset(@OFFSETOF_marpaESLIFAction_t_stringp@)] public IntPtr stringp;
+            [FieldOffset(@OFFSETOF_marpaESLIFAction_t_luas@)] public IntPtr luas;
+            [FieldOffset(@OFFSETOF_marpaESLIFAction_t_luaFunction@)] public IntPtr luaFunction;
+        }
+
         [StructLayout(LayoutKind.Explicit, Size = @SIZEOF_marpaESLIFString_t@)]
         public class marpaESLIFString_t
         {
@@ -486,7 +496,7 @@ namespace org.parser.marpa
         public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_ngrammarib(IntPtr marpaESLIFGrammarp, ref @C2CSHARP_TYPE_INT@ ngrammarip);
     
         [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_defaultsb(IntPtr marpaESLIFGrammarp, ref IntPtr marpaESLIFGrammarDefaultsp);
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_defaultsb(IntPtr marpaESLIFGrammarp, IntPtr marpaESLIFGrammarDefaultsp);
     
         [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_defaults_by_levelb(IntPtr marpaESLIFGrammarp, ref IntPtr marpaESLIFGrammarDefaultsp, @C2CSHARP_TYPE_INT@ leveli, ref IntPtr descp);
@@ -1088,6 +1098,44 @@ namespace org.parser.marpa
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
+        }
+
+        public int ngrammar()
+        {
+            @C2CSHARP_TYPE_INT@ ngrammar = 0;
+
+            if (marpaESLIFShr.marpaESLIFGrammar_ngrammarib(this.marpaESLIFGrammarp, ref ngrammar) == 0)
+            {
+                throw new Exception("marpaESLIFGrammar_ngrammarib failure");
+            }
+
+            return (int)ngrammar;
+        }
+
+        public ESLIFGrammarDefaults Defaults()
+        {
+            marpaESLIFShr.marpaESLIFGrammarDefaults_t marpaESLIFGrammarDefaults_t = new marpaESLIFGrammarDefaults_t();
+            IntPtr marpaESLIFGrammarDefaultsPtr = Marshal.AllocHGlobal(Marshal.SizeOf(marpaESLIFGrammarDefaults_t));
+
+            if (marpaESLIFShr.marpaESLIFGrammar_defaultsb(this.marpaESLIFGrammarp, marpaESLIFGrammarDefaultsPtr) == 0)
+            {
+                Marshal.FreeHGlobal(marpaESLIFGrammarDefaultsPtr);
+                throw new Exception("marpaESLIFGrammar_defaultsb failure");
+            }
+
+            ESLIFGrammarDefaults ESLIFGrammarDefaults = new ESLIFGrammarDefaults();
+        }
+
+        private ESLIFAction ESLIFAction(IntPtr marpaESLIFActionPtr)
+        {
+            if (marpaESLIFActionPtr == IntPtr.Zero)
+            {
+                return null;
+            }
+
+            return new ESLIFAction
+            {
+            };
         }
 
         private void DisposeUnmanagedResources()

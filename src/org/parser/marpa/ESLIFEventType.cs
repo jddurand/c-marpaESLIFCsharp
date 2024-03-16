@@ -1,4 +1,4 @@
-namespace org.parser.marpa.dev
+namespace org.parser.marpa
 {
     /// <summary>
     /// ESLIFEventType is an enumeration of all ESLIF possible events. See <see cref="ESLIFEvent"/>.
