@@ -1119,7 +1119,7 @@ namespace org.parser.marpa
                 throw new Exception("marpaESLIFGrammar_defaultsb failure");
             }
 
-            Marshal.PtrToStructure(marpaESLIFGrammarDefaultsPtr, marpaESLIFGrammarDefaults_t);
+            marpaESLIFGrammarDefaults_t = (marpaESLIFShr.marpaESLIFGrammarDefaults_t) Marshal.PtrToStructure(marpaESLIFGrammarDefaultsPtr, typeof(marpaESLIFShr.marpaESLIFGrammarDefaults_t));
 
             ESLIFGrammarDefaults ESLIFGrammarDefaults = new ESLIFGrammarDefaults
                 (
@@ -1142,8 +1142,7 @@ namespace org.parser.marpa
                 return null;
             }
 
-            marpaESLIFShr.marpaESLIFAction_t marpaESLIFAction_t = new marpaESLIFShr.marpaESLIFAction_t();
-            Marshal.PtrToStructure(marpaESLIFActionPtr, marpaESLIFAction_t);
+            marpaESLIFShr.marpaESLIFAction_t marpaESLIFAction_t = (marpaESLIFShr.marpaESLIFAction_t) Marshal.PtrToStructure(marpaESLIFActionPtr, typeof(marpaESLIFShr.marpaESLIFAction_t));
 
             switch (marpaESLIFAction_t.type)
             {
