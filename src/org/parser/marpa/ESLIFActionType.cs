@@ -13,6 +13,6 @@ namespace org.parser.marpa
         LUA = 2,
 
         /// <summary>LUAFUNCTION action type</summary>
-        LUAFUNCTIONTYPE = 3,
+        LUAFUNCTION = 3,
     }
 }

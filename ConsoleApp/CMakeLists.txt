@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.26.0 FATAL_ERROR)
+project(ConsoleApp LANGUAGES CSharp)
+add_executable(ConsoleApp Program.cs)
+add_dependencies(ConsoleApp marpaESLIFCSharp)
+set_property(TARGET ConsoleApp PROPERTY VS_DOTNET_REFERENCES "System")
+set_property(TARGET ConsoleApp PROPERTY VS_PACKAGE_REFERENCES "Microsoft.Extensions.Logging_8.0.0;Microsoft.Extensions.Logging.Console_8.0.0")

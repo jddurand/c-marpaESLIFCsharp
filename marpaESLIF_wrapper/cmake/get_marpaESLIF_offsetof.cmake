@@ -253,6 +253,10 @@ message(STATUS "Looking at type marpaESLIFAction_t")
 foreach(member 
     type
     u
+    u.names
+    u.stringp
+    u.luas
+    u.luaFunction
   )
   get_marpaESLIF_offsetof("marpaESLIFAction_t" ${member} OFFSETOF_marpaESLIFAction_t_${member})
 endforeach()

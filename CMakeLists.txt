@@ -123,9 +123,19 @@ add_library(marpaESLIFCSharp SHARED
   src/org/parser/marpa/ESLIFValueInterface.cs
 )
 add_dependencies(marpaESLIFCSharp genericLoggerCopy marpaESLIFCopy)
-set_property(TARGET marpaESLIFCSharp PROPERTY VS_DOTNET_REFERENCES "System;System.Runtime.InteropServices;System.Text")
+set_property(TARGET marpaESLIFCSharp PROPERTY VS_DOTNET_REFERENCES "System;System.Runtime.InteropServices")
 set_property(TARGET marpaESLIFCSharp PROPERTY VS_PACKAGE_REFERENCES "Microsoft.Extensions.Logging_8.0.0")
+#
+# Temporary test project
+#
+add_subdirectory(ConsoleApp)
+#
+# Make ConsoleApp the start project
+#
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ConsoleApp)
 #
 # C.f. https://gitlab.kitware.com/cmake/cmake/-/issues/23573
 #
-target_compile_options(marpaESLIFCSharp PRIVATE $<IF:$<STREQUAL:"win32",$<LOWER_CASE:"${CMAKE_GENERATOR_PLATFORM}">>,/platform:x86,/platform:x64>)
+foreach (target marpaESLIFCSharp ConsoleApp)
+  target_compile_options(${target} PRIVATE $<IF:$<STREQUAL:"win32",$<LOWER_CASE:"${CMAKE_GENERATOR_PLATFORM}">>,/platform:x86,/platform:x64>)
+endforeach()

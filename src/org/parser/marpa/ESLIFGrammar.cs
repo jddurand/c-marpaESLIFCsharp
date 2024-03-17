@@ -44,5 +44,10 @@ namespace org.parser.marpa
         {
             return this.marpaESLIFGrammar.ngrammar();
         }
+
+        public ESLIFGrammarDefaults Defaults()
+        {
+            return this.marpaESLIFGrammar.Defaults();
+        }
     }
 }

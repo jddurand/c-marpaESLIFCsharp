@@ -18,5 +18,16 @@ namespace org.parser.marpa
             this.defaultEncoding = defaultEncoding;
             this.fallbackEncoding = fallbackEncoding;
         }
+
+        public override string ToString()
+        {
+            return
+                $"ESLIFGrammarDefaults [defaultRuleAction={this.defaultRuleAction}" +
+                $", defaultSymbolAction={this.defaultSymbolAction}" +
+                $", defaultEventAction={this.defaultEventAction}" +
+                $", defaultRegexAction={this.defaultRegexAction}" +
+                $", defaultEncoding={this.defaultEncoding}" +
+                $", fallbackEncoding={this.fallbackEncoding}]";
+        }
     }
 }
