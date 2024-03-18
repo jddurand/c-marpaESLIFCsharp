@@ -509,10 +509,10 @@ namespace org.parser.marpa
         public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_defaults_by_level_setb(IntPtr marpaESLIFGrammarp, IntPtr marpaESLIFGrammarDefaultsp, @C2CSHARP_TYPE_INT@ leveli, IntPtr descp);
     
         [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_grammar_currentb(IntPtr marpaESLIFGrammarp, ref @C2CSHARP_TYPE_INT@ levelip, IntPtr descpp);
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_grammar_currentb(IntPtr marpaESLIFGrammarp, ref @C2CSHARP_TYPE_INT@ levelip, ref IntPtr descpp);
     
         [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_grammar_by_levelb(IntPtr marpaESLIFGrammarp, @C2CSHARP_TYPE_INT@ leveli, IntPtr descp, ref @C2CSHARP_TYPE_INT@ levelip, IntPtr descpp);
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_grammar_by_levelb(IntPtr marpaESLIFGrammarp, @C2CSHARP_TYPE_INT@ leveli, IntPtr descp, ref @C2CSHARP_TYPE_INT@ levelip, ref IntPtr descpp);
     
         [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_grammarproperty_currentb(IntPtr marpaESLIFGrammarp, IntPtr grammarPropertyp);
