@@ -4,11 +4,11 @@ namespace org.parser.marpa
     {
         public string luas { get; }
         public string actions { get; }
-        public short luacb { get; }
+        public bool luacb { get; }
         public byte[] luacp { get; }
         public byte[] luacstrip { get; }
 
-        public ESLIFLuaFunction(string luas, string actions, short luacb, byte[] luacp, byte[] luacstrip)
+        public ESLIFLuaFunction(string luas, string actions, bool luacb, byte[] luacp, byte[] luacstrip)
         {
             this.luas = luas;
             this.actions = actions;

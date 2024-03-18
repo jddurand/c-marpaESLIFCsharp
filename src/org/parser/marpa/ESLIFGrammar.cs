@@ -20,6 +20,11 @@ namespace org.parser.marpa
             this.marpaESLIFGrammar = new marpaESLIFGrammar(this.ESLIF.marpaESLIF, new marpaESLIFGrammarOption(grammar));
         }
 
+        public ESLIFGrammar(IntPtr marpaESLIFGrammarp)
+        {
+            this.marpaESLIFGrammar = new marpaESLIFGrammar(marpaESLIFGrammarp);
+        }
+
         public static ESLIFGrammar Instance(ESLIF ESLIF, string grammar)
         {
             lock (Lock)
@@ -48,6 +53,11 @@ namespace org.parser.marpa
         public ESLIFGrammarDefaults Defaults()
         {
             return this.marpaESLIFGrammar.Defaults();
+        }
+
+        public ESLIFGrammarDefaults DefaultsByLevel(int level)
+        {
+            return this.marpaESLIFGrammar.DefaultsByLevel(level);
         }
     }
 }

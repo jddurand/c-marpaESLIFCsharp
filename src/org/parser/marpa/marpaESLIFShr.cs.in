@@ -500,7 +500,7 @@ namespace org.parser.marpa
         public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_defaultsb(IntPtr marpaESLIFGrammarp, IntPtr marpaESLIFGrammarDefaultsp);
     
         [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_defaults_by_levelb(IntPtr marpaESLIFGrammarp, ref IntPtr marpaESLIFGrammarDefaultsp, @C2CSHARP_TYPE_INT@ leveli, ref IntPtr descp);
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_defaults_by_levelb(IntPtr marpaESLIFGrammarp, IntPtr marpaESLIFGrammarDefaultsp, @C2CSHARP_TYPE_INT@ leveli, IntPtr descp);
     
         [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_defaults_setb(IntPtr marpaESLIFGrammarp, IntPtr marpaESLIFGrammarDefaultsp);
@@ -958,6 +958,12 @@ namespace org.parser.marpa
             return (int)versionPatch;
         }
 
+        public ESLIFGrammar Grammar()
+        {
+            IntPtr marpaESLIFGrammarp = marpaESLIFShr.marpaESLIF_grammarp(this.marpaESLIFp);
+            return new ESLIFGrammar(marpaESLIFGrammarp);
+        }
+
         private void DisposeUnmanagedResources()
         {
             if (this.marpaESLIFp != IntPtr.Zero)
@@ -1052,6 +1058,7 @@ namespace org.parser.marpa
     {
         public IntPtr marpaESLIFGrammarp { get; protected set; }
         private readonly marpaESLIF marpaESLIF;
+        private readonly bool shallow;
         private readonly marpaESLIFGrammarOption marpaESLIFGrammarOption;
         private bool disposedValue;
 
@@ -1060,6 +1067,16 @@ namespace org.parser.marpa
             this.marpaESLIF = marpaESLIF ?? throw new ArgumentNullException(nameof(marpaESLIF));
             this.marpaESLIFGrammarOption = marpaESLIFGrammarOption; // Can be null
             this.marpaESLIFGrammarp = marpaESLIFShr.marpaESLIFGrammar_newp(this.marpaESLIF.marpaESLIFp, this.marpaESLIFGrammarOption != null ? this.marpaESLIFGrammarOption.marpaESLIFGrammarOptionp : IntPtr.Zero);
+            if (this.marpaESLIFGrammarp == IntPtr.Zero)
+            {
+                throw new Exception("marpaESLIFGrammar_newp failure");
+            }
+        }
+
+        public marpaESLIFGrammar(IntPtr marpaESLIFGrammarp)
+        {
+            this.marpaESLIFGrammarp = marpaESLIFGrammarp;
+            this.shallow = true;
             if (this.marpaESLIFGrammarp == IntPtr.Zero)
             {
                 throw new Exception("marpaESLIFGrammar_newp failure");
@@ -1123,10 +1140,10 @@ namespace org.parser.marpa
 
             ESLIFGrammarDefaults ESLIFGrammarDefaults = new ESLIFGrammarDefaults
                 (
-                this.marpaESLIFActionPtrToESLIFAction(marpaESLIFGrammarDefaults_t.defaultRuleActionp),
-                this.marpaESLIFActionPtrToESLIFAction(marpaESLIFGrammarDefaults_t.defaultSymbolActionp),
-                this.marpaESLIFActionPtrToESLIFAction(marpaESLIFGrammarDefaults_t.defaultEventActionp),
-                this.marpaESLIFActionPtrToESLIFAction(marpaESLIFGrammarDefaults_t.defaultRegexActionp),
+                marpaESLIFGrammarDefaults_t.defaultRuleActionp != IntPtr.Zero ? (new marpaESLIFAction(marpaESLIFGrammarDefaults_t.defaultRuleActionp)).ESLIFAction() : null,
+                marpaESLIFGrammarDefaults_t.defaultSymbolActionp != IntPtr.Zero ? (new marpaESLIFAction(marpaESLIFGrammarDefaults_t.defaultSymbolActionp)).ESLIFAction() : null,
+                marpaESLIFGrammarDefaults_t.defaultEventActionp != IntPtr.Zero ? (new marpaESLIFAction(marpaESLIFGrammarDefaults_t.defaultEventActionp)).ESLIFAction() : null,
+                marpaESLIFGrammarDefaults_t.defaultRegexActionp != IntPtr.Zero ? (new marpaESLIFAction(marpaESLIFGrammarDefaults_t.defaultRegexActionp)).ESLIFAction() : null,
                 marpaESLIFGrammarDefaults_t.defaultEncodings != IntPtr.Zero ? Marshal.PtrToStringAnsi(marpaESLIFGrammarDefaults_t.defaultEncodings) : null,
                 marpaESLIFGrammarDefaults_t.fallbackEncodings != IntPtr.Zero ? Marshal.PtrToStringAnsi(marpaESLIFGrammarDefaults_t.fallbackEncodings) : null
                 );
@@ -1135,94 +1152,43 @@ namespace org.parser.marpa
             return ESLIFGrammarDefaults;
         }
 
-        private ESLIFAction marpaESLIFActionPtrToESLIFAction(IntPtr marpaESLIFActionPtr)
+        public ESLIFGrammarDefaults DefaultsByLevel(int level)
         {
-            if (marpaESLIFActionPtr == IntPtr.Zero)
+            marpaESLIFShr.marpaESLIFGrammarDefaults_t marpaESLIFGrammarDefaults_t = new marpaESLIFShr.marpaESLIFGrammarDefaults_t();
+            IntPtr marpaESLIFGrammarDefaultsPtr = Marshal.AllocHGlobal(Marshal.SizeOf(marpaESLIFGrammarDefaults_t));
+
+            if (marpaESLIFShr.marpaESLIFGrammar_defaults_by_levelb(this.marpaESLIFGrammarp, marpaESLIFGrammarDefaultsPtr, (@C2CSHARP_TYPE_INT@) level, IntPtr.Zero) == 0)
             {
-                return null;
+                Marshal.FreeHGlobal(marpaESLIFGrammarDefaultsPtr);
+                throw new Exception("marpaESLIFGrammar_defaults_by_levelb failure");
             }
 
-            marpaESLIFShr.marpaESLIFAction_t marpaESLIFAction_t = (marpaESLIFShr.marpaESLIFAction_t) Marshal.PtrToStructure(marpaESLIFActionPtr, typeof(marpaESLIFShr.marpaESLIFAction_t));
+            marpaESLIFGrammarDefaults_t = (marpaESLIFShr.marpaESLIFGrammarDefaults_t)Marshal.PtrToStructure(marpaESLIFGrammarDefaultsPtr, typeof(marpaESLIFShr.marpaESLIFGrammarDefaults_t));
 
-            switch (marpaESLIFAction_t.type)
-            {
-                case marpaESLIFShr.marpaESLIFActionType_t.MARPAESLIF_ACTION_TYPE_NAME:
-                    return new ESLIFAction
-                        (
-                        ESLIFActionType.NAME,
-                        marpaESLIFAction_t.names != IntPtr.Zero ? Marshal.PtrToStringAnsi(marpaESLIFAction_t.names) : null,
-                        null,
-                        null,
-                        null
-                        );
-                case marpaESLIFShr.marpaESLIFActionType_t.MARPAESLIF_ACTION_TYPE_STRING:
-                    return new ESLIFAction
-                        (
-                        ESLIFActionType.NAME,
-                        null,
-                        marpaESLIFAction_t.stringp != IntPtr.Zero ? marpaESLIFString.marpaESLIFStringPtrToString(marpaESLIFAction_t.stringp) : null,
-                        null,
-                        null
-                        );
-                case marpaESLIFShr.marpaESLIFActionType_t.MARPAESLIF_ACTION_TYPE_LUA:
-                    return new ESLIFAction
-                        (
-                        ESLIFActionType.NAME,
-                        null,
-                        null,
-                        marpaESLIFAction_t.luas != IntPtr.Zero ? Marshal.PtrToStringAnsi(marpaESLIFAction_t.luas) : null,
-                        null
-                        );
-                case marpaESLIFShr.marpaESLIFActionType_t.MARPAESLIF_ACTION_TYPE_LUA_FUNCTION:
-                    return new ESLIFAction
-                        (
-                        ESLIFActionType.LUAFUNCTION,
-                        null,
-                        null,
-                        null,
-                        this.marpaESLIFLuaFunctionToESLIFLuaFunction(marpaESLIFAction_t.luaFunction)
-                        );
-                default:
-                    throw new Exception($"Invalid marpaESLIFActionType_t {(int)marpaESLIFAction_t.type}");
-            }
-        }
-
-        private ESLIFLuaFunction marpaESLIFLuaFunctionToESLIFLuaFunction(marpaESLIFShr.marpaESLIFLuaFunction_t marpaESLIFLuaFunction)
-        {
-            byte[] luacp = null;
-            if (marpaESLIFLuaFunction.luacp != IntPtr.Zero && marpaESLIFLuaFunction.luacl > 0)
-            {
-                luacp = new byte[marpaESLIFLuaFunction.luacl];
-                Marshal.Copy(marpaESLIFLuaFunction.luacp, luacp, 0, (int) marpaESLIFLuaFunction.luacl);
-            }
-
-            byte[] luacstrip = null;
-            if (marpaESLIFLuaFunction.luacstripp != IntPtr.Zero && marpaESLIFLuaFunction.luacstripl > 0)
-            {
-                luacstrip = new byte[marpaESLIFLuaFunction.luacstripl];
-                Marshal.Copy(marpaESLIFLuaFunction.luacstripp, luacstrip, 0, (int)marpaESLIFLuaFunction.luacstripl);
-            }
-
-            return new ESLIFLuaFunction
+            ESLIFGrammarDefaults ESLIFGrammarDefaults = new ESLIFGrammarDefaults
                 (
-                marpaESLIFLuaFunction.luas != IntPtr.Zero ? Marshal.PtrToStringAnsi(marpaESLIFLuaFunction.luas) : null,
-                marpaESLIFLuaFunction.actions != IntPtr.Zero ? Marshal.PtrToStringAnsi(marpaESLIFLuaFunction.actions) : null,
-                (short)marpaESLIFLuaFunction.luacb,
-                luacp,
-                luacstrip
+                marpaESLIFGrammarDefaults_t.defaultRuleActionp != IntPtr.Zero ? (new marpaESLIFAction(marpaESLIFGrammarDefaults_t.defaultRuleActionp)).ESLIFAction() : null,
+                marpaESLIFGrammarDefaults_t.defaultSymbolActionp != IntPtr.Zero ? (new marpaESLIFAction(marpaESLIFGrammarDefaults_t.defaultSymbolActionp)).ESLIFAction() : null,
+                marpaESLIFGrammarDefaults_t.defaultEventActionp != IntPtr.Zero ? (new marpaESLIFAction(marpaESLIFGrammarDefaults_t.defaultEventActionp)).ESLIFAction() : null,
+                marpaESLIFGrammarDefaults_t.defaultRegexActionp != IntPtr.Zero ? (new marpaESLIFAction(marpaESLIFGrammarDefaults_t.defaultRegexActionp)).ESLIFAction() : null,
+                marpaESLIFGrammarDefaults_t.defaultEncodings != IntPtr.Zero ? Marshal.PtrToStringAnsi(marpaESLIFGrammarDefaults_t.defaultEncodings) : null,
+                marpaESLIFGrammarDefaults_t.fallbackEncodings != IntPtr.Zero ? Marshal.PtrToStringAnsi(marpaESLIFGrammarDefaults_t.fallbackEncodings) : null
                 );
+
+            Marshal.FreeHGlobal(marpaESLIFGrammarDefaultsPtr);
+            return ESLIFGrammarDefaults;
         }
 
         private void DisposeUnmanagedResources()
         {
-            if (this.marpaESLIFGrammarp != IntPtr.Zero)
+            if (! this.shallow && this.marpaESLIFGrammarp != IntPtr.Zero)
             {
                 marpaESLIFShr.marpaESLIFGrammar_freev(this.marpaESLIFGrammarp);
             }
         }
     }
 
-    internal static class marpaESLIFString
+    public static class marpaESLIFString
     {
         public static string marpaESLIFStringPtrToString(IntPtr marpaESLIFStringPtr)
         {
@@ -1278,6 +1244,104 @@ namespace org.parser.marpa
             }
 
             return null;
+        }
+    }
+
+    public class marpaESLIFLuaFunction
+    {
+        public string luas { get; protected set; }
+        public string actions { get; protected set; }
+        public bool luacb { get; protected set; }
+        public byte[] luacp { get; protected set; }
+        public byte[] luacstripp { get; protected set; }
+
+        public marpaESLIFLuaFunction(marpaESLIFShr.marpaESLIFLuaFunction_t marpaESLIFLuaFunction_t)
+        {
+            this.luas = marpaESLIFLuaFunction_t.luas == IntPtr.Zero ? null : Marshal.PtrToStringAnsi(marpaESLIFLuaFunction_t.luas);
+            this.actions = marpaESLIFLuaFunction_t.actions == IntPtr.Zero ? null : Marshal.PtrToStringAnsi(marpaESLIFLuaFunction_t.actions);
+            this.luacb = marpaESLIFLuaFunction_t.luacb == 0 ? false : true;
+            if (marpaESLIFLuaFunction_t.luacp != IntPtr.Zero && marpaESLIFLuaFunction_t.luacl > 0)
+            {
+                this.luacp = new byte[marpaESLIFLuaFunction_t.luacl];
+                Marshal.Copy(marpaESLIFLuaFunction_t.luacp, this.luacp, 0, (int)marpaESLIFLuaFunction_t.luacl);
+            }
+            else
+            {
+                this.luacp = null;
+            }
+            if (marpaESLIFLuaFunction_t.luacstripp != IntPtr.Zero && marpaESLIFLuaFunction_t.luacstripl > 0)
+            {
+                this.luacstripp = new byte[marpaESLIFLuaFunction_t.luacstripl];
+                Marshal.Copy(marpaESLIFLuaFunction_t.luacstripp, this.luacstripp, 0, (int)marpaESLIFLuaFunction_t.luacstripl);
+            }
+            else
+            {
+                this.luacstripp = null;
+            }
+        }
+
+        public ESLIFLuaFunction ESLIFLuaFunction()
+        {
+            return new ESLIFLuaFunction
+                (
+                this.luas,
+                this.actions,
+                this.luacb,
+                this.luacp,
+                this.luacstripp
+                );
+        }
+    }
+
+    public class marpaESLIFAction {
+        public marpaESLIFShr.marpaESLIFActionType_t type { get; protected set; }
+        public string names { get; protected set; }
+        public string @string { get; protected set; }
+        public string luas { get; protected set; }
+        public marpaESLIFLuaFunction luaFunction { get; protected set; }
+
+        public marpaESLIFAction(IntPtr marpaESLIFActionPtr)
+        {
+            marpaESLIFShr.marpaESLIFAction_t marpaESLIFAction_t = (marpaESLIFShr.marpaESLIFAction_t)Marshal.PtrToStructure(marpaESLIFActionPtr, typeof(marpaESLIFShr.marpaESLIFAction_t));
+
+            switch (marpaESLIFAction_t.type)
+            {
+                case marpaESLIFShr.marpaESLIFActionType_t.MARPAESLIF_ACTION_TYPE_NAME:
+                    this.type = marpaESLIFAction_t.type;
+                    this.names = marpaESLIFAction_t.names != IntPtr.Zero ? Marshal.PtrToStringAnsi(marpaESLIFAction_t.names) : null;
+                    break;
+                case marpaESLIFShr.marpaESLIFActionType_t.MARPAESLIF_ACTION_TYPE_STRING:
+                    this.type = marpaESLIFAction_t.type;
+                    this.@string = marpaESLIFString.marpaESLIFStringPtrToString(marpaESLIFAction_t.stringp);
+                    break;
+                case marpaESLIFShr.marpaESLIFActionType_t.MARPAESLIF_ACTION_TYPE_LUA:
+                    this.type = marpaESLIFAction_t.type;
+                    this.luas = marpaESLIFAction_t.luas != IntPtr.Zero ? Marshal.PtrToStringAnsi(marpaESLIFAction_t.luas) : null;
+                    break;
+                case marpaESLIFShr.marpaESLIFActionType_t.MARPAESLIF_ACTION_TYPE_LUA_FUNCTION:
+                    this.type = marpaESLIFAction_t.type;
+                    this.luaFunction = new marpaESLIFLuaFunction(marpaESLIFAction_t.luaFunction);
+                    break;
+                default:
+                    throw new Exception($"Invalid marpaESLIFActionType_t {(int)marpaESLIFAction_t.type}");
+            }
+        }
+
+        public ESLIFAction ESLIFAction()
+        {
+            switch (this.type)
+            {
+                case marpaESLIFShr.marpaESLIFActionType_t.MARPAESLIF_ACTION_TYPE_NAME:
+                    return new ESLIFAction(ESLIFActionType.NAME, this.names, null, null, null);
+                case marpaESLIFShr.marpaESLIFActionType_t.MARPAESLIF_ACTION_TYPE_STRING:
+                    return new ESLIFAction(ESLIFActionType.STRING, null, this.@string, null, null);
+                case marpaESLIFShr.marpaESLIFActionType_t.MARPAESLIF_ACTION_TYPE_LUA:
+                    return new ESLIFAction(ESLIFActionType.LUA, null, null, this.luas, null);
+                case marpaESLIFShr.marpaESLIFActionType_t.MARPAESLIF_ACTION_TYPE_LUA_FUNCTION:
+                    return new ESLIFAction(ESLIFActionType.LUAFUNCTION, null, null, null, this.luaFunction.ESLIFLuaFunction());
+                default:
+                    throw new Exception($"Invalid marpaESLIFActionType_t {(int)this.type}");
+            }
         }
     }
 }

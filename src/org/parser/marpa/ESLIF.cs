@@ -58,5 +58,10 @@ namespace org.parser.marpa
         {
             return this.marpaESLIF.VersionPatch();
         }
+
+        public ESLIFGrammar Grammar()
+        {
+            return this.marpaESLIF.Grammar();
+        }
     }
 }
