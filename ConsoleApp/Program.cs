@@ -19,26 +19,26 @@ namespace marpaESLIFShrTest
                 });
 
             ILogger logger = loggerFactory.CreateLogger("Program");
-            ESLIF ESLIF = ESLIF.Instance(logger);
-            ESLIFGrammar ESLIFGrammar = ESLIF.Grammar();
-            logger.LogInformation($"Version: {ESLIF.Version()}");
-            logger.LogInformation($"Version major: {ESLIF.VersionMajor()}");
-            logger.LogInformation($"Version minor: {ESLIF.VersionMinor()}");
-            logger.LogInformation($"Version patch: {ESLIF.VersionPatch()}");
-            logger.LogInformation($"ESLIF Number of grammars: {ESLIFGrammar.ngrammar()}");
-            ESLIFGrammarDefaults ESLIFGrammarDefaults = ESLIFGrammar.Defaults();
-            logger.LogInformation($"ESLIF Grammar defaults: {ESLIFGrammarDefaults}");
-            ESLIFGrammarProperties ESLIFGrammarProperties = ESLIFGrammar.Properties();
-            logger.LogInformation($"ESLIF Grammar properties: {ESLIFGrammarProperties}");
-            for (int level = 0; level < ESLIFGrammar.ngrammar() ; level++ )
+            ESLIF eslif = ESLIF.Instance(logger);
+            ESLIFGrammar grammar = eslif.Grammar();
+            logger.LogInformation($"Version: {eslif.Version()}");
+            logger.LogInformation($"Version major: {eslif.VersionMajor()}");
+            logger.LogInformation($"Version minor: {eslif.VersionMinor()}");
+            logger.LogInformation($"Version patch: {eslif.VersionPatch()}");
+            logger.LogInformation($"ESLIF Number of grammars: {grammar.ngrammar()}");
+            ESLIFGrammarDefaults grammarDefaults = grammar.Defaults();
+            logger.LogInformation($"ESLIF Grammar defaults: {grammarDefaults}");
+            ESLIFGrammarProperties grammarProperties = grammar.Properties();
+            logger.LogInformation($"ESLIF Grammar properties: {grammarProperties}");
+            for (int level = 0; level < grammar.ngrammar() ; level++ )
             {
-                logger.LogInformation($"ESLIF Grammar defaults at level {level}: {ESLIFGrammar.DefaultsByLevel(level)}");
-                logger.LogInformation($"ESLIF Grammar properties at level {level}: {ESLIFGrammar.PropertiesByLevel(level)}");
+                logger.LogInformation($"ESLIF Grammar defaults at level {level}: {grammar.DefaultsByLevel(level)}");
+                logger.LogInformation($"ESLIF Grammar properties at level {level}: {grammar.PropertiesByLevel(level)}");
             }
 
             try
             {
-                ESLIFGrammar = ESLIFGrammar.Instance(ESLIF, "Something that will fail");
+                grammar = ESLIFGrammar.Instance(eslif, "Something that will fail");
             }
             catch (Exception e)
             {
@@ -47,12 +47,12 @@ namespace marpaESLIFShrTest
 
             try
             {
-                ESLIFGrammar = ESLIFGrammar.Instance(ESLIF, ":default ::= event-action => ::luac->function() print('In event-action') return true end\ntext ::= 'text'");
-                logger.LogInformation($"Number of grammars: {ESLIFGrammar.ngrammar()}");
-                ESLIFGrammarDefaults = ESLIFGrammar.Defaults();
-                logger.LogInformation($"Grammar defaults: {ESLIFGrammarDefaults}");
-                ESLIFGrammarProperties = ESLIFGrammar.Properties();
-                logger.LogInformation($"Grammar properties: {ESLIFGrammarProperties}");
+                grammar = ESLIFGrammar.Instance(eslif, ":default ::= event-action => ::luac->function() print('In event-action') return true end\ntext ::= 'text'");
+                logger.LogInformation($"Number of grammars: {grammar.ngrammar()}");
+                grammarDefaults = grammar.Defaults();
+                logger.LogInformation($"Grammar defaults: {grammarDefaults}");
+                grammarProperties = grammar.Properties();
+                logger.LogInformation($"Grammar properties: {grammarProperties}");
             }
             catch (Exception e)
             {
