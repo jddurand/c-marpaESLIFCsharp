@@ -59,5 +59,15 @@ namespace org.parser.marpa
         {
             return this.marpaESLIFGrammar.DefaultsByLevel(level);
         }
+
+        public ESLIFGrammarProperties Properties()
+        {
+            return this.marpaESLIFGrammar.Properties();
+        }
+
+        public ESLIFGrammarProperties PropertiesByLevel(int level)
+        {
+            return this.marpaESLIFGrammar.PropertiesByLevel(level);
+        }
     }
 }

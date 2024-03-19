@@ -18,21 +18,21 @@ namespace org.parser.marpa
     /// </summary>
     public class ESLIFGrammarProperties
     {
-        private readonly int level;
-        private readonly int maxLevel;
-        private readonly string description;
-        private readonly bool latm;
-        private readonly bool discardIsFallback;
-        private readonly string defaultSymbolAction;
-        private readonly string defaultRuleAction;
-        private readonly string defaultEventAction;
-        private readonly string defaultRegexAction;
-        private readonly int startId;
-        private readonly int discardId;
-        private readonly int[] symbolIds;
-        private readonly int[] ruleIds;
-        private readonly string defaultEncoding;
-        private readonly string fallbackEncoding;
+        public int level { get; }
+        public int maxLevel { get; }
+        public string description { get; }
+        public bool latm { get; }
+        public bool discardIsFallback { get; }
+        public ESLIFAction defaultSymbolAction { get; }
+        public ESLIFAction defaultRuleAction { get; }
+        public ESLIFAction defaultEventAction { get; }
+        public ESLIFAction defaultRegexAction { get; }
+        public int startId { get; }
+        public int discardId { get; }
+        public int[] symbolIds { get; }
+        public int[] ruleIds { get; }
+        public string defaultEncoding { get; }
+        public string fallbackEncoding { get; }
 
         /// <summary>
         /// Creation of an ESLIFGrammarProperties instance
@@ -55,7 +55,7 @@ namespace org.parser.marpa
         /// <param name="fallbackEncoding">Grammar fallback encoding</param>
         /// 
         /// <returns>An ESLIFGrammarProperties instance</returns>
-        public ESLIFGrammarProperties(int level, int maxLevel, string description, bool latm, bool discardIsFallback, string defaultSymbolAction, string defaultRuleAction, string defaultEventAction, string defaultRegexAction, int startId, int discardId, int[] symbolIds, int[] ruleIds, string defaultEncoding, string fallbackEncoding)
+        public ESLIFGrammarProperties(int level, int maxLevel, string description, bool latm, bool discardIsFallback, ESLIFAction defaultSymbolAction, ESLIFAction defaultRuleAction, ESLIFAction defaultEventAction, ESLIFAction defaultRegexAction, int startId, int discardId, int[] symbolIds, int[] ruleIds, string defaultEncoding, string fallbackEncoding)
         {
             this.level = level;
             this.maxLevel = maxLevel;
@@ -80,10 +80,10 @@ namespace org.parser.marpa
             + ", description=" + (this.description ?? "(null)")
             + ", latm=" + this.latm
             + ", discardIsFallback=" + this.discardIsFallback
-            + ", defaultSymbolAction=" + (this.defaultSymbolAction ?? "(null)")
-            + ", defaultRuleAction=" + (this.defaultRuleAction ?? "(null)")
-            + ", defaultEventAction=" + (this.defaultEventAction ?? "(null)")
-            + ", defaultRegexAction=" + (this.defaultRegexAction ?? "(null)")
+            + ", defaultSymbolAction=" + (this.defaultSymbolAction?.ToString())
+            + ", defaultRuleAction=" + (this.defaultRuleAction?.ToString())
+            + ", defaultEventAction=" + (this.defaultEventAction?.ToString())
+            + ", defaultRegexAction=" + (this.defaultRegexAction?.ToString())
             + ", startId=" + this.startId
             + ", discardId=" + this.discardId
             + ", symbolIds=" + (this.symbolIds != null ? "[" + string.Join(", ", this.symbolIds)  + "]": "(null)")
@@ -91,90 +91,5 @@ namespace org.parser.marpa
             + ", defaultEncoding=" + (this.defaultEncoding ?? "(null)")
             + ", fallbackEncoding=" + (this.fallbackEncoding ?? "(null)")
             + "]";
-
-        ///
-        /// <returns>Grammar's level</returns>
-        ///
-        public int getLevel() => this.level;
-
-        ///
-        /// <returns>Maximum grammar level</returns>
-        ///
-        public int getMaxLevel() => this.maxLevel;
-
-        ///
-        /// <returns>Grammar's description</returns>
-        ///
-        public String getDescription() => this.description;
-
-        ///
-        /// <returns>A boolean that indicates if this grammar is in the LATM (Longest Acceptable Token Mode) or not</returns>
-        ///
-        public bool isLatm() => this.latm;
-
-        /// <remarks>Alias to <see cref="isLatm"/></remarks>
-        /// <returns>A boolean that indicates if this grammar is in the LATM (Longest Acceptable Token Mode) or not</returns>
-        ///
-        public bool getLatm() => isLatm();
-
-        ///
-        /// <returns>A boolean that returns the grammar's discard-is-fallback setting</returns>
-        ///
-        public bool isDiscardIsFallback() => this.discardIsFallback;
-
-        /// <remarks>Alias to <see cref="isDiscardIsFallback"/></remarks>
-        /// <returns>A boolean that returns the grammar's discard-is-fallback setting</returns>
-        ///
-        public bool getDiscardIsFallback() => isDiscardIsFallback();
-
-        ///
-        /// <returns>Grammar's default symbol action, never null</returns>
-        ///
-        public string getDefaultSymbolAction() => this.defaultSymbolAction;
-
-        ///
-        /// <returns>Grammar's default rule action, can be null</returns>
-        ///
-        public string getDefaultRuleAction() => this.defaultRuleAction;
-
-        ///
-        /// <returns>Grammar's default event action, can be null</returns>
-        ///
-        public string getDefaultEventAction() => this.defaultEventAction;
-
-        ///
-        /// <returns>Grammar's default regex action, can be null</returns>
-        ///
-        public string getDefaultRegexAction() => this.defaultRegexAction;
-
-        ///
-        /// <returns>Grammar's start symbol id, always >= 0</returns>
-        ///
-        public int getStartId() => this.startId;
-
-        ///
-        /// <returns>Grammar's discard symbol id, < 0 if none.</returns>
-        ///
-        public int getDiscardId() => this.discardId;
-
-        ///
-        /// <returns>List of symbol identifiers</returns>
-        ///
-        public int[] getSymbolIds() => this.symbolIds;
-
-        ///
-        /// <returns>List of rule identifiers</returns>
-        ///
-        public int[] getRuleIds() => this.ruleIds;
-
-        ///
-        /// <returns>the default encoding, can be null</returns>
-        ///
-        public string getDefaultEncoding() => this.defaultEncoding;
-
-        ///
-        /// <returns>the fallback encoding, can be null</returns>
-        ///
-        public string getFallbackEncoding() => this.fallbackEncoding;
     }
 }

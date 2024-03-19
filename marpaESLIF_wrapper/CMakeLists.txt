@@ -149,6 +149,13 @@ c_type_to_csharp_type("int"            TRUE  C2CSHARP_TYPE_INT)
 c_type_to_csharp_type("unsigned int"   FALSE C2CSHARP_TYPE_UNSIGNED_INT)
 c_type_to_csharp_type("long"           TRUE  C2CSHARP_TYPE_LONG)
 c_type_to_csharp_type("unsigned long"  FALSE C2CSHARP_TYPE_UNSIGNED_LONG)
+
+if(C2CSHARP_TYPE_INT STREQUAL "int")
+  set(C2CSHARP_TYPE_INT_IS_INT TRUE CACHE BOOL "C int is C# int" FORCE)
+  mark_as_advanced(C2CSHARP_TYPE_INT_IS_INT)
+else()
+  unset(C2CSHARP_TYPE_INT_IS_INT)
+endif()
 #
 # Special cases
 #
