@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 
 namespace org.parser.marpa
 {
@@ -68,6 +69,16 @@ namespace org.parser.marpa
         public ESLIFGrammarProperties PropertiesByLevel(int level)
         {
             return this.marpaESLIFGrammar.PropertiesByLevel(level);
+        }
+
+        public ESLIFGrammarRuleProperties RuleProperties(int ruleId)
+        {
+            return this.marpaESLIFGrammar.RuleProperties(ruleId);
+        }
+
+        public ESLIFGrammarRuleProperties RulePropertiesByLevel(int ruleId, int level)
+        {
+            return this.marpaESLIFGrammar.RulePropertiesByLevel(ruleId, level);
         }
     }
 }

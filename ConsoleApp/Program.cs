@@ -48,11 +48,25 @@ namespace marpaESLIFShrTest
             try
             {
                 grammar = ESLIFGrammar.Instance(eslif, ":default ::= event-action => ::luac->function() print('In event-action') return true end\ntext ::= 'text'");
-                logger.LogInformation($"Number of grammars: {grammar.ngrammar()}");
+                int ngrammar = grammar.ngrammar();
+                logger.LogInformation($"Number of grammars: {ngrammar}");
                 grammarDefaults = grammar.Defaults();
                 logger.LogInformation($"Grammar defaults: {grammarDefaults}");
                 grammarProperties = grammar.Properties();
                 logger.LogInformation($"Grammar properties: {grammarProperties}");
+                foreach(int ruleId in grammarProperties.ruleIds) {
+                    ESLIFGrammarRuleProperties ruleProperties = grammar.RuleProperties(ruleId);
+                    logger.LogInformation($"Grammar rule No {ruleId} property: {ruleProperties}");
+                }
+                for(int level = 0; level < ngrammar; level++)
+                {
+                    grammarProperties = grammar.PropertiesByLevel(level);
+                    foreach (int ruleId in grammarProperties.ruleIds)
+                    {
+                        ESLIFGrammarRuleProperties ruleProperties = grammar.RulePropertiesByLevel(ruleId, level);
+                        logger.LogInformation($"Grammar level No {level} rule No {ruleId} property: {ruleProperties}");
+                    }
+                }
             }
             catch (Exception e)
             {
