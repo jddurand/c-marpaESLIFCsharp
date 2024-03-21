@@ -56,15 +56,35 @@ namespace marpaESLIFShrTest
                 logger.LogInformation($"Grammar properties: {grammarProperties}");
                 foreach(int ruleId in grammarProperties.ruleIds) {
                     ESLIFGrammarRuleProperties ruleProperties = grammar.RuleProperties(ruleId);
-                    logger.LogInformation($"Grammar rule No {ruleId} property: {ruleProperties}");
+                    logger.LogInformation($"Current grammar rule No {ruleId} property: {ruleProperties}");
                 }
-                for(int level = 0; level < ngrammar; level++)
+                foreach (int ruleId in grammarProperties.ruleIds)
+                {
+                    string ruleDisplay = grammar.RuleDisplay(ruleId);
+                    logger.LogInformation($"Current grammar rule No {ruleId} display: {ruleDisplay}");
+                }
+                foreach (int ruleId in grammarProperties.ruleIds)
+                {
+                    string ruleShow = grammar.RuleShow(ruleId);
+                    logger.LogInformation($"Current grammar rule No {ruleId} show: {ruleShow}");
+                }
+                for (int level = 0; level < ngrammar; level++)
                 {
                     grammarProperties = grammar.PropertiesByLevel(level);
                     foreach (int ruleId in grammarProperties.ruleIds)
                     {
                         ESLIFGrammarRuleProperties ruleProperties = grammar.RulePropertiesByLevel(ruleId, level);
                         logger.LogInformation($"Grammar level No {level} rule No {ruleId} property: {ruleProperties}");
+                    }
+                    foreach (int ruleId in grammarProperties.ruleIds)
+                    {
+                        string ruleDisplay = grammar.RuleDisplayByLevel(ruleId, level);
+                        logger.LogInformation($"Grammar level No {level}  rule No {ruleId} display: {ruleDisplay}");
+                    }
+                    foreach (int ruleId in grammarProperties.ruleIds)
+                    {
+                        string ruleShow = grammar.RuleShowByLevel(ruleId, level);
+                        logger.LogInformation($"Grammar level No {level}  rule No {ruleId} show: {ruleShow}");
                     }
                 }
             }

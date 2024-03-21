@@ -80,5 +80,25 @@ namespace org.parser.marpa
         {
             return this.marpaESLIFGrammar.RulePropertiesByLevel(ruleId, level);
         }
+
+        public string RuleDisplay(int ruleId)
+        {
+            return this.marpaESLIFGrammar.RuleDisplay(ruleId);
+        }
+
+        public string RuleDisplayByLevel(int ruleId, int level)
+        {
+            return this.marpaESLIFGrammar.RuleDisplayByLevel(ruleId, level);
+        }
+
+        public string RuleShow(int ruleId)
+        {
+            return this.marpaESLIFGrammar.RuleShow(ruleId);
+        }
+
+        public string RuleShowByLevel(int ruleId, int level)
+        {
+            return this.marpaESLIFGrammar.RuleShowByLevel(ruleId, level);
+        }
     }
 }

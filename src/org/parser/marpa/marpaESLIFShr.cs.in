@@ -535,10 +535,10 @@ namespace org.parser.marpa
         public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_ruleproperty_by_levelb(IntPtr marpaESLIFGrammarp, @C2CSHARP_TYPE_INT@ rulei, IntPtr rulePropertyp, @C2CSHARP_TYPE_INT@ leveli, IntPtr descp);
     
         [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_ruledisplayform_currentb(IntPtr marpaESLIFGrammarp, @C2CSHARP_TYPE_INT@ rulei, IntPtr ruledisplaysp);
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_ruledisplayform_currentb(IntPtr marpaESLIFGrammarp, @C2CSHARP_TYPE_INT@ rulei, ref IntPtr ruledisplaysp);
     
         [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_ruledisplayform_by_levelb(IntPtr marpaESLIFGrammarp, @C2CSHARP_TYPE_INT@ rulei, IntPtr ruledisplaysp, @C2CSHARP_TYPE_INT@ leveli, IntPtr descp);
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_ruledisplayform_by_levelb(IntPtr marpaESLIFGrammarp, @C2CSHARP_TYPE_INT@ rulei, ref IntPtr ruledisplaysp, @C2CSHARP_TYPE_INT@ leveli, IntPtr descp);
     
         [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_symbolarray_currentb(IntPtr marpaESLIFGrammarp, IntPtr symbolipp, ref @C2CSHARP_TYPE_SIZE_T@ symbollp);
@@ -553,25 +553,25 @@ namespace org.parser.marpa
         public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_symbolproperty_by_levelb(IntPtr marpaESLIFGrammarp, @C2CSHARP_TYPE_INT@ symboli, IntPtr marpaESLIFSymbolPropertyp, @C2CSHARP_TYPE_INT@ leveli, IntPtr descp);
     
         [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_symboldisplayform_currentb(IntPtr marpaESLIFGrammarp, @C2CSHARP_TYPE_INT@ symboli, IntPtr symboldisplaysp);
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_symboldisplayform_currentb(IntPtr marpaESLIFGrammarp, @C2CSHARP_TYPE_INT@ symboli, ref IntPtr symboldisplaysp);
     
         [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_symboldisplayform_by_levelb(IntPtr marpaESLIFGrammarp, @C2CSHARP_TYPE_INT@ symboli, IntPtr symboldisplaysp, @C2CSHARP_TYPE_INT@ leveli, IntPtr descp);
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_symboldisplayform_by_levelb(IntPtr marpaESLIFGrammarp, @C2CSHARP_TYPE_INT@ symboli, ref IntPtr symboldisplaysp, @C2CSHARP_TYPE_INT@ leveli, IntPtr descp);
     
         [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_ruleshowform_currentb(IntPtr marpaESLIFGrammarp, @C2CSHARP_TYPE_INT@ rulei, IntPtr ruleshowsp);
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_ruleshowform_currentb(IntPtr marpaESLIFGrammarp, @C2CSHARP_TYPE_INT@ rulei, ref IntPtr ruleshowsp);
     
         [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_ruleshowform_by_levelb(IntPtr marpaESLIFGrammarp, @C2CSHARP_TYPE_INT@ rulei, IntPtr ruleshowsp, @C2CSHARP_TYPE_INT@ leveli, IntPtr descp);
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_ruleshowform_by_levelb(IntPtr marpaESLIFGrammarp, @C2CSHARP_TYPE_INT@ rulei, ref IntPtr ruleshowsp, @C2CSHARP_TYPE_INT@ leveli, IntPtr descp);
     
         [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_grammarshowform_currentb(IntPtr marpaESLIFGrammarp, IntPtr grammarshowsp);
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_grammarshowform_currentb(IntPtr marpaESLIFGrammarp, ref IntPtr grammarshowsp);
     
         [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_grammarshowform_by_levelb(IntPtr marpaESLIFGrammarp, IntPtr grammarshowsp, @C2CSHARP_TYPE_INT@ leveli, IntPtr descp);
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_grammarshowform_by_levelb(IntPtr marpaESLIFGrammarp, ref IntPtr grammarshowsp, @C2CSHARP_TYPE_INT@ leveli, IntPtr descp);
     
         [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_grammarshowscriptb(IntPtr marpaESLIFGrammarp, IntPtr grammarscriptsp);
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_grammarshowscriptb(IntPtr marpaESLIFGrammarp, ref IntPtr grammarscriptsp);
     
         [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFGrammar_parseb(IntPtr marpaESLIFGrammarp, IntPtr marpaESLIFRecognizerOptionp, IntPtr marpaESLIFValueOptionp, ref @C2CSHARP_TYPE_SHORT@ exhaustedbp);
@@ -1179,6 +1179,50 @@ namespace org.parser.marpa
 
             Marshal.FreeHGlobal(marpaESLIFGrammarDefaultsPtr);
             return ESLIFGrammarDefaults;
+        }
+
+        public string RuleDisplay(int rule)
+        {
+            IntPtr ruledisplaysPtr = IntPtr.Zero;
+            if (marpaESLIFShr.marpaESLIFGrammar_ruledisplayform_currentb(this.marpaESLIFGrammarp, (@C2CSHARP_TYPE_INT@)rule, ref ruledisplaysPtr) == 0)
+            {
+                throw new Exception("marpaESLIFGrammar_ruledisplayform_currentb failure");
+            }
+
+            return ruledisplaysPtr == IntPtr.Zero ? null : Marshal.PtrToStringAnsi(ruledisplaysPtr);
+        }
+
+        public string RuleDisplayByLevel(int rule, int level)
+        {
+            IntPtr ruledisplaysPtr = IntPtr.Zero;
+            if (marpaESLIFShr.marpaESLIFGrammar_ruledisplayform_by_levelb(this.marpaESLIFGrammarp, (@C2CSHARP_TYPE_INT@)rule, ref ruledisplaysPtr, level, IntPtr.Zero) == 0)
+            {
+                throw new Exception("marpaESLIFGrammar_ruledisplayform_by_levelb failure");
+            }
+
+            return ruledisplaysPtr == IntPtr.Zero ? null : Marshal.PtrToStringAnsi(ruledisplaysPtr);
+        }
+
+        public string RuleShow(int rule)
+        {
+            IntPtr ruleshowsPtr = IntPtr.Zero;
+            if (marpaESLIFShr.marpaESLIFGrammar_ruleshowform_currentb(this.marpaESLIFGrammarp, (@C2CSHARP_TYPE_INT@)rule, ref ruleshowsPtr) == 0)
+            {
+                throw new Exception("marpaESLIFGrammar_ruleshowform_currentb failure");
+            }
+
+            return ruleshowsPtr == IntPtr.Zero ? null : Marshal.PtrToStringAnsi(ruleshowsPtr);
+        }
+
+        public string RuleShowByLevel(int rule, int level)
+        {
+            IntPtr ruleshowsPtr = IntPtr.Zero;
+            if (marpaESLIFShr.marpaESLIFGrammar_ruleshowform_by_levelb(this.marpaESLIFGrammarp, (@C2CSHARP_TYPE_INT@)rule, ref ruleshowsPtr, level, IntPtr.Zero) == 0)
+            {
+                throw new Exception("marpaESLIFGrammar_ruleshowform_by_levelb failure");
+            }
+
+            return ruleshowsPtr == IntPtr.Zero ? null : Marshal.PtrToStringAnsi(ruleshowsPtr);
         }
 
         private ESLIFGrammarRuleProperties marpaESLIFRulePropertyToESLIFGrammarRuleProperties(marpaESLIFShr.marpaESLIFRuleProperty_t marpaESLIFRuleProperty_t)
