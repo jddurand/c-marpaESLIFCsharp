@@ -1283,24 +1283,18 @@ namespace org.parser.marpa
                 throw new Exception($"Invalid symbol type {(int)marpaESLIFSymbolProperty_t.type}");
 
             return new ESLIFGrammarSymbolProperties
-                ((int)marpaESLIFRuleProperty_t.idi,
-                marpaESLIFString.marpaESLIFStringPtrToString(marpaESLIFRuleProperty_t.descp),
-                marpaESLIFRuleProperty_t.asciishows != IntPtr.Zero ? Marshal.PtrToStringAnsi(marpaESLIFRuleProperty_t.asciishows) : null,
-                (int)marpaESLIFRuleProperty_t.lhsi,
-                (int)marpaESLIFRuleProperty_t.separatori,
-                rhsIds,
-                skip,
-                (int)marpaESLIFRuleProperty_t.exceptioni,
-                marpaESLIFRuleProperty_t.actionp != IntPtr.Zero ? (new marpaESLIFAction(marpaESLIFRuleProperty_t.actionp)).ESLIFAction() : null,
-                marpaESLIFRuleProperty_t.discardEvents != IntPtr.Zero ? Marshal.PtrToStringAnsi(marpaESLIFRuleProperty_t.discardEvents) : null,
-                marpaESLIFRuleProperty_t.discardEventb != 0,
-                (int)marpaESLIFRuleProperty_t.ranki,
-                marpaESLIFRuleProperty_t.nullRanksHighb != 0,
-                marpaESLIFRuleProperty_t.sequenceb != 0,
-                marpaESLIFRuleProperty_t.properb != 0,
-                (int)marpaESLIFRuleProperty_t.minimumi,
-                (int)marpaESLIFRuleProperty_t.propertyBitSet,
-                marpaESLIFRuleProperty_t.hideseparatorb != 0
+                (ESLIFSymbolType,
+                marpaESLIFSymbolProperty_t.startb != 0,
+                marpaESLIFSymbolProperty_t.discardb != 0,
+                marpaESLIFSymbolProperty_t.discardRhsb != 0,
+                marpaESLIFSymbolProperty_t.lhsb != 0,
+                marpaESLIFSymbolProperty_t.topb != 0,
+                (int)marpaESLIFSymbolProperty_t.idi,
+                marpaESLIFString.marpaESLIFStringPtrToString(marpaESLIFSymbolProperty_t.descp),
+                marpaESLIFSymbolProperty_t.eventBefores != IntPtr.Zero ? Marshal.PtrToStringAnsi(marpaESLIFSymbolProperty_t.eventBefores) : null,
+                marpaESLIFSymbolProperty_t.eventBeforeb != 0,
+                marpaESLIFSymbolProperty_t.eventAfters != IntPtr.Zero ? Marshal.PtrToStringAnsi(marpaESLIFSymbolProperty_t.eventAfters) : null,
+                marpaESLIFSymbolProperty_t.eventAfterb != 0,
                 );
         }
 
