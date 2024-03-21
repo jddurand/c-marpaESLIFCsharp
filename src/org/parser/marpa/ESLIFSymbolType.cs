@@ -7,9 +7,9 @@ namespace org.parser.marpa
     {
 
         /// <summary>Symbol is a terminal</summary>
-        MARPAESLIF_SYMBOLTYPE_TERMINAL = 0,
+        TERMINAL = 0,
 
         /// <summary>Symbol is a meta symbol</summary>
-        MARPAESLIF_SYMBOLTYPE_META = 1,
+        META = 1,
     }
 }

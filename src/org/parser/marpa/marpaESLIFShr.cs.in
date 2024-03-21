@@ -1269,6 +1269,41 @@ namespace org.parser.marpa
                 );
         }
 
+        private ESLIFGrammarSymbolProperties marpaESLIFSymbolPropertyToESLIFGrammarSymbolProperties(marpaESLIFShr.marpaESLIFSymbolProperty_t marpaESLIFSymbolProperty_t)
+        {
+            ESLIFSymbolType ESLIFSymbolType =
+                marpaESLIFSymbolProperty_t.type == marpaESLIFShr.marpaESLIFSymbolType_t.MARPAESLIF_SYMBOLTYPE_TERMINAL
+                ?
+                ESLIFSymbolType.TERMINAL
+                :
+                marpaESLIFSymbolProperty_t.type == marpaESLIFShr.marpaESLIFSymbolType_t.MARPAESLIF_SYMBOLTYPE_META
+                ?
+                ESLIFSymbolType.META
+                :
+                throw new Exception($"Invalid symbol type {(int)marpaESLIFSymbolProperty_t.type}");
+
+            return new ESLIFGrammarSymbolProperties
+                ((int)marpaESLIFRuleProperty_t.idi,
+                marpaESLIFString.marpaESLIFStringPtrToString(marpaESLIFRuleProperty_t.descp),
+                marpaESLIFRuleProperty_t.asciishows != IntPtr.Zero ? Marshal.PtrToStringAnsi(marpaESLIFRuleProperty_t.asciishows) : null,
+                (int)marpaESLIFRuleProperty_t.lhsi,
+                (int)marpaESLIFRuleProperty_t.separatori,
+                rhsIds,
+                skip,
+                (int)marpaESLIFRuleProperty_t.exceptioni,
+                marpaESLIFRuleProperty_t.actionp != IntPtr.Zero ? (new marpaESLIFAction(marpaESLIFRuleProperty_t.actionp)).ESLIFAction() : null,
+                marpaESLIFRuleProperty_t.discardEvents != IntPtr.Zero ? Marshal.PtrToStringAnsi(marpaESLIFRuleProperty_t.discardEvents) : null,
+                marpaESLIFRuleProperty_t.discardEventb != 0,
+                (int)marpaESLIFRuleProperty_t.ranki,
+                marpaESLIFRuleProperty_t.nullRanksHighb != 0,
+                marpaESLIFRuleProperty_t.sequenceb != 0,
+                marpaESLIFRuleProperty_t.properb != 0,
+                (int)marpaESLIFRuleProperty_t.minimumi,
+                (int)marpaESLIFRuleProperty_t.propertyBitSet,
+                marpaESLIFRuleProperty_t.hideseparatorb != 0
+                );
+        }
+
         private ESLIFGrammarProperties marpaESLIFGrammarPropertyToESLIFGrammarProperties(marpaESLIFShr.marpaESLIFGrammarProperty_t marpaESLIFGrammarProperty_t)
         {
             int[] symbolIds = null;

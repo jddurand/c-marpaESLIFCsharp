@@ -17,35 +17,35 @@ namespace org.parser.marpa
     /// </summary>
     public class ESLIFGrammarSymbolProperties
     {
-        private readonly ESLIFSymbolType type;
-        private readonly bool start;
-        private readonly bool discard;
-        private readonly bool discardRhs;
-        private readonly bool lhs;
-        private readonly bool top;
-        private readonly int id;
-        private readonly string description;
-        private readonly string eventBefore;
-        private readonly bool eventBeforeInitialState;
-        private readonly string eventAfter;
-        private readonly bool eventAfterInitialState;
-        private readonly string eventPredicted;
-        private readonly bool eventPredictedInitialState;
-        private readonly string eventNulled;
-        private readonly bool eventNulledInitialState;
-        private readonly string eventCompleted;
-        private readonly bool eventCompletedInitialState;
-        private readonly string discardEvent;
-        private readonly bool discardEventInitialState;
-        private readonly int lookupResolvedLeveli;
-        private readonly int priority;
-        private readonly string nullableAction;
-        private readonly int propertyBitSet;
-        private readonly int eventBitSet;
-        private readonly string symbolAction;
-        private readonly string ifAction;
-        private readonly string generatorAction;
-        private readonly bool verbose;
+        public ESLIFSymbolType type { get; }
+        public bool start { get; }
+        public bool discard { get; }
+        public bool discardRhs { get; }
+        public bool lhs { get; }
+        public bool top { get; }
+        public int id { get; }
+        public string description { get; }
+        public string eventBefore { get; }
+        public bool eventBeforeInitialState { get; }
+        public string eventAfter { get; }
+        public bool eventAfterInitialState { get; }
+        public string eventPredicted { get; }
+        public bool eventPredictedInitialState { get; }
+        public string eventNulled { get; }
+        public bool eventNulledInitialState { get; }
+        public string eventCompleted { get; }
+        public bool eventCompletedInitialState { get; }
+        public string discardEvent { get; }
+        public bool discardEventInitialState { get; }
+        public int lookupResolvedLeveli { get; }
+        public int priority { get; }
+        public string nullableAction { get; }
+        public int propertyBitSet { get; }
+        public int eventBitSet { get; }
+        public string symbolAction { get; }
+        public string ifAction { get; }
+        public string generatorAction { get; }
+        public bool verbose { get; }
 
         /// <summary>
         /// Creation of an ESLIFGrammarSymbolProperties instance
@@ -146,141 +146,6 @@ namespace org.parser.marpa
             + ", generatorAction=" + (this.generatorAction ?? "(null)")
             + ", verbose=" + this.verbose
             + "]";
-
-        /// <returns>the type</returns>
-        public ESLIFSymbolType getType() => type;
-
-        /// <returns>if this the start symbol</returns>
-        public bool isStart() => this.start;
-
-        /// <remarks>Alias to <see cref="isStart"/></remarks>
-        /// <returns>if this is the start symbol</returns>
-        public bool getStart() => isStart();
-
-        /// <returns>if this is the discard symbol</returns>
-        public bool isDiscard() => this.discard;
-
-        /// <remarks>Alias to <see cref="isDiscard"/></remarks>
-        /// <returns>if this is the discard symbol</returns>
-        public bool getDiscard() => isDiscard();
-
-        /// <returns>if this is a RHS of a discard rule</returns>
-        public bool isDiscardRhs() => this.discardRhs;
-
-        /// <remarks>Alias to <see cref="isDiscardRhs"/></remarks>
-        /// <returns>if this is a RHS of a discard rule</returns>
-        public bool getDiscardRhs() => isDiscardRhs();
-
-        /// <returns>if this is an LHS</returns>
-        public bool isLhs() => this.lhs;
-
-        /// <remarks>Alias to <see cref="isLhs"/></remarks>
-        /// <returns>if this is an LHS</returns>
-        public bool getLhs() => isLhs();
-
-        /// <returns>if this is the first symbol of the grammar</returns>
-        public bool isTop() => this.top;
-
-        /// <remarks>Alias to <see cref="isTop"/></remarks>
-        /// <returns>if this is the first symbol of the grammar</returns>
-        public bool getTop() => isTop();
-
-        /// <returns>the id</returns>
-        public int getId() => this.id;
-
-        /// <returns>the description</returns>
-        public string getDescription() => this.description;
-
-        /// <returns>the event before name, null if there is none</returns>
-        public string getEventBefore() => this.eventBefore;
-
-        /// <returns>if the event before initial state is on, meaningless if there is no event before</returns>
-        public bool isEventBeforeInitialState() => this.eventBeforeInitialState;
-
-        /// <remarks>Alias to <see cref="isEventBeforeInitialState"/></remarks>
-        /// <returns>if the eventBefore initial state is on, meaningless if there is no event before</returns>
-        public bool getEventBeforeInitialState() => isEventBeforeInitialState();
-
-        /// <returns>the event after name, null if there is none</returns>
-        public string getEventAfter() => this.eventAfter;
-
-        /// <returns>if the event after initial state is on, meaningless if there is no event after</returns>
-        public bool isEventAfterInitialState() => this.eventAfterInitialState;
-
-        /// <remarks>Alias to <see cref="isEventAfterInitialState"/></remarks>
-        /// <returns>if the event after initial state is on, meaningless if there is no event after</returns>
-        public bool getEventAfterInitialState() => isEventAfterInitialState();
-
-        /// <returns>the event predicted name, null if there is none</returns>
-        public string getEventPredicted() => this.eventPredicted;
-
-        /// <returns>A boolean indicating if the event predicted initial state is on, meaningless if there is no prediction event</returns>
-        public bool isEventPredictedInitialState() => this.eventPredictedInitialState;
-
-        /// <remarks>Alias to <see cref="isEventPredictedInitialState"/></remarks>
-        /// <returns>if the event predicted initial state is on, meaningless if there is no prediction event</returns>
-        public bool getEventPredictedInitialState() => isEventPredictedInitialState();
-
-        /// <returns>the null event name, null if there is none - used internally for ":discard[on]" and ":discard[off]" in particular</returns>
-        public string getEventNulled() => this.eventNulled;
-
-        /// <returns>the nulled event initial state, meaningless if there is nulled event</returns>
-        public bool isEventNulledInitialState() => this.eventNulledInitialState;
-
-        /// <remarks>Alias to <see cref="isEventNulledInitialState"/></remarks>
-        /// <returns>the nulled event initial state, meaningless if there is nulled event</returns>
-        public bool getEventNulledInitialState() => isEventNulledInitialState();
-
-        /// <returns>the completion event name, null if there is none</returns>
-        public string getEventCompleted() => this.eventCompleted;
-
-        /// <returns>the completion event initial state, meaningless if there is no completion event</returns>
-        public bool isEventCompletedInitialState() => this.eventCompletedInitialState;
-
-        /// <remarks>Alias to <see cref="isEventCompletedInitialState"/></remarks>
-        /// <returns>the completion event initial state, meaningless if there is no completion event</returns>
-        public bool getEventCompletedInitialState() => isEventCompletedInitialState();
-
-        /// <returns>the discard event, null if there is none</returns>
-        public string getDiscardEvent() => this.discardEvent;
-
-        /// <returns>the discard event initial state, meaningless if there is no discard event</returns>
-        public bool isDiscardEventInitialState() => this.discardEventInitialState;
-
-        /// <remarks>Alias to <see cref="isDiscardEventInitialState"/></remarks>
-        /// <returns>the discard event initial state, meaningless if there is no discard event</returns>
-        public bool getDiscardEventInitialState() => isDiscardEventInitialState();
-
-        /// <returns>the grammar level to which it is resolved, can be different to the grammar used when this is a lexeme</returns>
-        public int getLookupResolvedLeveli() => this.lookupResolvedLeveli;
-
-        /// <returns>the symbol priority</returns>
-        public int getPriority() => this.priority;
-
-        /// <returns>the nullable action, null if there is none</returns>
-        public string getNullableAction() => this.nullableAction;
-
-        /// <returns>the low-level properties (combination of ESLIFSymbolPropertyBitSet values)</returns>
-        public int getPropertyBitSet() => this.propertyBitSet;
-
-        /// <returns>the low-level events (combination of ESLIFSymbolEventBitSet values)</returns>
-        public int getEventBitSet() => this.eventBitSet;
-
-        /// <returns>the symbol action</returns>
-        public string getSymbolAction() => this.symbolAction;
-
-        /// <returns>the if action</returns>
-        public string getIfAction() => this.ifAction;
-
-        /// <returns>the generator action</returns>
-        public string getGeneratorAction() => this.generatorAction;
-
-        /// <returns>the symbol verbose</returns>
-        public bool isVerbose() => this.verbose;
-
-        /// <remarks>Alias to <see cref="isVerbose"/></remarks>
-        /// <returns>the symbol verbose</returns>
-        public bool getVerbose() => isVerbose();
     }
 }
 
