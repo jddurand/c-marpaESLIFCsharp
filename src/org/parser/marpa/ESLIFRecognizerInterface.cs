@@ -13,6 +13,5 @@ namespace org.parser.marpa
         bool IsWithTrack();
         void SetESLIFRecognizer(ESLIFRecognizer recognizer);
         ESLIFRecognizer getESLIFRecognizer();
-
     }
 }
