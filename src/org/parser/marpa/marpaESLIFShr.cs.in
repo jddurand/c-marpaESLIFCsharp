@@ -1295,6 +1295,23 @@ namespace org.parser.marpa
                 marpaESLIFSymbolProperty_t.eventBeforeb != 0,
                 marpaESLIFSymbolProperty_t.eventAfters != IntPtr.Zero ? Marshal.PtrToStringAnsi(marpaESLIFSymbolProperty_t.eventAfters) : null,
                 marpaESLIFSymbolProperty_t.eventAfterb != 0,
+                marpaESLIFSymbolProperty_t.eventPredicteds != IntPtr.Zero ? Marshal.PtrToStringAnsi(marpaESLIFSymbolProperty_t.eventPredicteds) : null,
+                marpaESLIFSymbolProperty_t.eventPredictedb != 0,
+                marpaESLIFSymbolProperty_t.eventNulleds != IntPtr.Zero ? Marshal.PtrToStringAnsi(marpaESLIFSymbolProperty_t.eventNulleds) : null,
+                marpaESLIFSymbolProperty_t.eventNulledb != 0,
+                marpaESLIFSymbolProperty_t.eventCompleteds != IntPtr.Zero ? Marshal.PtrToStringAnsi(marpaESLIFSymbolProperty_t.eventCompleteds) : null,
+                marpaESLIFSymbolProperty_t.eventCompletedb != 0,
+                marpaESLIFSymbolProperty_t.discardEvents != IntPtr.Zero ? Marshal.PtrToStringAnsi(marpaESLIFSymbolProperty_t.discardEvents) : null,
+                marpaESLIFSymbolProperty_t.discardEventb != 0,
+                (int)marpaESLIFSymbolProperty_t.lookupResolvedLeveli,
+                (int)marpaESLIFSymbolProperty_t.priorityi,
+                marpaESLIFSymbolProperty_t.nullableActionp != IntPtr.Zero ? (new marpaESLIFAction(marpaESLIFSymbolProperty_t.nullableActionp)).ESLIFAction() : null,
+                (int)marpaESLIFSymbolProperty_t.propertyBitSet,
+                (int)marpaESLIFSymbolProperty_t.eventBitSet,
+                marpaESLIFSymbolProperty_t.symbolActionp != IntPtr.Zero ? (new marpaESLIFAction(marpaESLIFSymbolProperty_t.symbolActionp)).ESLIFAction() : null,
+                marpaESLIFSymbolProperty_t.ifActionp != IntPtr.Zero ? (new marpaESLIFAction(marpaESLIFSymbolProperty_t.ifActionp)).ESLIFAction() : null,
+                marpaESLIFSymbolProperty_t.generatorActionp != IntPtr.Zero ? (new marpaESLIFAction(marpaESLIFSymbolProperty_t.generatorActionp)).ESLIFAction() : null,
+                marpaESLIFSymbolProperty_t.verboseb != 0
                 );
         }
 
@@ -1413,6 +1430,42 @@ namespace org.parser.marpa
             Marshal.FreeHGlobal(marpaESLIFRulePropertyPtr);
 
             return ESLIFGrammarRuleProperties;
+        }
+
+        public ESLIFGrammarSymbolProperties SymbolProperties(int rule)
+        {
+            marpaESLIFShr.marpaESLIFSymbolProperty_t marpaESLIFSymbolProperty_t = new marpaESLIFShr.marpaESLIFSymbolProperty_t();
+            IntPtr marpaESLIFSymbolPropertyPtr = Marshal.AllocHGlobal(Marshal.SizeOf(marpaESLIFSymbolProperty_t));
+
+            if (marpaESLIFShr.marpaESLIFGrammar_symbolproperty_currentb(this.marpaESLIFGrammarp, (int)rule, marpaESLIFSymbolPropertyPtr) == 0)
+            {
+                Marshal.FreeHGlobal(marpaESLIFSymbolPropertyPtr);
+                throw new Exception("marpaESLIFGrammar_symbolproperty_currentb failure");
+            }
+
+            marpaESLIFSymbolProperty_t = (marpaESLIFShr.marpaESLIFSymbolProperty_t)Marshal.PtrToStructure(marpaESLIFSymbolPropertyPtr, typeof(marpaESLIFShr.marpaESLIFSymbolProperty_t));
+            ESLIFGrammarSymbolProperties ESLIFGrammarSymbolProperties = marpaESLIFSymbolPropertyToESLIFGrammarSymbolProperties(marpaESLIFSymbolProperty_t);
+            Marshal.FreeHGlobal(marpaESLIFSymbolPropertyPtr);
+
+            return ESLIFGrammarSymbolProperties;
+        }
+
+        public ESLIFGrammarSymbolProperties SymbolPropertiesByLevel(int rule, int level)
+        {
+            marpaESLIFShr.marpaESLIFSymbolProperty_t marpaESLIFSymbolProperty_t = new marpaESLIFShr.marpaESLIFSymbolProperty_t();
+            IntPtr marpaESLIFSymbolPropertyPtr = Marshal.AllocHGlobal(Marshal.SizeOf(marpaESLIFSymbolProperty_t));
+
+            if (marpaESLIFShr.marpaESLIFGrammar_symbolproperty_by_levelb(this.marpaESLIFGrammarp, (int)rule, marpaESLIFSymbolPropertyPtr, level, IntPtr.Zero) == 0)
+            {
+                Marshal.FreeHGlobal(marpaESLIFSymbolPropertyPtr);
+                throw new Exception("marpaESLIFGrammar_symbolproperty_by_levelb failure");
+            }
+
+            marpaESLIFSymbolProperty_t = (marpaESLIFShr.marpaESLIFSymbolProperty_t)Marshal.PtrToStructure(marpaESLIFSymbolPropertyPtr, typeof(marpaESLIFShr.marpaESLIFSymbolProperty_t));
+            ESLIFGrammarSymbolProperties ESLIFGrammarSymbolProperties = marpaESLIFSymbolPropertyToESLIFGrammarSymbolProperties(marpaESLIFSymbolProperty_t);
+            Marshal.FreeHGlobal(marpaESLIFSymbolPropertyPtr);
+
+            return ESLIFGrammarSymbolProperties;
         }
 
         private void DisposeUnmanagedResources()

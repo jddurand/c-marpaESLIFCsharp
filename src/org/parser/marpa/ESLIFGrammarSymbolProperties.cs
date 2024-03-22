@@ -39,12 +39,12 @@ namespace org.parser.marpa
         public bool discardEventInitialState { get; }
         public int lookupResolvedLeveli { get; }
         public int priority { get; }
-        public string nullableAction { get; }
+        public ESLIFAction nullableAction { get; }
         public int propertyBitSet { get; }
         public int eventBitSet { get; }
-        public string symbolAction { get; }
-        public string ifAction { get; }
-        public string generatorAction { get; }
+        public ESLIFAction symbolAction { get; }
+        public ESLIFAction ifAction { get; }
+        public ESLIFAction generatorAction { get; }
         public bool verbose { get; }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace org.parser.marpa
         /// <param name="verbose">verbose priority</param>
         /// 
         /// <returns>An ESLIFGrammarSymbolProperties instance</returns>
-        public ESLIFGrammarSymbolProperties(ESLIFSymbolType type, bool start, bool discard, bool discardRhs, bool lhs, bool top, int id, string description, string eventBefore, bool eventBeforeInitialState, string eventAfter, bool eventAfterInitialState, string eventPredicted, bool eventPredictedInitialState, string eventNulled, bool eventNulledInitialState, string eventCompleted, bool eventCompletedInitialState, string discardEvent, bool discardEventInitialState, int lookupResolvedLeveli, int priority, string nullableAction, int propertyBitSet, int eventBitSet, string symbolAction, string ifAction, string generatorAction, bool verbose)
+        public ESLIFGrammarSymbolProperties(ESLIFSymbolType type, bool start, bool discard, bool discardRhs, bool lhs, bool top, int id, string description, string eventBefore, bool eventBeforeInitialState, string eventAfter, bool eventAfterInitialState, string eventPredicted, bool eventPredictedInitialState, string eventNulled, bool eventNulledInitialState, string eventCompleted, bool eventCompletedInitialState, string discardEvent, bool discardEventInitialState, int lookupResolvedLeveli, int priority, ESLIFAction nullableAction, int propertyBitSet, int eventBitSet, ESLIFAction symbolAction, ESLIFAction ifAction, ESLIFAction generatorAction, bool verbose)
         {
             this.type = type;
             this.start = start;
@@ -138,12 +138,12 @@ namespace org.parser.marpa
             + ", discardEventInitialState=" + this.discardEventInitialState
             + ", lookupResolvedLeveli=" + this.lookupResolvedLeveli
             + ", priority=" + this.priority
-            + ", nullableAction=" + (this.nullableAction ?? "(null)")
+            + ", nullableAction=" + (this.nullableAction?.ToString())
             + ", propertyBitSet=" + this.propertyBitSet
             + ", eventBitSet=" + this.eventBitSet
-            + ", symbolAction=" + (this.symbolAction ?? "(null)")
-            + ", ifAction=" + (this.ifAction ?? "(null)")
-            + ", generatorAction=" + (this.generatorAction ?? "(null)")
+            + ", symbolAction=" + (this.symbolAction?.ToString())
+            + ", ifAction=" + (this.ifAction?.ToString())
+            + ", generatorAction=" + (this.generatorAction?.ToString())
             + ", verbose=" + this.verbose
             + "]";
     }

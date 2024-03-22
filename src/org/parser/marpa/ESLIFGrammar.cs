@@ -81,6 +81,16 @@ namespace org.parser.marpa
             return this.marpaESLIFGrammar.RulePropertiesByLevel(ruleId, level);
         }
 
+        public ESLIFGrammarSymbolProperties SymbolProperties(int ruleId)
+        {
+            return this.marpaESLIFGrammar.SymbolProperties(ruleId);
+        }
+
+        public ESLIFGrammarSymbolProperties SymbolPropertiesByLevel(int ruleId, int level)
+        {
+            return this.marpaESLIFGrammar.SymbolPropertiesByLevel(ruleId, level);
+        }
+
         public string RuleDisplay(int ruleId)
         {
             return this.marpaESLIFGrammar.RuleDisplay(ruleId);
