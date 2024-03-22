@@ -7,12 +7,13 @@ namespace org.parser.marpa
 {
     public class ESLIFGrammar
     {
-        private static readonly object Lock = new object();
+        private static readonly object MutitonsLock = new object();
         private static readonly Dictionary<IntPtr, ESLIFGrammar> Multitons = new Dictionary<IntPtr, ESLIFGrammar>();
 
         private readonly marpaESLIFGrammar marpaESLIFGrammar;
         private readonly ESLIF ESLIF;
         private readonly string grammar;
+        private readonly object InstanceLock = new object();
 
         private ESLIFGrammar(ESLIF ESLIF, string grammar)
         {
@@ -28,7 +29,7 @@ namespace org.parser.marpa
 
         public static ESLIFGrammar Instance(ESLIF ESLIF, string grammar)
         {
-            lock (Lock)
+            lock (MutitonsLock)
             {
                 ESLIFGrammar ESLIFGrammar;
                 KeyValuePair<IntPtr, ESLIFGrammar> keyPair = Multitons.FirstOrDefault(p => ESLIF == p.Value.ESLIF && grammar == p.Value.grammar);
@@ -129,6 +130,18 @@ namespace org.parser.marpa
         public string ShowByLevel(int level)
         {
             return this.marpaESLIFGrammar.ShowByLevel(level);
+        }
+
+        public bool Parse(ESLIFRecognizerInterface recognizerInterface, ESLIFValueInterface valueInterface)
+        {
+            bool result = false;
+
+            lock(this.InstanceLock)
+            {
+
+            }
+
+            return result
         }
     }
 }
