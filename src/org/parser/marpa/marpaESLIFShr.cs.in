@@ -1516,6 +1516,18 @@ namespace org.parser.marpa
             return grammarshowsp == IntPtr.Zero ? null : Marshal.PtrToStringAnsi(grammarshowsp);
         }
 
+        public bool Parse(ESLIFRecognizerInterface recognizerInterface, ESLIFValueInterface valueInterface)
+        {
+            bool result = false;
+
+            lock(this.Lock)
+            {
+
+            }
+
+            return result;
+        }
+
         private void DisposeUnmanagedResources()
         {
             if (! this.shallow && this.marpaESLIFGrammarp != IntPtr.Zero)

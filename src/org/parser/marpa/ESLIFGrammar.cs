@@ -13,7 +13,6 @@ namespace org.parser.marpa
         private readonly marpaESLIFGrammar marpaESLIFGrammar;
         private readonly ESLIF ESLIF;
         private readonly string grammar;
-        private readonly object InstanceLock = new object();
 
         private ESLIFGrammar(ESLIF ESLIF, string grammar)
         {
@@ -134,14 +133,7 @@ namespace org.parser.marpa
 
         public bool Parse(ESLIFRecognizerInterface recognizerInterface, ESLIFValueInterface valueInterface)
         {
-            bool result = false;
-
-            lock(this.InstanceLock)
-            {
-
-            }
-
-            return result
+            return this.marpaESLIFGrammar.Parse(recognizerInterface, valueInterface);
         }
     }
 }
