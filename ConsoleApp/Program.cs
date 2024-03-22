@@ -54,17 +54,12 @@ namespace marpaESLIFShrTest
                 logger.LogInformation($"Grammar defaults: {grammarDefaults}");
                 grammarProperties = grammar.Properties();
                 logger.LogInformation($"Grammar properties: {grammarProperties}");
-                foreach(int ruleId in grammarProperties.ruleIds) {
+                foreach (int ruleId in grammarProperties.ruleIds)
+                {
                     ESLIFGrammarRuleProperties ruleProperties = grammar.RuleProperties(ruleId);
                     logger.LogInformation($"Current grammar rule No {ruleId} properties: {ruleProperties}");
-                }
-                foreach (int ruleId in grammarProperties.ruleIds)
-                {
                     string ruleDisplay = grammar.RuleDisplay(ruleId);
                     logger.LogInformation($"Current grammar rule No {ruleId} display: {ruleDisplay}");
-                }
-                foreach (int ruleId in grammarProperties.ruleIds)
-                {
                     string ruleShow = grammar.RuleShow(ruleId);
                     logger.LogInformation($"Current grammar rule No {ruleId} show: {ruleShow}");
                 }
@@ -72,6 +67,8 @@ namespace marpaESLIFShrTest
                 {
                     ESLIFGrammarSymbolProperties symbolProperties = grammar.SymbolProperties(symbolId);
                     logger.LogInformation($"Current grammar symbol No {symbolId} properties: {symbolProperties}");
+                    string symbolDisplay = grammar.SymbolDisplay(symbolId);
+                    logger.LogInformation($"Current grammar symbol No {symbolId} display: {symbolId}");
                 }
                 for (int level = 0; level < ngrammar; level++)
                 {
@@ -80,21 +77,17 @@ namespace marpaESLIFShrTest
                     {
                         ESLIFGrammarRuleProperties ruleProperties = grammar.RulePropertiesByLevel(ruleId, level);
                         logger.LogInformation($"Grammar level No {level} rule No {ruleId} properties: {ruleProperties}");
-                    }
-                    foreach (int ruleId in grammarProperties.ruleIds)
-                    {
                         string ruleDisplay = grammar.RuleDisplayByLevel(ruleId, level);
-                        logger.LogInformation($"Grammar level No {level}  rule No {ruleId} display: {ruleDisplay}");
-                    }
-                    foreach (int ruleId in grammarProperties.ruleIds)
-                    {
+                        logger.LogInformation($"Grammar level No {level} rule No {ruleId} display: {ruleDisplay}");
                         string ruleShow = grammar.RuleShowByLevel(ruleId, level);
-                        logger.LogInformation($"Grammar level No {level}  rule No {ruleId} show: {ruleShow}");
+                        logger.LogInformation($"Grammar level No {level} rule No {ruleId} show: {ruleShow}");
                     }
                     foreach (int symbolId in grammarProperties.symbolIds)
                     {
                         ESLIFGrammarSymbolProperties symbolProperties = grammar.SymbolPropertiesByLevel(symbolId, level);
                         logger.LogInformation($"Grammar level No {level} symbol No {symbolId} properties: {symbolProperties}");
+                        string symbolDisplay = grammar.SymbolDisplayByLevel(symbolId, level);
+                        logger.LogInformation($"Grammar level No {level} symbol No {symbolId} display: {symbolDisplay}");
                     }
                 }
             }
