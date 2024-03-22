@@ -30,10 +30,16 @@ namespace marpaESLIFShrTest
             logger.LogInformation($"ESLIF Grammar defaults: {grammarDefaults}");
             ESLIFGrammarProperties grammarProperties = grammar.Properties();
             logger.LogInformation($"ESLIF Grammar properties: {grammarProperties}");
+            string grammarShow = grammar.Show();
+            logger.LogInformation($"ESLIF Grammar show: {grammarShow}");
             for (int level = 0; level < grammar.ngrammar() ; level++ )
             {
-                logger.LogInformation($"ESLIF Grammar defaults at level {level}: {grammar.DefaultsByLevel(level)}");
-                logger.LogInformation($"ESLIF Grammar properties at level {level}: {grammar.PropertiesByLevel(level)}");
+                grammarDefaults = grammar.DefaultsByLevel(level);
+                logger.LogInformation($"ESLIF Grammar defaults at level {level}: {grammarDefaults}");
+                grammarProperties = grammar.PropertiesByLevel(level);
+                logger.LogInformation($"ESLIF Grammar properties at level {level}: {grammarProperties}");
+                grammarShow = grammar.ShowByLevel(level);
+                logger.LogInformation($"ESLIF Grammar show at level {level}: {grammarShow}");
             }
 
             try
@@ -54,6 +60,8 @@ namespace marpaESLIFShrTest
                 logger.LogInformation($"Grammar defaults: {grammarDefaults}");
                 grammarProperties = grammar.Properties();
                 logger.LogInformation($"Grammar properties: {grammarProperties}");
+                grammarShow = grammar.Show();
+                logger.LogInformation($"Grammar show: {grammarShow}");
                 foreach (int ruleId in grammarProperties.ruleIds)
                 {
                     ESLIFGrammarRuleProperties ruleProperties = grammar.RuleProperties(ruleId);
@@ -72,6 +80,8 @@ namespace marpaESLIFShrTest
                 }
                 for (int level = 0; level < ngrammar; level++)
                 {
+                    grammarShow = grammar.ShowByLevel(level);
+                    logger.LogInformation($"Grammar level No {level} show: {grammarShow}");
                     grammarProperties = grammar.PropertiesByLevel(level);
                     foreach (int ruleId in grammarProperties.ruleIds)
                     {

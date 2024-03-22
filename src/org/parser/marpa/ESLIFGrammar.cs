@@ -120,5 +120,15 @@ namespace org.parser.marpa
         {
             return this.marpaESLIFGrammar.SymbolDisplayByLevel(symbolId, level);
         }
+
+        public string Show()
+        {
+            return this.marpaESLIFGrammar.Show();
+        }
+
+        public string ShowByLevel(int level)
+        {
+            return this.marpaESLIFGrammar.ShowByLevel(level);
+        }
     }
 }
