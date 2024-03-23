@@ -1759,44 +1759,48 @@ namespace org.parser.marpa
             Marshal.PtrToStructure< marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t>(marpaESLIFValueResultFlatp, marpaESLIFValueResultFlat_t);
             marpaESLIF_wrapperShr.marpaESLIF_free(marpaESLIFValueResultFlatp);
 
+            object result = null;
             switch (marpaESLIFValueResultFlat_t.type)
             {
                 case marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_UNDEF:
-                    valueInterface.SetResult(null);
+                    result = null;
                     break;
                 case marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_CHAR:
-                    valueInterface.SetResult(Convert.ToChar(marpaESLIFValueResultFlat_t.c));
+                    result = Convert.ToChar(marpaESLIFValueResultFlat_t.c);
                     break;
                 case marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_SHORT:
-                    valueInterface.SetResult(marpaESLIFValueResultFlat_t.b);
+                    result = marpaESLIFValueResultFlat_t.b;
                     break;
                 case marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_INT:
-                    valueInterface.SetResult(marpaESLIFValueResultFlat_t.i);
+                    result = marpaESLIFValueResultFlat_t.i;
                     break;
                 case marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_LONG:
-                    valueInterface.SetResult(marpaESLIFValueResultFlat_t.l);
+                    result = marpaESLIFValueResultFlat_t.l;
                     break;
                 case marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_FLOAT:
-                    valueInterface.SetResult(marpaESLIFValueResultFlat_t.f);
+                    result = marpaESLIFValueResultFlat_t.f;
                     break;
                 case marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_DOUBLE:
-                    valueInterface.SetResult(marpaESLIFValueResultFlat_t.d);
+                    result = marpaESLIFValueResultFlat_t.d;
                     break;
                 case marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_PTR:
                     GCHandle gcHandle = GCHandle.FromIntPtr(marpaESLIFValueResultFlat_t.p);
-                    valueInterface.SetResult(gcHandle.Target);
+                    result = gcHandle.Target;
                     break;
                 case marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_ARRAY:
                     break;
                 case marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_BOOL:
-                    valueInterface.SetResult(marpaESLIFValueResultFlat_t.b != 0);
+                    result = marpaESLIFValueResultFlat_t.b != 0;
                     break;
                 case marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_STRING:
-                    valueInterface.SetResult(marpaESLIFString.BytesToString(marpaESLIFValueResultFlat_t.s.p, marpaESLIFValueResultFlat_t.s.sizel, marpaESLIFValueResultFlat_t.s.encodingasciis));
+                    result = marpaESLIFString.BytesToString(marpaESLIFValueResultFlat_t.s.p, marpaESLIFValueResultFlat_t.s.sizel, marpaESLIFValueResultFlat_t.s.encodingasciis);
                     break;
+                default:
+                    throw new Exception($"Unsupported value result type {(int)marpaESLIFValueResultFlat_t.type}");
             }
 
-            throw new NotImplementedException();
+            valueInterface.SetResult(result);
+            return 1;
         }
 
         private static marpaESLIFShr.marpaESLIFValueRuleCallback_t RuleActionResolver(IntPtr userDatavp, IntPtr marpaESLIFValuep, IntPtr actions)
