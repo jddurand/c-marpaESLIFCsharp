@@ -4,7 +4,7 @@ using System;
 
 namespace marpaESLIFShrTest
 {
-    internal class Program
+    public class Program
     {
         static void Main(string[] args)
         {
@@ -106,8 +106,145 @@ namespace marpaESLIFShrTest
                 logger.LogWarning($"ESLIFGrammar failure, {e.Message}");
             }
 
+            grammar = ESLIFGrammar.Instance(eslif, "/*\r\n * Example of a calulator with ESLIF BNF:\r\n *\r\n * Automatic discard of whitespaces\r\n * Correct association for expressions\r\n * Embedded action using anonymous lua functions\r\n *\r\n*/\r\n:discard ::= /[\\s]+/\r\n\r\nexp ::=\r\n    /[\\d]+/\r\n    |    \"(\"  exp \")\"    assoc => group action => ::copy[1]\r\n   || exp (- '**' -) exp assoc => right action => ::luac->function(x,y) return x^y end\r\n   || exp (-  '*' -) exp                action => ::luac->function(x,y) return x*y end\r\n    | exp (-  '/' -) exp                action => ::luac->function(x,y) return x/y end\r\n   || exp (-  '+' -) exp                action => ::luac->function(x,y) return x+y end\r\n    | exp (-  '-' -) exp                action => ::luac->function(x,y) return x-y end\r\n");
+            bool isExhausted = false;
+            RecognizerInterface recognizerInterface = new RecognizerInterface("3 * 4");
+            ValueInterface valueInterface = new ValueInterface();
+            grammar.Parse(recognizerInterface, valueInterface, ref isExhausted);
+
             // Give some time to the logger ;)
             Console.ReadLine();
+        }
+    }
+
+    public class RecognizerInterface : ESLIFRecognizerInterface
+    {
+        private readonly string input;
+        public RecognizerInterface(string input)
+        {
+            this.input = input ?? throw new ArgumentNullException(nameof(input));
+        }
+
+        public byte[] Data()
+        {
+            return System.Text.Encoding.UTF8.GetBytes(this.input);
+        }
+
+        public string Encoding()
+        {
+            return "UTF-8";
+        }
+
+        public ESLIFRecognizer getESLIFRecognizer()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsCharacterStream()
+        {
+            return true;
+        }
+
+        public bool IsEof()
+        {
+            return true;
+        }
+
+        public bool IsWithDisableThreshold()
+        {
+            return true;
+        }
+
+        public bool IsWithExhaustion()
+        {
+            return true;
+        }
+
+        public bool IsWithNewline()
+        {
+            return true;
+        }
+
+        public bool IsWithTrack()
+        {
+            return false;
+        }
+
+        public bool Read()
+        {
+            return true;
+        }
+
+        public void SetESLIFRecognizer(ESLIFRecognizer recognizer)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class ValueInterface : ESLIFValueInterface
+    {
+        public object result { get; protected set; }
+        public string ruleName { get; set; }
+        public string symbolName { get; set; }
+
+        public object GetResult()
+        {
+            return this.result;
+        }
+
+        public bool IsWithAmbiguous()
+        {
+            return false;
+        }
+
+        public bool IsWithHighRankOnly()
+        {
+            return true;
+        }
+
+        public bool IsWithNull()
+        {
+            return false;
+        }
+
+        public bool IsWithOrderByRank()
+        {
+            return true;
+        }
+
+        public int MaxParses()
+        {
+            return 0;
+        }
+
+        public void SetGrammar(ESLIFGrammar grammar)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetResult(object result)
+        {
+            this.result = result;
+        }
+
+        public void SetRuleName()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetRuleNumber()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetSymbolName()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetSymbolNumber()
+        {
+            throw new NotImplementedException();
         }
     }
 }

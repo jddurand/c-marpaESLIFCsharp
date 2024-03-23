@@ -6,7 +6,6 @@ namespace org.parser.marpa
 {
     public class marpaESLIF_wrapperShr
     {
-#region Thin_Interface
         [StructLayout(LayoutKind.Explicit, Size = @SIZEOF_marpaESLIFValueResultFlat_t@)]
         // marpaESLIFValueResult with an union cannot be represented - this is why there is our marpaESLIF_wrapper.dll
         public class marpaESLIFValueResultFlat_t
@@ -70,12 +69,5 @@ namespace org.parser.marpa
         [DllImport("marpaESLIF_wrapper.dll", CallingConvention = CallingConvention.Cdecl)]
         // System free()
         public static extern void marpaESLIF_free(IntPtr p);
-
-#endregion Thin_Interface
-
-#region Thin_Interface_Mapping_To_External_Interface
-
-
-#endregion Thin_Interface_Mapping_To_External_Interface
     }
 }

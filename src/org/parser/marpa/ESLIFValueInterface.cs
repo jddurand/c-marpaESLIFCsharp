@@ -5,7 +5,7 @@ namespace org.parser.marpa
         bool IsWithHighRankOnly();
         bool IsWithOrderByRank();
         bool IsWithAmbiguous();
-        bool isWithNull();
+        bool IsWithNull();
         int MaxParses();
         void SetResult(object result);
         object GetResult();
