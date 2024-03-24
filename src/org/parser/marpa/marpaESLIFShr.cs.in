@@ -1729,7 +1729,7 @@ namespace org.parser.marpa
         public class marpaESLIFValueOptionContext
         {
             public ESLIFValueInterface valueInterface;
-            public List<object> stack;
+            public List<object> stack = new List<object>();
 
             public marpaESLIFValueOptionContext(ESLIFValueInterface valueInterface)
             {
@@ -1769,10 +1769,10 @@ namespace org.parser.marpa
                 throw new Exception("context is null");
             }
 
-            context.stack = new List<object>();
             Import.Importer(context.stack, marpaESLIFValueResultp, haveUndefb);
 
             context.valueInterface.SetResult(context.stack.Last());
+
             return 1;
         }
 
