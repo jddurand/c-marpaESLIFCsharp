@@ -106,7 +106,19 @@ namespace marpaESLIFShrTest
                 logger.LogWarning($"ESLIFGrammar failure, {e.Message}");
             }
 
-            grammar = ESLIFGrammar.Instance(eslif, "/*\r\n * Example of a calulator with ESLIF BNF:\r\n *\r\n * Automatic discard of whitespaces\r\n * Correct association for expressions\r\n * Embedded action using anonymous lua functions\r\n *\r\n*/\r\n:discard ::= /[\\s]+/\r\n\r\nexp ::=\r\n    /[\\d]+/\r\n    |    \"(\"  exp \")\"    assoc => group action => ::copy[1]\r\n   || exp (- '**' -) exp assoc => right action => ::luac->function(x,y) return x^y end\r\n   || exp (-  '*' -) exp                action => ::luac->function(x,y) return x*y end\r\n    | exp (-  '/' -) exp                action => ::luac->function(x,y) return x/y end\r\n   || exp (-  '+' -) exp                action => ::luac->function(x,y) return x+y end\r\n    | exp (-  '-' -) exp                action => ::luac->function(x,y) return x-y end\r\n");
+            grammar = ESLIFGrammar.Instance(eslif,
+                @"
+:discard ::= /[\s]+/
+exp ::=
+    /[\d]+/                                 action => ::luac->function(input) return tonumber(input) end
+    |    ""(""  exp "")""    assoc => group action => ::luac->function(l,e,r) return e               end
+   || exp (- '**' -) exp     assoc => right action => ::luac->function(x,y)   return x^y             end
+   || exp (-  '*' -) exp                    action => ::luac->function(x,y)   return x*y             end
+    | exp (-  '/' -) exp                    action => ::luac->function(x,y)   return x/y             end
+   || exp (-  '+' -) exp                    action => ::luac->function(x,y)   return x+y             end
+    | exp (-  '-' -) exp                    action => ::luac->function(x,y)   return x-y             end
+"
+            );
             bool isExhausted = false;
             RecognizerInterface recognizerInterface = new RecognizerInterface("3 * 4");
             ValueInterface valueInterface = new ValueInterface();
