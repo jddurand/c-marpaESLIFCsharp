@@ -12,7 +12,7 @@ namespace org.parser.marpa
         {
             this.eslif = eslif ?? throw new ArgumentNullException(nameof(eslif));
             this.recognizerInterface = recognizerInterface; // Can be null
-            this.marpaESLIFRecognizer = new marpaESLIFRecognizer(eslif.marpaESLIF, recognizerInterface TO FINISH);
+            // this.marpaESLIFRecognizer = new marpaESLIFRecognizer(eslif.marpaESLIF, recognizerInterface TO FINISH);
         }
     }
 }

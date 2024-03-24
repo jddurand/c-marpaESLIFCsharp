@@ -1,0 +1,139 @@
+#cmakedefine MARPAESLIF_HAVE_LONG_LONG
+#cmakedefine C2CSHARP_TYPE_INT_IS_INT
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+
+namespace org.parser.marpa
+{
+    public static class Import
+    {
+        public static void Importer(List<object> stack, IntPtr marpaESLIFValueResultp, short haveUndefb)
+        {
+            IntPtr marpaESLIFValueResultFlatp = marpaESLIF_wrapperShr.marpaESLIFValueResultConvertp(marpaESLIFValueResultp);
+            marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t marpaESLIFValueResultFlat_t = new marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t();
+            Marshal.PtrToStructure<marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t>(marpaESLIFValueResultFlatp, marpaESLIFValueResultFlat_t);
+            marpaESLIF_wrapperShr.marpaESLIF_free(marpaESLIFValueResultFlatp);
+
+            /*
+              Note that we take advantage that we KNOW WE HAVE BEEN COMPILED ON WINDOWS. This mean that we KNOW that:
+              C.f. https://learn.microsoft.com/fr-fr/cpp/cpp/data-type-ranges?view=msvc-170
+                   https://learn.microsoft.com/fr-fr/dotnet/csharp/language-reference/builtin-types/floating-point-numeric-types
+              C.f. https://learn.microsoft.com/fr-fr/dotnet/csharp/language-reference/builtin-types/integral-numeric-types
+
+              This mapping is indeed what we discover by inspecting the marpaESLIFValueResult structure when producing marpaESLIF_wrapper.
+
+              marpaESLIF Type                    C type    C nb_bits      C# Type
+
+              MARPAESLIF_VALUE_TYPE_UNDEF                                 null
+              MARPAESLIF_VALUE_TYPE_CHAR         char      CHAR_BIT       char           Note: In C on windows, char  == __int8   => C# char
+              MARPAESLIF_VALUE_TYPE_SHORT        short     >= 16          short          Note: In C on windows, short == __int16  => C# short
+              MARPAESLIF_VALUE_TYPE_INT          int       >= 16          int            Note: In C on Windows, int   == __int32  => C# int
+              MARPAESLIF_VALUE_TYPE_LONG         long      >= 32          int            Note: In C on Windows, long  == __int32  => C# int
+              MARPAESLIF_VALUE_TYPE_FLOAT        float     depends        float          Note: In C on Windows, float in 4 bytes  => C# float
+              MARPAESLIF_VALUE_TYPE_DOUBLE       double    depends        double         Note: In C on Windows, double in 8 bytes  => C# double
+              MARPAESLIF_VALUE_TYPE_PTR          char*                    Handle on an object
+              MARPAESLIF_VALUE_TYPE_ARRAY                                 char[]
+              MARPAESLIF_VALUE_TYPE_BOOL                                  bool
+              MARPAESLIF_VALUE_TYPE_STRING                                string
+              MARPAESLIF_VALUE_TYPE_ROW                                   object[]
+              MARPAESLIF_VALUE_TYPE_TABLE                                 Dictionary<object,object>
+              MARPAESLIF_VALUE_TYPE_LONG_DOUBLE                           double         Note: In C on Windows, long double is a double
+              MARPAESLIF_VALUE_TYPE_LONG_LONG    long long >= 64          long           Note: In C on Windows, long long   == __int64 => C# long
+
+            */
+
+            switch (marpaESLIFValueResultFlat_t.type)
+            {
+                case marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_UNDEF:
+                    stack.Add(null);
+                    break;
+                case marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_CHAR:
+                    stack.Add(Convert.ToChar(marpaESLIFValueResultFlat_t.c)); // Converted to char for convenience
+                    break;
+                case marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_SHORT:
+                    stack.Add(marpaESLIFValueResultFlat_t.b);
+                    break;
+                case marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_INT:
+                    stack.Add(marpaESLIFValueResultFlat_t.i);
+                    break;
+                case marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_LONG:
+                    stack.Add(marpaESLIFValueResultFlat_t.l);
+                    break;
+                case marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_FLOAT:
+                    stack.Add(marpaESLIFValueResultFlat_t.f);
+                    break;
+                case marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_DOUBLE:
+                    stack.Add(marpaESLIFValueResultFlat_t.d);
+                    break;
+                case marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_PTR:
+                    GCHandle gcHandle = GCHandle.FromIntPtr(marpaESLIFValueResultFlat_t.p);
+                    stack.Add(gcHandle.Target);
+                    break;
+                case marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_ARRAY:
+                    byte[] bytes = new byte[marpaESLIFValueResultFlat_t.a.sizel];
+                    if (marpaESLIFValueResultFlat_t.a.sizel > 0)
+                    {
+                        Marshal.Copy(marpaESLIFValueResultFlat_t.a.p, bytes, 0, bytes.Length);
+                    }
+                    stack.Add(bytes.Select(b => Convert.ToChar(b)).ToArray());
+                    break;
+                case marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_BOOL:
+                    stack.Add(marpaESLIFValueResultFlat_t.b != 0 ? true : false);
+                    break;
+                case marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_STRING:
+                    stack.Add(marpaESLIFString.BytesToString(marpaESLIFValueResultFlat_t.s.p, marpaESLIFValueResultFlat_t.s.sizel, marpaESLIFValueResultFlat_t.s.encodingasciis));
+                    break;
+                case marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_ROW:
+                    /* We received elements in order: first, second, etc..., we pushed that in stack, so pop will say last, beforelast, etc..., second, first */
+                    if (marpaESLIFValueResultFlat_t.r.sizel <= 0)
+                    {
+                        stack.Add(new object[0]);
+                    }
+                    else
+                    {
+                        int j = (int)marpaESLIFValueResultFlat_t.r.sizel - 1;
+                        object[] objects = new object[j];
+                        for (int i = 0; i < marpaESLIFValueResultFlat_t.r.sizel; i++, j--)
+                        {
+                            objects[j] = stack.Last();
+                            stack.RemoveAt(stack.Count - 1);
+                        }
+                        stack.Add(objects);
+                    }
+                    break;
+                case marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_TABLE:
+                    /* We received elements in order: first, second, etc..., we pushed that in stack, so pop will say last, beforelast, etc..., second, first */
+                    if (marpaESLIFValueResultFlat_t.t.sizel <= 0)
+                    {
+                        stack.Add(new Dictionary<object, object>());
+                    }
+                    else
+                    {
+                        Dictionary<object, object> dict = new Dictionary<object, object>();
+                        for (int i = 0; i < marpaESLIFValueResultFlat_t.t.sizel; i++)
+                        {
+                            object value = stack.Last();
+                            stack.RemoveAt(stack.Count - 1);
+                            object key = stack.Last();
+                            stack.RemoveAt(stack.Count - 1);
+                            dict.Add(key, value);
+                        }
+                        stack.Add(dict);
+                    }
+                    break;
+                case marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_LONG_DOUBLE:
+                    stack.Add(marpaESLIFValueResultFlat_t.ld);
+                    break;
+#if MARPAESLIF_HAVE_LONG_LONG
+                case marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_LONG_LONG:
+                    stack.Add(marpaESLIFValueResultFlat_t.ll);
+                    break;
+#endif
+                default:
+                    throw new Exception($"Unsupported value result type {(int)marpaESLIFValueResultFlat_t.type}");
+            }
+        }
+    }
+}

@@ -1,0 +1,53 @@
+#cmakedefine MARPAESLIF_HAVE_LONG_LONG
+#cmakedefine C2CSHARP_TYPE_INT_IS_INT
+using System;
+using System.Runtime.InteropServices;
+
+namespace org.parser.marpa
+{
+    public class marpaESLIFLuaFunction
+    {
+        public string luas { get; protected set; }
+        public string actions { get; protected set; }
+        public bool luacb { get; protected set; }
+        public byte[] luacp { get; protected set; }
+        public byte[] luacstripp { get; protected set; }
+
+        public marpaESLIFLuaFunction(marpaESLIFShr.marpaESLIFLuaFunction_t marpaESLIFLuaFunction_t)
+        {
+            this.luas = marpaESLIFLuaFunction_t.luas == IntPtr.Zero ? null : Marshal.PtrToStringAnsi(marpaESLIFLuaFunction_t.luas);
+            this.actions = marpaESLIFLuaFunction_t.actions == IntPtr.Zero ? null : Marshal.PtrToStringAnsi(marpaESLIFLuaFunction_t.actions);
+            this.luacb = marpaESLIFLuaFunction_t.luacb == 0 ? false : true;
+            if (marpaESLIFLuaFunction_t.luacp != IntPtr.Zero && marpaESLIFLuaFunction_t.luacl > 0)
+            {
+                this.luacp = new byte[marpaESLIFLuaFunction_t.luacl];
+                Marshal.Copy(marpaESLIFLuaFunction_t.luacp, this.luacp, 0, (int)marpaESLIFLuaFunction_t.luacl);
+            }
+            else
+            {
+                this.luacp = null;
+            }
+            if (marpaESLIFLuaFunction_t.luacstripp != IntPtr.Zero && marpaESLIFLuaFunction_t.luacstripl > 0)
+            {
+                this.luacstripp = new byte[marpaESLIFLuaFunction_t.luacstripl];
+                Marshal.Copy(marpaESLIFLuaFunction_t.luacstripp, this.luacstripp, 0, (int)marpaESLIFLuaFunction_t.luacstripl);
+            }
+            else
+            {
+                this.luacstripp = null;
+            }
+        }
+
+        public ESLIFLuaFunction ESLIFLuaFunction()
+        {
+            return new ESLIFLuaFunction
+                (
+                this.luas,
+                this.actions,
+                this.luacb,
+                this.luacp,
+                this.luacstripp
+                );
+        }
+    }
+}

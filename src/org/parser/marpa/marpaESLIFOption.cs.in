@@ -1,0 +1,68 @@
+#cmakedefine MARPAESLIF_HAVE_LONG_LONG
+#cmakedefine C2CSHARP_TYPE_INT_IS_INT
+using System;
+using System.Runtime.InteropServices;
+
+namespace org.parser.marpa
+{
+    public class marpaESLIFOption : IDisposable
+    {
+        public IntPtr marpaESLIFOptionp { get; protected set; }
+        private readonly genericLogger genericLogger;
+        private marpaESLIFShr.marpaESLIFOption_t marpaESLIFOption_t;
+        private bool disposedValue;
+
+        public marpaESLIFOption(genericLogger genericLogger = null)
+        {
+            this.genericLogger = genericLogger; // Can be null
+
+            this.marpaESLIFOption_t = new marpaESLIFShr.marpaESLIFOption_t
+            {
+                genericLoggerp = this.genericLogger != null ? this.genericLogger.genericLoggerp : IntPtr.Zero,
+            };
+
+            this.marpaESLIFOptionp = Marshal.AllocHGlobal(Marshal.SizeOf(marpaESLIFOption_t));
+            Marshal.StructureToPtr(marpaESLIFOption_t, this.marpaESLIFOptionp, false);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // DONE: dispose managed state (managed objects)
+                }
+
+                // DONE: free unmanaged resources (unmanaged objects) and override finalizer
+                this.DisposeUnmanagedResources();
+                // DONE: set large fields to null
+                disposedValue = true;
+            }
+        }
+
+        // DONE: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        ~marpaESLIFOption()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: false);
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void DisposeUnmanagedResources()
+        {
+            if (this.marpaESLIFOptionp != IntPtr.Zero)
+            {
+                Marshal.FreeHGlobal(this.marpaESLIFOptionp);
+                this.marpaESLIFOptionp = IntPtr.Zero;
+            }
+        }
+    }
+
+}

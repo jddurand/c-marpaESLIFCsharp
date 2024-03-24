@@ -71,24 +71,37 @@ add_subdirectory(marpaESLIF_wrapper)
 # Thin interfaces
 # (should be without CMAKE_CURRENT_SOURCE_DIR but does not show up in Visual Studio - a CMake bug ?)
 #
-configure_file(
-  src/org/parser/marpa/genericLoggerShr.cs.in
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/genericLoggerShr.cs @ONLY
-)
-configure_file(
-  src/org/parser/marpa/marpaESLIFShr.cs.in
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/marpaESLIFShr.cs @ONLY
-)
-configure_file(
-  src/org/parser/marpa/marpaESLIF_wrapperShr.cs.in
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/marpaESLIF_wrapperShr.cs @ONLY
-)
+configure_file(src/org/parser/marpa/genericLoggerShr.cs.in           ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/genericLoggerShr.cs @ONLY)
+configure_file(src/org/parser/marpa/Import.cs.in                     ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/Import.cs @ONLY)
+configure_file(src/org/parser/marpa/marpaESLIFShr.cs.in              ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/marpaESLIFShr.cs @ONLY)
+configure_file(src/org/parser/marpa/marpaESLIF.cs.in                 ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/marpaESLIF.cs @ONLY)
+configure_file(src/org/parser/marpa/marpaESLIFAction.cs.in           ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/marpaESLIFAction.cs @ONLY)
+configure_file(src/org/parser/marpa/marpaESLIFOption.cs.in           ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/marpaESLIFOption.cs @ONLY)
+configure_file(src/org/parser/marpa/marpaESLIFGrammar.cs.in          ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/marpaESLIFGrammar.cs @ONLY)
+configure_file(src/org/parser/marpa/marpaESLIFGrammarOption.cs.in    ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/marpaESLIFGrammarOption.cs @ONLY)
+configure_file(src/org/parser/marpa/marpaESLIFLuaFunction.cs.in      ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/marpaESLIFLuaFunction.cs @ONLY)
+configure_file(src/org/parser/marpa/marpaESLIFRecognizer.cs.in       ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/marpaESLIFRecognizer.cs @ONLY)
+configure_file(src/org/parser/marpa/marpaESLIFRecognizerOption.cs.in ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/marpaESLIFRecognizerOption.cs @ONLY)
+configure_file(src/org/parser/marpa/marpaESLIFString.cs.in           ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/marpaESLIFString.cs @ONLY)
+configure_file(src/org/parser/marpa/marpaESLIFValueOption.cs.in      ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/marpaESLIFValueOption.cs @ONLY)
+configure_file(src/org/parser/marpa/marpaESLIF_wrapperShr.cs.in      ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/marpaESLIF_wrapperShr.cs @ONLY)
 #
 # The C# package itself
 #
 add_library(marpaESLIFCSharp SHARED
   src/org/parser/marpa/genericLoggerShr.cs
+  src/org/parser/marpa/Import.cs
   src/org/parser/marpa/marpaESLIFShr.cs
+  src/org/parser/marpa/marpaESLIF.cs
+  src/org/parser/marpa/marpaESLIFAction.cs
+  src/org/parser/marpa/marpaESLIFOption.cs
+  src/org/parser/marpa/marpaESLIFGrammar.cs
+  src/org/parser/marpa/marpaESLIFGrammarOption.cs
+  src/org/parser/marpa/marpaESLIFLuaFunction.cs
+  src/org/parser/marpa/marpaESLIFRecognizer.cs
+  src/org/parser/marpa/marpaESLIFRecognizerOption.cs
+  src/org/parser/marpa/marpaESLIFString.cs
+  src/org/parser/marpa/marpaESLIFValueOption.cs
   src/org/parser/marpa/marpaESLIF_wrapperShr.cs
   
   src/org/parser/marpa/ESLIF.cs

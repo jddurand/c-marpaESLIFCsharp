@@ -1,0 +1,71 @@
+#cmakedefine MARPAESLIF_HAVE_LONG_LONG
+#cmakedefine C2CSHARP_TYPE_INT_IS_INT
+using System;
+using System.Runtime.InteropServices;
+using System.Text;
+
+namespace org.parser.marpa
+{
+    public static class marpaESLIFString
+    {
+        public static string BytesToString(IntPtr bytep, @C2CSHARP_TYPE_SIZE_T@ bytel, IntPtr encodingasciis)
+        {
+            return BytesToString(bytep, bytel, Marshal.PtrToStringAnsi(encodingasciis));
+        }
+
+        public static string BytesToString(IntPtr bytep, @C2CSHARP_TYPE_SIZE_T@ bytel, string encodingAscii)
+        {
+            if (bytep == IntPtr.Zero || bytel <= 0)
+            {
+                return string.Empty;
+            }
+
+            byte[] bytes = new byte[bytel];
+            Marshal.Copy(bytep, bytes, 0, (int)bytel);
+
+            if (encodingAscii == "ASCII")
+            {
+                return Encoding.ASCII.GetString(bytes);
+            }
+
+            if (encodingAscii == "UTF-7")
+            {
+                return Encoding.UTF7.GetString(bytes);
+            }
+
+            if (encodingAscii == "UTF-8")
+            {
+                return Encoding.UTF8.GetString(bytes);
+            }
+
+            if (encodingAscii == "UTF-16LE")
+            {
+                return Encoding.Unicode.GetString(bytes);
+            }
+
+            if (encodingAscii == "UTF-16BE")
+            {
+                return Encoding.BigEndianUnicode.GetString(bytes);
+            }
+
+            if (encodingAscii == "UTF-32LE")
+            {
+                return Encoding.UTF32.GetString(bytes);
+            }
+
+            throw new Exception($"Unsupported encoding {encodingAscii}");
+        }
+
+        public static string marpaESLIFStringPtrToString(IntPtr marpaESLIFStringPtr)
+        {
+            if (marpaESLIFStringPtr == IntPtr.Zero)
+            {
+                return null;
+            }
+
+            marpaESLIFShr.marpaESLIFString_t marpaESLIFString_t = new marpaESLIFShr.marpaESLIFString_t();
+            Marshal.StructureToPtr(marpaESLIFString_t, marpaESLIFStringPtr, false);
+            return BytesToString(marpaESLIFString_t.bytep, marpaESLIFString_t.bytel, marpaESLIFString_t.encodingasciis);
+        }
+    }
+}

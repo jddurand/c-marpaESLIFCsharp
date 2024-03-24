@@ -1,0 +1,124 @@
+#cmakedefine MARPAESLIF_HAVE_LONG_LONG
+#cmakedefine C2CSHARP_TYPE_INT_IS_INT
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+
+namespace org.parser.marpa
+{
+    public class marpaESLIFValueOption : IDisposable
+    {
+        public IntPtr marpaESLIFValueOptionp { get; protected set; }
+        private readonly marpaESLIFShr.marpaESLIFValueOption_t marpaESLIFValueOption_t;
+        private readonly ESLIFValueInterface valueInterface;
+        private readonly GCHandle contextHandle;
+        private readonly IntPtr userDatavp;
+        private bool disposedValue;
+        private marpaESLIFValueOptionContext context;
+
+        public class marpaESLIFValueOptionContext
+        {
+            public ESLIFValueInterface valueInterface;
+            public List<object> stack = new List<object>();
+
+            public marpaESLIFValueOptionContext(ESLIFValueInterface valueInterface)
+            {
+                this.valueInterface = valueInterface ?? throw new ArgumentNullException(nameof(valueInterface));
+            }
+        }
+
+        public marpaESLIFValueOption(ESLIFValueInterface valueInterface)
+        {
+            this.valueInterface = valueInterface ?? throw new ArgumentNullException(nameof(valueInterface));
+
+            this.context = new marpaESLIFValueOptionContext(valueInterface);
+            this.contextHandle = GCHandle.Alloc(context, GCHandleType.Normal);
+            this.userDatavp = GCHandle.ToIntPtr(this.contextHandle);
+
+            this.marpaESLIFValueOption_t = new marpaESLIFShr.marpaESLIFValueOption_t();
+            this.marpaESLIFValueOption_t.userDatavp = userDatavp;
+            this.marpaESLIFValueOption_t.ruleActionResolverp = RuleActionResolver;
+            this.marpaESLIFValueOption_t.symbolActionResolverp = SymbolActionResolver;
+            this.marpaESLIFValueOption_t.importerp = Importer;
+            this.marpaESLIFValueOption_t.highRankOnlyb = (short)(this.valueInterface.IsWithHighRankOnly() ? 1 : 0);
+            this.marpaESLIFValueOption_t.orderByRankb = (short)(this.valueInterface.IsWithOrderByRank() ? 1 : 0);
+            this.marpaESLIFValueOption_t.ambiguousb = (short)(this.valueInterface.IsWithAmbiguous() ? 1 : 0);
+            this.marpaESLIFValueOption_t.nullb = (short)(this.valueInterface.IsWithNull() ? 1 : 0);
+            this.marpaESLIFValueOption_t.maxParsesi = (int)this.valueInterface.MaxParses();
+
+            this.marpaESLIFValueOptionp = Marshal.AllocHGlobal(Marshal.SizeOf(this.marpaESLIFValueOption_t));
+            Marshal.StructureToPtr(marpaESLIFValueOption_t, this.marpaESLIFValueOptionp, false);
+        }
+
+        private static @C2CSHARP_TYPE_SHORT@ Importer(IntPtr marpaESLIFValuep, IntPtr userDatavp, IntPtr marpaESLIFValueResultp, short haveUndefb)
+        {
+            GCHandle contextHandle = GCHandle.FromIntPtr(userDatavp);
+            marpaESLIFValueOptionContext context = (marpaESLIFValueOptionContext)contextHandle.Target;
+            if (context == null)
+            {
+                throw new Exception("context is null");
+            }
+
+            Import.Importer(context.stack, marpaESLIFValueResultp, haveUndefb);
+
+            context.valueInterface.SetResult(context.stack.Last());
+
+            return 1;
+        }
+
+        private static marpaESLIFShr.marpaESLIFValueRuleCallback_t RuleActionResolver(IntPtr userDatavp, IntPtr marpaESLIFValuep, IntPtr actions)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static marpaESLIFShr.marpaESLIFValueSymbolCallback_t SymbolActionResolver(IntPtr userDatavp, IntPtr marpaESLIFValuep, IntPtr actions)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void DisposeUnmanagedResources()
+        {
+            if (this.userDatavp != IntPtr.Zero)
+            {
+                this.contextHandle.Free();
+            }
+
+            if (this.marpaESLIFValueOptionp != IntPtr.Zero)
+            {
+                Marshal.FreeHGlobal(this.marpaESLIFValueOptionp);
+                this.marpaESLIFValueOptionp = IntPtr.Zero;
+            }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // DONE: dispose managed state (managed objects)
+                }
+
+                // DONE: free unmanaged resources (unmanaged objects) and override finalizer
+                this.DisposeUnmanagedResources();
+                // DONE: set large fields to null
+                disposedValue = true;
+            }
+        }
+
+        // DONE: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        ~marpaESLIFValueOption()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: false);
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+    }
+}

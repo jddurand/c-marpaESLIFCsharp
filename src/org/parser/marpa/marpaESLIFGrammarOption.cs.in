@@ -1,0 +1,88 @@
+#cmakedefine MARPAESLIF_HAVE_LONG_LONG
+#cmakedefine C2CSHARP_TYPE_INT_IS_INT
+using System;
+using System.Runtime.InteropServices;
+using System.Text;
+
+namespace org.parser.marpa
+{
+    public class marpaESLIFGrammarOption : IDisposable
+    {
+        public IntPtr marpaESLIFGrammarOptionp { get; protected set; }
+        private readonly string grammar;
+        private readonly marpaESLIFShr.marpaESLIFGrammarOption_t marpaESLIFGrammarOption_t;
+        private bool disposedValue;
+
+        public marpaESLIFGrammarOption(string grammar)
+        {
+            this.grammar = grammar ?? throw new ArgumentNullException(nameof(grammar));
+
+            byte[] grammarBytes = Encoding.UTF8.GetBytes(this.grammar);
+            byte[] encodingBytes = Encoding.UTF8.GetBytes("UTF-8");
+
+            this.marpaESLIFGrammarOption_t = new marpaESLIFShr.marpaESLIFGrammarOption_t
+            {
+                bytep = Marshal.AllocHGlobal(grammarBytes.Length),
+                bytel = (@C2CSHARP_TYPE_SIZE_T@)grammarBytes.Length,
+                encodings = Marshal.AllocHGlobal(encodingBytes.Length),
+                encodingl = (@C2CSHARP_TYPE_SIZE_T@)encodingBytes.Length,
+            };
+
+            Marshal.Copy(grammarBytes, 0, marpaESLIFGrammarOption_t.bytep, grammarBytes.Length);
+            Marshal.Copy(encodingBytes, 0, marpaESLIFGrammarOption_t.encodings, encodingBytes.Length);
+
+            this.marpaESLIFGrammarOptionp = Marshal.AllocHGlobal(Marshal.SizeOf(this.marpaESLIFGrammarOption_t));
+            Marshal.StructureToPtr(marpaESLIFGrammarOption_t, this.marpaESLIFGrammarOptionp, false);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // DONE: dispose managed state (managed objects)
+                }
+
+                // DONE: free unmanaged resources (unmanaged objects) and override finalizer
+                this.DisposeUnmanagedResources();
+
+                // DONE: set large fields to null
+                disposedValue = true;
+            }
+        }
+
+        // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        ~marpaESLIFGrammarOption()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: false);
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void DisposeUnmanagedResources()
+        {
+            if (this.marpaESLIFGrammarOption_t.bytep != IntPtr.Zero)
+            {
+                Marshal.FreeHGlobal(this.marpaESLIFGrammarOption_t.bytep);
+            }
+
+            if (this.marpaESLIFGrammarOption_t.encodings != IntPtr.Zero)
+            {
+                Marshal.FreeHGlobal(this.marpaESLIFGrammarOption_t.encodings);
+            }
+
+            if (this.marpaESLIFGrammarOptionp != IntPtr.Zero)
+            {
+                Marshal.FreeHGlobal(this.marpaESLIFGrammarOptionp);
+                this.marpaESLIFGrammarOptionp = IntPtr.Zero;
+            }
+        }
+    }
+}

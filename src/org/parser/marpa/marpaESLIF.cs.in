@@ -1,0 +1,124 @@
+#cmakedefine MARPAESLIF_HAVE_LONG_LONG
+#cmakedefine C2CSHARP_TYPE_INT_IS_INT
+using System;
+using System.Runtime.InteropServices;
+
+namespace org.parser.marpa
+{
+    public class marpaESLIF : IDisposable
+    {
+        public IntPtr marpaESLIFp { get; protected set;  }
+        private readonly marpaESLIFOption marpaESLIFOption;
+        private bool disposedValue;
+
+        public marpaESLIF(marpaESLIFOption marpaESLIFOption = null)
+        {
+            this.marpaESLIFOption = marpaESLIFOption; // Can be null
+            this.marpaESLIFp = marpaESLIFShr.marpaESLIF_newp(this.marpaESLIFOption != null ? this.marpaESLIFOption.marpaESLIFOptionp : IntPtr.Zero);
+            if (this.marpaESLIFp == IntPtr.Zero)
+            {
+                throw new Exception("marpaESLIF_newp failure");
+            }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // DONE: dispose managed state (managed objects)
+                }
+
+                // DONE: free unmanaged resources (unmanaged objects) and override finalizer
+                this.DisposeUnmanagedResources();
+                // DONE: set large fields to null
+                disposedValue = true;
+            }
+        }
+
+        // DONE: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        ~marpaESLIF()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: false);
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        public string Version()
+        {
+            IntPtr versionsp = IntPtr.Zero;
+            if (marpaESLIFShr.marpaESLIF_versionb(this.marpaESLIFp, ref versionsp) == 0)
+            {
+                throw new Exception("marpaESLIF_versionb failure");
+            }
+
+            string version;
+            if (versionsp != IntPtr.Zero)
+            {
+                version = Marshal.PtrToStringAnsi(versionsp);
+                // No free : this is a pointer to a string owned by marpaESLIF
+            }
+            else
+            {
+                version = null;
+            }
+
+            return version;
+        }
+
+        public int VersionMajor()
+        {
+            @C2CSHARP_TYPE_INT@ versionMajor = 0;
+            if (marpaESLIFShr.marpaESLIF_versionMajorb(this.marpaESLIFp, ref versionMajor) == 0)
+            {
+                throw new Exception("marpaESLIF_versionMajorb failure");
+            }
+
+            return (int)versionMajor;
+        }
+
+        public int VersionMinor()
+        {
+            @C2CSHARP_TYPE_INT@ versionMinor = 0;
+            if (marpaESLIFShr.marpaESLIF_versionMinorb(this.marpaESLIFp, ref versionMinor) == 0)
+            {
+                throw new Exception("marpaESLIF_versionMinorb failure");
+            }
+
+            return (int)versionMinor;
+        }
+
+        public int VersionPatch()
+        {
+            @C2CSHARP_TYPE_INT@ versionPatch = 0;
+            if (marpaESLIFShr.marpaESLIF_versionPatchb(this.marpaESLIFp, ref versionPatch) == 0)
+            {
+                throw new Exception("marpaESLIF_versionMinorb failure");
+            }
+
+            return (int)versionPatch;
+        }
+
+        public ESLIFGrammar Grammar()
+        {
+            IntPtr marpaESLIFGrammarp = marpaESLIFShr.marpaESLIF_grammarp(this.marpaESLIFp);
+            return new ESLIFGrammar(marpaESLIFGrammarp);
+        }
+
+        private void DisposeUnmanagedResources()
+        {
+            if (this.marpaESLIFp != IntPtr.Zero)
+            {
+                marpaESLIFShr.marpaESLIF_freev(this.marpaESLIFp);
+                this.marpaESLIFp = IntPtr.Zero;
+            }
+        }
+    }
+}

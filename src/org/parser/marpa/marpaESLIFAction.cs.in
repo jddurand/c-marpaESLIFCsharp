@@ -1,0 +1,59 @@
+#cmakedefine MARPAESLIF_HAVE_LONG_LONG
+#cmakedefine C2CSHARP_TYPE_INT_IS_INT
+using System;
+using System.Runtime.InteropServices;
+
+namespace org.parser.marpa
+{
+    public class marpaESLIFAction {
+        public marpaESLIFShr.marpaESLIFActionType_t type { get; protected set; }
+        public string names { get; protected set; }
+        public string @string { get; protected set; }
+        public string luas { get; protected set; }
+        public marpaESLIFLuaFunction luaFunction { get; protected set; }
+
+        public marpaESLIFAction(IntPtr marpaESLIFActionPtr)
+        {
+            marpaESLIFShr.marpaESLIFAction_t marpaESLIFAction_t = (marpaESLIFShr.marpaESLIFAction_t)Marshal.PtrToStructure(marpaESLIFActionPtr, typeof(marpaESLIFShr.marpaESLIFAction_t));
+
+            switch (marpaESLIFAction_t.type)
+            {
+                case marpaESLIFShr.marpaESLIFActionType_t.MARPAESLIF_ACTION_TYPE_NAME:
+                    this.type = marpaESLIFAction_t.type;
+                    this.names = marpaESLIFAction_t.names != IntPtr.Zero ? Marshal.PtrToStringAnsi(marpaESLIFAction_t.names) : null;
+                    break;
+                case marpaESLIFShr.marpaESLIFActionType_t.MARPAESLIF_ACTION_TYPE_STRING:
+                    this.type = marpaESLIFAction_t.type;
+                    this.@string = marpaESLIFString.marpaESLIFStringPtrToString(marpaESLIFAction_t.stringp);
+                    break;
+                case marpaESLIFShr.marpaESLIFActionType_t.MARPAESLIF_ACTION_TYPE_LUA:
+                    this.type = marpaESLIFAction_t.type;
+                    this.luas = marpaESLIFAction_t.luas != IntPtr.Zero ? Marshal.PtrToStringAnsi(marpaESLIFAction_t.luas) : null;
+                    break;
+                case marpaESLIFShr.marpaESLIFActionType_t.MARPAESLIF_ACTION_TYPE_LUA_FUNCTION:
+                    this.type = marpaESLIFAction_t.type;
+                    this.luaFunction = new marpaESLIFLuaFunction(marpaESLIFAction_t.luaFunction);
+                    break;
+                default:
+                    throw new Exception($"Invalid marpaESLIFActionType_t {(int)marpaESLIFAction_t.type}");
+            }
+        }
+
+        public ESLIFAction ESLIFAction()
+        {
+            switch (this.type)
+            {
+                case marpaESLIFShr.marpaESLIFActionType_t.MARPAESLIF_ACTION_TYPE_NAME:
+                    return new ESLIFAction(ESLIFActionType.NAME, this.names, null, null, null);
+                case marpaESLIFShr.marpaESLIFActionType_t.MARPAESLIF_ACTION_TYPE_STRING:
+                    return new ESLIFAction(ESLIFActionType.STRING, null, this.@string, null, null);
+                case marpaESLIFShr.marpaESLIFActionType_t.MARPAESLIF_ACTION_TYPE_LUA:
+                    return new ESLIFAction(ESLIFActionType.LUA, null, null, this.luas, null);
+                case marpaESLIFShr.marpaESLIFActionType_t.MARPAESLIF_ACTION_TYPE_LUA_FUNCTION:
+                    return new ESLIFAction(ESLIFActionType.LUAFUNCTION, null, null, null, this.luaFunction.ESLIFLuaFunction());
+                default:
+                    throw new Exception($"Invalid marpaESLIFActionType_t {(int)this.type}");
+            }
+        }
+    }
+}
