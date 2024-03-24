@@ -30,7 +30,7 @@ namespace org.parser.marpa
             {
                 if (disposing)
                 {
-                    // DIBE: dispose managed state (managed objects)
+                    // DONE: dispose managed state (managed objects)
                 }
 
                 // DONE: free unmanaged resources (unmanaged objects) and override finalizer
