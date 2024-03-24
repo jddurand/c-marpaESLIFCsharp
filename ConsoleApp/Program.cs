@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using org.parser.marpa;
 using System;
+using System.Reflection.Emit;
 
 namespace marpaESLIFShrTest
 {
@@ -120,9 +121,17 @@ exp ::=
 "
             );
             bool isExhausted = false;
-            RecognizerInterface recognizerInterface = new RecognizerInterface("3 * 4");
+            string input = "3 * 4";
+            RecognizerInterface recognizerInterface = new RecognizerInterface(input);
             ValueInterface valueInterface = new ValueInterface();
-            grammar.Parse(recognizerInterface, valueInterface, ref isExhausted);
+            if (grammar.Parse(recognizerInterface, valueInterface, ref isExhausted))
+            {
+                logger.LogInformation($"Parse of {input} gives: {valueInterface.result}, isExhausted={isExhausted}");
+            }
+            if (grammar.ParseByLevel(recognizerInterface, valueInterface, ref isExhausted, 0))
+            {
+                logger.LogInformation($"Parse of {input} at level 0 gives: {valueInterface.result}, isExhausted={isExhausted}");
+            }
 
             // Give some time to the logger ;)
             Console.ReadLine();

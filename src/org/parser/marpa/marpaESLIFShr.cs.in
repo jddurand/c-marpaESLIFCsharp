@@ -1057,6 +1057,66 @@ namespace org.parser.marpa
         }
     }
 
+    public class marpaESLIFRecognizer : IDisposable
+    {
+        public IntPtr marpaESLIFRecognizerp { get; protected set; }
+        private readonly marpaESLIF marpaESLIF;
+        private readonly bool shallow;
+        private readonly marpaESLIFRecognizerOption marpaESLIFRecognizerOption;
+        private object Lock = new object();
+        private bool disposedValue;
+
+        public marpaESLIFRecognizer(marpaESLIF marpaESLIF, marpaESLIFRecognizerOption marpaESLIFRecognizerOption = null)
+        {
+            this.marpaESLIF = marpaESLIF ?? throw new ArgumentNullException(nameof(marpaESLIF));
+            this.marpaESLIFRecognizerOption = marpaESLIFRecognizerOption; // Can be null
+            this.marpaESLIFRecognizerp = marpaESLIFShr.marpaESLIFRecognizer_newp(this.marpaESLIF.marpaESLIFp, this.marpaESLIFRecognizerOption != null ? this.marpaESLIFRecognizerOption.marpaESLIFRecognizerOptionp: IntPtr.Zero);
+            if (this.marpaESLIFRecognizerp == IntPtr.Zero)
+            {
+                throw new Exception("marpaESLIFRecognizer_newp failure");
+            }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // DIBE: dispose managed state (managed objects)
+                }
+
+                // DONE: free unmanaged resources (unmanaged objects) and override finalizer
+                DisposeUnmanagedResources();
+                // DONE: set large fields to null
+                disposedValue = true;
+            }
+        }
+
+        // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        ~marpaESLIFRecognizer()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: false);
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void DisposeUnmanagedResources()
+        {
+            if (!this.shallow && this.marpaESLIFRecognizerp != IntPtr.Zero)
+            {
+                marpaESLIFShr.marpaESLIFRecognizer_freev(this.marpaESLIFRecognizerp);
+            }
+        }
+    }
+
+
     public class marpaESLIFGrammar : IDisposable
     {
         public IntPtr marpaESLIFGrammarp { get; protected set; }
@@ -1539,6 +1599,27 @@ namespace org.parser.marpa
             return result;
         }
 
+        public bool ParseByLevel(ESLIFRecognizerInterface recognizerInterface, ESLIFValueInterface valueInterface, ref bool isExhausted, int level)
+        {
+            bool result = false;
+            isExhausted = false;
+            @C2CSHARP_TYPE_SHORT@ exhausted = 0;
+
+            lock (this.Lock)
+            {
+                using (marpaESLIFRecognizerOption recognizerOption = new marpaESLIFRecognizerOption(recognizerInterface))
+                {
+                    using (marpaESLIFValueOption valueOption = new marpaESLIFValueOption(valueInterface))
+                    {
+                        result = marpaESLIFShr.marpaESLIFGrammar_parse_by_levelb(this.marpaESLIFGrammarp, recognizerOption.marpaESLIFRecognizerOptionp, valueOption.marpaESLIFValueOptionp, ref exhausted, (@C2CSHARP_TYPE_INT@) level, IntPtr.Zero) != 0;
+                        isExhausted = exhausted != 0;
+                    }
+                }
+            }
+
+            return result;
+        }
+
         private void DisposeUnmanagedResources()
         {
             if (! this.shallow && this.marpaESLIFGrammarp != IntPtr.Zero)
@@ -1556,6 +1637,18 @@ namespace org.parser.marpa
         private readonly GCHandle recognizerInterfaceHandle;
         private readonly IntPtr userDatavp;
         private bool disposedValue;
+        private marpaESLIFRecognizerOptionContext context;
+
+        public class marpaESLIFRecognizerOptionContext
+        {
+            public ESLIFRecognizerInterface recognizerInterface;
+            public List<object> stack = new List<object>();
+
+            public marpaESLIFRecognizerOptionContext(ESLIFRecognizerInterface recognizerInterface)
+            {
+                this.recognizerInterface = recognizerInterface ?? throw new ArgumentNullException(nameof(recognizerInterface));
+            }
+        }
 
         public marpaESLIFRecognizerOption(ESLIFRecognizerInterface recognizerInterface)
         {
@@ -1585,7 +1678,16 @@ namespace org.parser.marpa
 
         private static @C2CSHARP_TYPE_SHORT@ Importer(IntPtr marpaESLIFRecognizerp, IntPtr userDatavp, IntPtr marpaESLIFValueResultp, short haveUndefb)
         {
-            throw new NotImplementedException();
+            GCHandle contextHandle = GCHandle.FromIntPtr(userDatavp);
+            marpaESLIFRecognizerOptionContext context = (marpaESLIFRecognizerOptionContext)contextHandle.Target;
+            if (context == null)
+            {
+                throw new Exception("context is null");
+            }
+
+            Import.Importer(context.stack, marpaESLIFValueResultp, haveUndefb);
+
+            return 1;
         }
 
         private static marpaESLIFShr.marpaESLIFRecognizerGeneratorCallback_t GeneratorActionResolver(IntPtr userDatavp, IntPtr marpaESLIFRecognizerp, IntPtr actions)
@@ -1760,7 +1862,7 @@ namespace org.parser.marpa
             Marshal.StructureToPtr(marpaESLIFValueOption_t, this.marpaESLIFValueOptionp, false);
         }
 
-        private static short Importer(IntPtr marpaESLIFValuep, IntPtr userDatavp, IntPtr marpaESLIFValueResultp, short haveUndefb)
+        private static @C2CSHARP_TYPE_SHORT@ Importer(IntPtr marpaESLIFValuep, IntPtr userDatavp, IntPtr marpaESLIFValueResultp, short haveUndefb)
         {
             GCHandle contextHandle = GCHandle.FromIntPtr(userDatavp);
             marpaESLIFValueOptionContext context = (marpaESLIFValueOptionContext)contextHandle.Target;

@@ -140,5 +140,15 @@ namespace org.parser.marpa
 
             return result;
         }
+
+        public bool ParseByLevel(ESLIFRecognizerInterface recognizerInterface, ESLIFValueInterface valueInterface, ref bool isExhausted, int level)
+        {
+            bool _isExhausted = false;
+
+            bool result = this.marpaESLIFGrammar.ParseByLevel(recognizerInterface, valueInterface, ref _isExhausted, level);
+            isExhausted = _isExhausted;
+
+            return result;
+        }
     }
 }
