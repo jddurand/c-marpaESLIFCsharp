@@ -2,7 +2,6 @@
 #cmakedefine C2CSHARP_TYPE_INT_IS_INT
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace org.parser.marpa
@@ -10,12 +9,12 @@ namespace org.parser.marpa
     public class marpaESLIFValueOption : IDisposable
     {
         public IntPtr marpaESLIFValueOptionp { get; protected set; }
+        public marpaESLIFValueOptionContext context { get; protected set; }
         private readonly marpaESLIFShr.marpaESLIFValueOption_t marpaESLIFValueOption_t;
         private readonly ESLIFValueInterface valueInterface;
         private readonly GCHandle contextHandle;
         private readonly IntPtr userDatavp;
         private bool disposedValue;
-        private marpaESLIFValueOptionContext context;
 
         public class marpaESLIFValueOptionContext
         {
@@ -61,8 +60,6 @@ namespace org.parser.marpa
             }
 
             Import.Importer(context.stack, marpaESLIFValueResultp, haveUndefb);
-
-            context.valueInterface.SetResult(context.stack.Last());
 
             return 1;
         }

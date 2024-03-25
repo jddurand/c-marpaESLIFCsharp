@@ -481,6 +481,17 @@ namespace org.parser.marpa
                     {
                         result = marpaESLIFShr.marpaESLIFGrammar_parseb(this.marpaESLIFGrammarp, recognizerOption.marpaESLIFRecognizerOptionp, valueOption.marpaESLIFValueOptionp, ref exhausted) != 0;
                         isExhausted = exhausted != 0;
+
+                        if (result)
+                        {
+                            if (valueOption.context.stack.Count != 1)
+                            {
+                                throw new Exception($"Internal value stack is {valueOption.context.stack.Count} instead of {1}");
+                            }
+                            object value = valueOption.context.stack[0];
+                            valueOption.context.stack.Clear();
+                            valueInterface.SetResult(value);
+                        }
                     }
                 }
             }
