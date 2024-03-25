@@ -9,7 +9,7 @@ namespace org.parser.marpa
 {
     public static class Import
     {
-        public static void Importer(List<object> stack, IntPtr marpaESLIFValueResultp, short haveUndefb)
+        public static void Importer(List<object> stack, IntPtr marpaESLIFValueResultp)
         {
             IntPtr marpaESLIFValueResultFlatp = marpaESLIF_wrapperShr.marpaESLIFValueResultConvertp(marpaESLIFValueResultp);
             marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t marpaESLIFValueResultFlat_t = new marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t();

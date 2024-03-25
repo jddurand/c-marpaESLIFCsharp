@@ -60,7 +60,7 @@ namespace org.parser.marpa
                 throw new Exception("context is null");
             }
 
-            Import.Importer(context.stack, marpaESLIFValueResultp, haveUndefb);
+            Import.Importer(context.stack, marpaESLIFValueResultp);
 
             return 1;
         }
@@ -81,8 +81,17 @@ namespace org.parser.marpa
             }
             else
             {
-                // By definition they are all available in the valuation stack
-                args = context.stack.GetRange(arg0i, argni - arg0i + 1);
+                args = new List<object>();
+                for (@C2CSHARP_TYPE_INT@ i = arg0i; i <= argni; i++)
+                {
+                    Import.Importer(context.stack, marpaESLIFShr.marpaESLIFValue_stack_getp(marpaESLIFValuep, i));
+                    if (context.stack.Count != 1)
+                    {
+                        throw new Exception($"Internal value stack is {context.stack.Count} instead of {1}");
+                    }
+                    args.Add(context.stack[0]);
+                    context.stack.Clear();
+                }
             }
 
             object result = context.action(args);

@@ -115,7 +115,7 @@ exp ::=
     /[\d]+/                                 action => ::luac->function(input) return tonumber(input) end
     |    ""(""  exp "")""    assoc => group action => ::luac->function(l,e,r) return e               end
    || exp (- '**' -) exp     assoc => right action => ::luac->function(x,y)   return x^y             end
-   || exp (-  '*' -) exp                    action => ::luac->function(x,y)   return x*y             end
+   || exp (-  '*' -) exp                    action => jdd # ::luac->function(x,y)   return x*y             end
     | exp (-  '/' -) exp                    action => ::luac->function(x,y)   return x/y             end
    || exp (-  '+' -) exp                    action => ::luac->function(x,y)   return x+y             end
     | exp (-  '-' -) exp                    action => ::luac->function(x,y)   return x-y             end
@@ -274,7 +274,12 @@ exp ::=
 
         public Dictionary<string, Func<object, List<object>>> Actions()
         {
-            return new Dictionary<string, Func<object, List<object>>>();
+            return new Dictionary<string, Func<object, List<object>>>
+            {
+                { "jdd", (args) => {
+                    return null;
+                } },
+            };
         }
     }
 }
