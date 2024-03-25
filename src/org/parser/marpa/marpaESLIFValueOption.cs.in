@@ -102,7 +102,10 @@ namespace org.parser.marpa
             }
 
             string action = Marshal.PtrToStringAnsi(actions);
-            context.action = context.valueInterface.Actions()[action];
+            if (!context.valueInterface.Actions().TryGetValue(action, out context.action))
+            {
+                throw new Exception($"Unimplemented action {action}");
+            }
 
             return RuleCallback;
         }
