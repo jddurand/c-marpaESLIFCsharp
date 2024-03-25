@@ -20,6 +20,7 @@ namespace org.parser.marpa
         {
             public ESLIFValueInterface valueInterface;
             public List<object> stack = new List<object>();
+            public Func<object, List<object>> action = null;
 
             public marpaESLIFValueOptionContext(ESLIFValueInterface valueInterface)
             {
@@ -64,14 +65,56 @@ namespace org.parser.marpa
             return 1;
         }
 
+        private static @C2CSHARP_TYPE_SHORT@ RuleCallback(IntPtr userDatavp, IntPtr marpaESLIFValuep, @C2CSHARP_TYPE_INT@ arg0i, @C2CSHARP_TYPE_INT@ argni, @C2CSHARP_TYPE_INT@ resulti, @C2CSHARP_TYPE_SHORT@ nullableb)
+        {
+            GCHandle contextHandle = GCHandle.FromIntPtr(userDatavp);
+            marpaESLIFValueOptionContext context = (marpaESLIFValueOptionContext)contextHandle.Target;
+            if (context == null)
+            {
+                throw new Exception("context is null");
+            }
+
+            List<object> args;
+            if (nullableb != 0)
+            {
+                args = null;
+            }
+            else
+            {
+                // By definition they are all available in the valuation stack
+                args = context.stack.GetRange(arg0i, argni - arg0i + 1);
+            }
+
+            object result = context.action(args);
+
+            // Set this object at stack indice resulti
+
+            return 1;
+        }
+
         private static marpaESLIFShr.marpaESLIFValueRuleCallback_t RuleActionResolver(IntPtr userDatavp, IntPtr marpaESLIFValuep, IntPtr actions)
         {
-            throw new NotImplementedException();
+            GCHandle contextHandle = GCHandle.FromIntPtr(userDatavp);
+            marpaESLIFValueOptionContext context = (marpaESLIFValueOptionContext)contextHandle.Target;
+            if (context == null)
+            {
+                throw new Exception("context is null");
+            }
+
+            string action = Marshal.PtrToStringAnsi(actions);
+            context.action = context.valueInterface.Actions()[action];
+
+            return RuleCallback;
+        }
+
+        private static @C2CSHARP_TYPE_SHORT@ SymbolCallback(IntPtr userDatavp, IntPtr marpaESLIFValuep, IntPtr marpaESLIFValueResult, @C2CSHARP_TYPE_INT@ resulti)
+        {
+            return 0;
         }
 
         private static marpaESLIFShr.marpaESLIFValueSymbolCallback_t SymbolActionResolver(IntPtr userDatavp, IntPtr marpaESLIFValuep, IntPtr actions)
         {
-            throw new NotImplementedException();
+            return SymbolCallback;
         }
 
         private void DisposeUnmanagedResources()
