@@ -4,11 +4,153 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace org.parser.marpa
 {
-    public static class Import
+    public static class ImportExport
     {
+        // Note that we never use value result specific context: with Windows, a GCHandle is enough to:
+        // - prevent an object to be garbaged or the contrary
+        // - get the underlying value
+
+        public static void Exporter(object input)
+        {
+            // We maintain in parallel stacks of marpaESLIFValueResultFlats and objects
+            List<marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t> marpaESLIFValueResultFlats = new List<marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t>
+            {
+                new marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t()
+            };
+            List<object> values = new List<object> {
+                input
+            };
+
+            while (marpaESLIFValueResultFlats.Any())
+            {
+                marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t marpaESLIFValueResultFlat_t = marpaESLIFValueResultFlats.Last();
+                marpaESLIFValueResultFlats.RemoveAt(marpaESLIFValueResultFlats.Count - 1);
+
+                object value = values.Last();
+                values.RemoveAt(values.Count - 1);
+
+                bool eslif = false;
+
+                if (value == null)
+                {
+                    marpaESLIFValueResultFlat_t.type = marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_UNDEF;
+                    eslif = true;
+                }
+                else
+                {
+                    Type valueType = value.GetType();
+
+                    if (Object.ReferenceEquals(valueType, typeof(char)))
+                    {
+                        marpaESLIFValueResultFlat_t.type = marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_CHAR;
+                        marpaESLIFValueResultFlat_t.c = Convert.ToSByte(value);
+                        eslif = true;
+                    }
+                    else if (Object.ReferenceEquals(valueType, typeof(@C2CSHARP_TYPE_SHORT@)))
+                    {
+                        marpaESLIFValueResultFlat_t.type = marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_SHORT;
+                        marpaESLIFValueResultFlat_t.b = (@C2CSHARP_TYPE_SHORT@)value;
+                        eslif = true;
+                    }
+                    else if (Object.ReferenceEquals(valueType, typeof(@C2CSHARP_TYPE_INT@)))
+                    {
+                        marpaESLIFValueResultFlat_t.type = marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_INT;
+                        marpaESLIFValueResultFlat_t.i = (@C2CSHARP_TYPE_INT@)value;
+                        eslif = true;
+                    }
+                    else if (Object.ReferenceEquals(valueType, typeof(@C2CSHARP_TYPE_LONG@))) // long - Never hitted in practice
+                    {
+                        marpaESLIFValueResultFlat_t.type = marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_LONG;
+                        marpaESLIFValueResultFlat_t.i = (@C2CSHARP_TYPE_LONG@)value;
+                        eslif = true;
+                    }
+                    else if (Object.ReferenceEquals(valueType, typeof(@C2CSHARP_TYPE_FLOAT@)))
+                    {
+                        marpaESLIFValueResultFlat_t.type = marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_FLOAT;
+                        marpaESLIFValueResultFlat_t.f = (@C2CSHARP_TYPE_FLOAT@)value;
+                        eslif = true;
+                    }
+                    else if (Object.ReferenceEquals(valueType, typeof(@C2CSHARP_TYPE_DOUBLE@))) // long - Never hitted in practice
+                    {
+                        marpaESLIFValueResultFlat_t.type = marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_DOUBLE;
+                        marpaESLIFValueResultFlat_t.d = (@C2CSHARP_TYPE_DOUBLE@)value;
+                        eslif = true;
+                    }
+                }
+
+                if (!eslif)
+                {
+                    // Generic object - pointer is a handle on it
+                    GCHandle valueHandle = GCHandle.Alloc(value);
+                    marpaESLIFValueResultFlat_t.type = marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_PTR;
+                    marpaESLIFValueResultFlat_t.representationp = Representation;
+                    marpaESLIFValueResultFlat_t.p.p = GCHandle.ToIntPtr(valueHandle);
+                    marpaESLIFValueResultFlat_t.p.freeCallbackp = FreeCallback;
+                }
+            }
+        }
+
+        private static void FreeCallback(IntPtr userDatavp, IntPtr marpaESLIFValueResultp)
+        {
+            IntPtr marpaESLIFValueResultFlatp = marpaESLIF_wrapperShr.marpaESLIFValueResultConvertp(marpaESLIFValueResultp);
+            marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t marpaESLIFValueResultFlat_t = new marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t();
+            Marshal.PtrToStructure<marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t>(marpaESLIFValueResultFlatp, marpaESLIFValueResultFlat_t);
+            marpaESLIF_wrapperShr.marpaESLIF_free(marpaESLIFValueResultFlatp);
+
+            // We support only the PTR type
+            if (marpaESLIFValueResultFlat_t.type != marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_PTR)
+            {
+                throw new Exception($"Unsupported type {marpaESLIFValueResultFlat_t.type}");
+            }
+
+            GCHandle handle = GCHandle.FromIntPtr(marpaESLIFValueResultFlat_t.p.p);
+            handle.Free();
+        }
+
+        private static short Representation(IntPtr userDatavp, IntPtr marpaESLIFValueResultp, ref IntPtr inputcpp, ref @C2CSHARP_TYPE_SIZE_T@ inputlp, ref IntPtr encodingasciisp, ref marpaESLIFShr.marpaESLIFRepresentationDispose_t disposeCallbackpp, ref @C2CSHARP_TYPE_SHORT@ stringbp)
+        {
+            IntPtr marpaESLIFValueResultFlatp = marpaESLIF_wrapperShr.marpaESLIFValueResultConvertp(marpaESLIFValueResultp);
+            marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t marpaESLIFValueResultFlat_t = new marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t();
+            Marshal.PtrToStructure<marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t>(marpaESLIFValueResultFlatp, marpaESLIFValueResultFlat_t);
+            marpaESLIF_wrapperShr.marpaESLIF_free(marpaESLIFValueResultFlatp);
+
+            // We support only the PTR type
+            if (marpaESLIFValueResultFlat_t.type != marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_PTR)
+            {
+                throw new Exception($"Unsupported type {marpaESLIFValueResultFlat_t.type}");
+            }
+
+            GCHandle handle = GCHandle.FromIntPtr(marpaESLIFValueResultFlat_t.p.p);
+            byte[] bytes = Encoding.UTF8.GetBytes($"{handle.Target}");
+            if (bytes.Length > 0)
+            {
+                inputcpp = Marshal.AllocHGlobal(bytes.Length);
+                Marshal.Copy(bytes, 0, inputcpp, bytes.Length);
+                inputlp = (uint)bytes.Length;
+                encodingasciisp = Marshal.StringToHGlobalAnsi("UTF-8");
+                disposeCallbackpp = RepresentationDispose;
+                stringbp = 1;
+            }
+
+            return 1;
+        }
+
+        private static void RepresentationDispose(IntPtr userDatavp, IntPtr inputcp, @C2CSHARP_TYPE_SIZE_T@ inputl, IntPtr encodingasciis)
+        {
+            if (inputcp != IntPtr.Zero)
+            {
+                Marshal.FreeHGlobal(inputcp);
+            }
+            if (encodingasciis != IntPtr.Zero)
+            {
+                Marshal.FreeHGlobal(encodingasciis);
+            }
+        }
+
         public static void Importer(List<object> stack, IntPtr marpaESLIFValueResultp)
         {
             IntPtr marpaESLIFValueResultFlatp = marpaESLIF_wrapperShr.marpaESLIFValueResultConvertp(marpaESLIFValueResultp);
@@ -68,7 +210,7 @@ namespace org.parser.marpa
                     stack.Add(marpaESLIFValueResultFlat_t.d);
                     break;
                 case marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_PTR:
-                    GCHandle gcHandle = GCHandle.FromIntPtr(marpaESLIFValueResultFlat_t.p);
+                    GCHandle gcHandle = GCHandle.FromIntPtr(marpaESLIFValueResultFlat_t.p.p);
                     stack.Add(gcHandle.Target);
                     break;
                 case marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_ARRAY:

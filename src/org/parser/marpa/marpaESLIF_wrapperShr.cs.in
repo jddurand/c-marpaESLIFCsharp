@@ -19,7 +19,7 @@ namespace org.parser.marpa
             [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_l@)] public @C2CSHARP_TYPE_LONG@ l; /* Value is a long */
             [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_f@)] public @C2CSHARP_TYPE_FLOAT@ f; /* Value is a float */
             [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_d@)] public @C2CSHARP_TYPE_DOUBLE@ d; /* Value is a double */
-            [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_p@)] public IntPtr p; /* Value is a pointer */
+            [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_p@)] public marpaESLIFShr.marpaESLIFValueResultPtr_t p; /* Value is a pointer */
             [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_a@)] public marpaESLIFShr.marpaESLIFValueResultArray_t a; /* Value is a byte array */
             [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_y@)] public marpaESLIFShr.marpaESLIFValueResultBool_t y; /* Value is a boolean */
             [FieldOffset(@OFFSETOF_marpaESLIFValueResultFlat_t_s@)] public marpaESLIFShr.marpaESLIFValueResultString_t s; /* Value is a string */

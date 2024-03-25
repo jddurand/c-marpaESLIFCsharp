@@ -72,7 +72,7 @@ add_subdirectory(marpaESLIF_wrapper)
 # (should be without CMAKE_CURRENT_SOURCE_DIR but does not show up in Visual Studio - a CMake bug ?)
 #
 configure_file(src/org/parser/marpa/genericLoggerShr.cs.in           ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/generated/genericLoggerShr.cs @ONLY)
-configure_file(src/org/parser/marpa/Import.cs.in                     ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/generated/Import.cs @ONLY)
+configure_file(src/org/parser/marpa/ImportExport.cs.in               ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/generated/ImportExport.cs @ONLY)
 configure_file(src/org/parser/marpa/marpaESLIFShr.cs.in              ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/generated/marpaESLIFShr.cs @ONLY)
 configure_file(src/org/parser/marpa/marpaESLIF.cs.in                 ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/generated/marpaESLIF.cs @ONLY)
 configure_file(src/org/parser/marpa/marpaESLIFAction.cs.in           ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/generated/marpaESLIFAction.cs @ONLY)
@@ -90,7 +90,7 @@ configure_file(src/org/parser/marpa/marpaESLIF_wrapperShr.cs.in      ${CMAKE_CUR
 #
 add_library(marpaESLIFCSharp SHARED
   src/org/parser/marpa/generated/genericLoggerShr.cs
-  src/org/parser/marpa/generated/Import.cs
+  src/org/parser/marpa/generated/ImportExport.cs
   src/org/parser/marpa/generated/marpaESLIFShr.cs
   src/org/parser/marpa/generated/marpaESLIF.cs
   src/org/parser/marpa/generated/marpaESLIFAction.cs

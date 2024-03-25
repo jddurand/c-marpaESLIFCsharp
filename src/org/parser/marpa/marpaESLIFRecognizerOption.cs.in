@@ -63,7 +63,7 @@ namespace org.parser.marpa
                 throw new Exception("context is null");
             }
 
-            Import.Importer(context.stack, marpaESLIFValueResultp);
+            ImportExport.Importer(context.stack, marpaESLIFValueResultp);
 
             return 1;
         }
