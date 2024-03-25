@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using org.parser.marpa;
 using System;
+using System.Collections.Generic;
 using System.Reflection.Emit;
 
 namespace marpaESLIFShrTest
@@ -205,8 +206,11 @@ exp ::=
     public class ValueInterface : ESLIFValueInterface
     {
         public object result { get; protected set; }
-        public string ruleName { get; set; }
-        public string symbolName { get; set; }
+        public string ruleName { get; protected set; }
+        public int ruleNumber { get; protected set; }
+        public string symbolName { get; protected set; }
+        public int symbolNumber { get; protected set; }
+        public ESLIFGrammar grammar { get; protected set; }
 
         public object GetResult()
         {
@@ -240,7 +244,7 @@ exp ::=
 
         public void SetGrammar(ESLIFGrammar grammar)
         {
-            throw new NotImplementedException();
+            this.grammar = grammar;
         }
 
         public void SetResult(object result)
@@ -248,24 +252,29 @@ exp ::=
             this.result = result;
         }
 
-        public void SetRuleName()
+        public void SetRuleName(string ruleName)
         {
-            throw new NotImplementedException();
+            this.ruleName = ruleName;
         }
 
-        public void SetRuleNumber()
+        public void SetRuleNumber(int ruleNumber)
         {
-            throw new NotImplementedException();
+            this.ruleNumber = ruleNumber;
         }
 
-        public void SetSymbolName()
+        public void SetSymbolName(string symbolName)
         {
-            throw new NotImplementedException();
+            this.symbolName = symbolName;
         }
 
-        public void SetSymbolNumber()
+        public void SetSymbolNumber(int symbolNumber)
         {
-            throw new NotImplementedException();
+            this.symbolNumber = symbolNumber;
+        }
+
+        public Dictionary<string, Func<object, List<object>>> Actions()
+        {
+            return new Dictionary<string, Func<object, List<object>>>();
         }
     }
 }
