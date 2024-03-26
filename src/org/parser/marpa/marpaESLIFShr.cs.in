@@ -138,9 +138,9 @@ namespace org.parser.marpa
             MARPAESLIF_VALUE_TYPE_ROW,
             MARPAESLIF_VALUE_TYPE_TABLE,
             MARPAESLIF_VALUE_TYPE_LONG_DOUBLE,
-    #if MARPAESLIF_HAVE_LONG_LONG
+#if MARPAESLIF_HAVE_LONG_LONG
             MARPAESLIF_VALUE_TYPE_LONG_LONG,
-    #endif
+#endif
             MARPAESLIF_VALUE_TYPE_OFFSET_AND_LENGTH,
         }
     

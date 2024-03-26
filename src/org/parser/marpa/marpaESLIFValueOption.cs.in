@@ -60,7 +60,7 @@ namespace org.parser.marpa
                 throw new Exception("context is null");
             }
 
-            ImportExport.Importer(context.stack, marpaESLIFValueResultp);
+            ImportExport.Instance.Importer(context.stack, marpaESLIFValueResultp);
 
             return 1;
         }
@@ -84,7 +84,7 @@ namespace org.parser.marpa
                 args = new List<object>();
                 for (@C2CSHARP_TYPE_INT@ i = arg0i; i <= argni; i++)
                 {
-                    ImportExport.Importer(context.stack, marpaESLIFShr.marpaESLIFValue_stack_getp(marpaESLIFValuep, i));
+                    ImportExport.Instance.Importer(context.stack, marpaESLIFShr.marpaESLIFValue_stack_getp(marpaESLIFValuep, i));
                     if (context.stack.Count != 1)
                     {
                         throw new Exception($"Internal value stack is {context.stack.Count} instead of 1");
