@@ -1,6 +1,7 @@
 #cmakedefine MARPAESLIF_HAVE_LONG_LONG
 #cmakedefine C2CSHARP_TYPE_INT_IS_INT
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -16,13 +17,13 @@ namespace org.parser.marpa
 
         private static ImportExport Singleton = null;
         private static readonly object Lock = new object();
-        private IntPtr CSHARP_CONTEXT = Marshal.StringToHGlobalAnsi("C#");
-        private IntPtr UTF8_STRING = Marshal.StringToHGlobalAnsi("UTF-8");
+        private static IntPtr CSHARP_CONTEXT = Marshal.StringToHGlobalAnsi("C#");
+        private static IntPtr UTF8_STRING = Marshal.StringToHGlobalAnsi("UTF-8");
         private bool disposedValue;
 
         private ImportExport() {
-            this.CSHARP_CONTEXT = marpaESLIF_wrapperShr.marpaESLIF_malloc(1);
-            if (this.CSHARP_CONTEXT == IntPtr.Zero) {
+            CSHARP_CONTEXT = marpaESLIF_wrapperShr.marpaESLIF_malloc(1);
+            if (CSHARP_CONTEXT == IntPtr.Zero) {
                 throw new Exception("marpaESLIF_malloc failure");
             }
         }
@@ -62,69 +63,107 @@ namespace org.parser.marpa
                 values.RemoveAt(values.Count - 1);
 
                 bool eslif = false;
+                Type valueType = value.GetType();
 
-                if (value == null)
+                if (Object.ReferenceEquals(valueType, null))
                 {
-                    marpaESLIFValueResultFlat_t.type = marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_UNDEF;
-                    marpaESLIFValueResultFlat_t.contextp = this.CSHARP_CONTEXT;
-                    eslif = true;
+                    eslif = this.ExportNull(value, marpaESLIFValueResultFlat_t);
                 }
-                else
+                if (Object.ReferenceEquals(valueType, typeof(byte)))
                 {
-                    Type valueType = value.GetType();
-
-                    if (Object.ReferenceEquals(valueType, typeof(byte)))
-                    {
-                        eslif = this.ExportNumberNotDecimal(value, marpaESLIFValueResultFlat_t, 1);
-                    }
-                    else if (Object.ReferenceEquals(valueType, typeof(short)))
-                    {
-                        eslif = this.ExportNumberNotDecimal(value, marpaESLIFValueResultFlat_t, 2);
-                    }
-                    else if (Object.ReferenceEquals(valueType, typeof(int)))
-                    {
-                        eslif = this.ExportNumberNotDecimal(value, marpaESLIFValueResultFlat_t, 4);
-                    }
-                    else if (Object.ReferenceEquals(valueType, typeof(long)))
-                    {
-                        eslif = this.ExportNumberNotDecimal(value, marpaESLIFValueResultFlat_t, 8);
-                    }
-                    else if (Object.ReferenceEquals(valueType, typeof(float)))
-                    {
-                        eslif = this.ExportNumberDecimal(value, marpaESLIFValueResultFlat_t, 4);
-                    }
-                    else if (Object.ReferenceEquals(valueType, typeof(double)))
-                    {
-                        eslif = this.ExportNumberDecimal(value, marpaESLIFValueResultFlat_t, 8);
-                    }
-                    else if (Object.ReferenceEquals(valueType, typeof(decimal)))
-                    {
-                        eslif = this.ExportNumberDecimal(value, marpaESLIFValueResultFlat_t, 16);
-                    }
-                    else if (Object.ReferenceEquals(valueType, typeof(bool)))
-                    {
-                        eslif = this.ExportBoolean((bool)value, marpaESLIFValueResultFlat_t);
-                    }
-                    else if (Object.ReferenceEquals(valueType, typeof(char)))
-                    {
-                        eslif = this.ExportString($"{(char)value}", marpaESLIFValueResultFlat_t);
-                    }
-                    else if (Object.ReferenceEquals(valueType, typeof(string)))
-                    {
-                        eslif = this.ExportString($"{(string)value}", marpaESLIFValueResultFlat_t);
-                    }
+                    eslif = this.ExportNumberNotDecimal(value, marpaESLIFValueResultFlat_t, 1);
+                }
+                else if (Object.ReferenceEquals(valueType, typeof(short)))
+                {
+                    eslif = this.ExportNumberNotDecimal(value, marpaESLIFValueResultFlat_t, 2);
+                }
+                else if (Object.ReferenceEquals(valueType, typeof(int)))
+                {
+                    eslif = this.ExportNumberNotDecimal(value, marpaESLIFValueResultFlat_t, 4);
+                }
+                else if (Object.ReferenceEquals(valueType, typeof(long)))
+                {
+                    eslif = this.ExportNumberNotDecimal(value, marpaESLIFValueResultFlat_t, 8);
+                }
+                else if (Object.ReferenceEquals(valueType, typeof(float)))
+                {
+                    eslif = this.ExportNumberDecimal(value, marpaESLIFValueResultFlat_t, 4);
+                }
+                else if (Object.ReferenceEquals(valueType, typeof(double)))
+                {
+                    eslif = this.ExportNumberDecimal(value, marpaESLIFValueResultFlat_t, 8);
+                }
+                else if (Object.ReferenceEquals(valueType, typeof(decimal)))
+                {
+                    eslif = this.ExportNumberDecimal(value, marpaESLIFValueResultFlat_t, 16);
+                }
+                else if (Object.ReferenceEquals(valueType, typeof(bool)))
+                {
+                    eslif = this.ExportBoolean((bool)value, marpaESLIFValueResultFlat_t);
+                }
+                else if (Object.ReferenceEquals(valueType, typeof(char)))
+                {
+                    eslif = this.ExportString($"{(char)value}", marpaESLIFValueResultFlat_t);
+                }
+                else if (Object.ReferenceEquals(valueType, typeof(string)))
+                {
+                    eslif = this.ExportString($"{(string)value}", marpaESLIFValueResultFlat_t);
+                }
+                else if (valueType.IsArray && typeof(byte) == valueType.GetElementType())
+                {
+                    eslif = this.ExportByteArray((byte[])value, marpaESLIFValueResultFlat_t);
+                }
+                else if (IsDictionary(value))
+                {
+                    throw new NotImplementedException();
                 }
 
                 if (!eslif)
                 {
                     // Generic object - pointer is a handle on it
                     GCHandle valueHandle = GCHandle.Alloc(value);
+
                     marpaESLIFValueResultFlat_t.type = marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_PTR;
                     marpaESLIFValueResultFlat_t.representationp = Representation;
                     marpaESLIFValueResultFlat_t.p.p = GCHandle.ToIntPtr(valueHandle);
-                    marpaESLIFValueResultFlat_t.p.freeCallbackp = FreePtrCallback;
+                    marpaESLIFValueResultFlat_t.p.freeCallbackp = FreeCallback;
                 }
             }
+        }
+
+        private static bool IsDictionary(object o)
+        {
+            return o is IDictionary &&
+               o.GetType().IsGenericType &&
+               o.GetType().GetGenericTypeDefinition().IsAssignableFrom(typeof(Dictionary<object, object>));
+        }
+
+        private bool ExportNull(object value, marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t marpaESLIFValueResultFlat_t)
+        {
+            marpaESLIFValueResultFlat_t.type = marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_UNDEF;
+            marpaESLIFValueResultFlat_t.contextp = CSHARP_CONTEXT;
+
+            return true;
+        }
+
+        private bool ExportByteArray(byte[] bytes, marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t marpaESLIFValueResultFlat_t)
+        {
+            marpaESLIFValueResultFlat_t.type = marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_ARRAY;
+            marpaESLIFValueResultFlat_t.contextp = CSHARP_CONTEXT;
+            marpaESLIFValueResultFlat_t.s.sizel = (@C2CSHARP_TYPE_SIZE_T@) bytes.Length;
+            if (marpaESLIFValueResultFlat_t.s.sizel > 0)
+            {
+                IntPtr p = Marshal.AllocHGlobal(bytes.Length);
+                Marshal.Copy(bytes, 0, p, bytes.Length);
+                marpaESLIFValueResultFlat_t.a.p = p;
+            }
+            else
+            {
+                marpaESLIFValueResultFlat_t.a.p = IntPtr.Zero;
+            }
+            marpaESLIFValueResultFlat_t.s.freeCallbackp = FreeCallback;
+
+            return true;
         }
 
         private bool ExportString(string value, marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t marpaESLIFValueResultFlat_t)
@@ -134,12 +173,14 @@ namespace org.parser.marpa
             Buffer.BlockCopy(bytes, 0, bytesWithNul, 0, bytes.Length);
             bytesWithNul[bytes.Length] = 0;
             IntPtr p = Marshal.AllocHGlobal(bytesWithNul.Length);
+            Marshal.Copy(bytesWithNul, 0, p, bytesWithNul.Length);
+
             marpaESLIFValueResultFlat_t.type = marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_STRING;
-            marpaESLIFValueResultFlat_t.contextp = this.CSHARP_CONTEXT;
+            marpaESLIFValueResultFlat_t.contextp = CSHARP_CONTEXT;
             marpaESLIFValueResultFlat_t.s.p = p;
             marpaESLIFValueResultFlat_t.s.sizel = (@C2CSHARP_TYPE_SIZE_T@) bytes.Length;
-            marpaESLIFValueResultFlat_t.s.encodingasciis = this.UTF8_STRING;
-            marpaESLIFValueResultFlat_t.s.freeCallbackp = FreeStringCallback;
+            marpaESLIFValueResultFlat_t.s.encodingasciis = UTF8_STRING;
+            marpaESLIFValueResultFlat_t.s.freeCallbackp = FreeCallback;
 
             return true;
         }
@@ -147,7 +188,7 @@ namespace org.parser.marpa
         private bool ExportBoolean(bool value, marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t marpaESLIFValueResultFlat_t)
         {
             marpaESLIFValueResultFlat_t.type = marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_BOOL;
-            marpaESLIFValueResultFlat_t.contextp = this.CSHARP_CONTEXT;
+            marpaESLIFValueResultFlat_t.contextp = CSHARP_CONTEXT;
             marpaESLIFValueResultFlat_t.y = (value == false) ? marpaESLIFShr.marpaESLIFValueResultBool_t.MARPAESLIFVALUERESULTBOOL_FALSE : marpaESLIFShr.marpaESLIFValueResultBool_t.MARPAESLIFVALUERESULTBOOL_TRUE;
 
             return true;
@@ -159,28 +200,28 @@ namespace org.parser.marpa
 
             if (sizeof_in_csharp <= @SIZEOF_CHAR@) {
                 marpaESLIFValueResultFlat_t.type = marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_CHAR;
-                marpaESLIFValueResultFlat_t.contextp = this.CSHARP_CONTEXT;
+                marpaESLIFValueResultFlat_t.contextp = CSHARP_CONTEXT;
                 marpaESLIFValueResultFlat_t.c = (@C2CSHARP_TYPE_CHAR@)value;
                 eslif = true;
             }
             else if (sizeof_in_csharp <= @SIZEOF_SHORT@)
             {
                 marpaESLIFValueResultFlat_t.type = marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_SHORT;
-                marpaESLIFValueResultFlat_t.contextp = this.CSHARP_CONTEXT;
+                marpaESLIFValueResultFlat_t.contextp = CSHARP_CONTEXT;
                 marpaESLIFValueResultFlat_t.b = (@C2CSHARP_TYPE_SHORT@)value;
                 eslif = true;
             }
             else if (sizeof_in_csharp <= @SIZEOF_INT@)
             {
                 marpaESLIFValueResultFlat_t.type = marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_INT;
-                marpaESLIFValueResultFlat_t.contextp = this.CSHARP_CONTEXT;
+                marpaESLIFValueResultFlat_t.contextp = CSHARP_CONTEXT;
                 marpaESLIFValueResultFlat_t.i = (@C2CSHARP_TYPE_INT@)value;
                 eslif = true;
             }
             else if (sizeof_in_csharp <= @SIZEOF_LONG@)
             {
                 marpaESLIFValueResultFlat_t.type = marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_LONG;
-                marpaESLIFValueResultFlat_t.contextp = this.CSHARP_CONTEXT;
+                marpaESLIFValueResultFlat_t.contextp = CSHARP_CONTEXT;
                 marpaESLIFValueResultFlat_t.l = (@C2CSHARP_TYPE_LONG@)value;
                 eslif = true;
             }
@@ -188,7 +229,7 @@ namespace org.parser.marpa
             else if (sizeof_in_csharp <= @SIZEOF_LONG_LONG@)
             {
                 marpaESLIFValueResultFlat_t.type = marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_LONG_LONG;
-                marpaESLIFValueResultFlat_t.contextp = this.CSHARP_CONTEXT;
+                marpaESLIFValueResultFlat_t.contextp = CSHARP_CONTEXT;
                 marpaESLIFValueResultFlat_t.ll = (@C2CSHARP_TYPE_LONG_LONG@)value;
                 eslif = true;
             }
@@ -202,21 +243,21 @@ namespace org.parser.marpa
 
             if (sizeof_in_csharp <= @SIZEOF_FLOAT@) {
                 marpaESLIFValueResultFlat_t.type = marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_FLOAT;
-                marpaESLIFValueResultFlat_t.contextp = this.CSHARP_CONTEXT;
+                marpaESLIFValueResultFlat_t.contextp = CSHARP_CONTEXT;
                 marpaESLIFValueResultFlat_t.f = (@C2CSHARP_TYPE_FLOAT@)value;
                 eslif = true;
             }
             else if (sizeof_in_csharp <= @SIZEOF_DOUBLE@)
             {
                 marpaESLIFValueResultFlat_t.type = marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_DOUBLE;
-                marpaESLIFValueResultFlat_t.contextp = this.CSHARP_CONTEXT;
+                marpaESLIFValueResultFlat_t.contextp = CSHARP_CONTEXT;
                 marpaESLIFValueResultFlat_t.d = (@C2CSHARP_TYPE_DOUBLE@)value;
                 eslif = true;
             }
             else if (sizeof_in_csharp <= @SIZEOF_LONG_DOUBLE@)
             {
                 marpaESLIFValueResultFlat_t.type = marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_LONG_DOUBLE;
-                marpaESLIFValueResultFlat_t.contextp = this.CSHARP_CONTEXT;
+                marpaESLIFValueResultFlat_t.contextp = CSHARP_CONTEXT;
                 marpaESLIFValueResultFlat_t.ld = (@C2CSHARP_TYPE_LONG_DOUBLE@)value;
                 eslif = true;
             }
@@ -224,38 +265,32 @@ namespace org.parser.marpa
             return eslif;
         }
 
-        private static void FreeStringCallback(IntPtr userDatavp, IntPtr marpaESLIFValueResultp)
+        private static void FreeCallback(IntPtr userDatavp, IntPtr marpaESLIFValueResultp)
         {
             IntPtr marpaESLIFValueResultFlatp = marpaESLIF_wrapperShr.marpaESLIFValueResultConvertp(marpaESLIFValueResultp);
             marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t marpaESLIFValueResultFlat_t = new marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t();
             Marshal.PtrToStructure<marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t>(marpaESLIFValueResultFlatp, marpaESLIFValueResultFlat_t);
             marpaESLIF_wrapperShr.marpaESLIF_free(marpaESLIFValueResultFlatp);
 
-            // We support only the STRING type
-            if (marpaESLIFValueResultFlat_t.type != marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_STRING)
+            switch (marpaESLIFValueResultFlat_t.type)
             {
-                throw new Exception($"Unsupported type {marpaESLIFValueResultFlat_t.type}");
+                case marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_PTR:
+                    if (marpaESLIFValueResultFlat_t.p.p != IntPtr.Zero)
+                    {
+                        GCHandle.FromIntPtr(marpaESLIFValueResultFlat_t.p.p).Free();
+                    }
+                    break;
+                case marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_STRING:
+                    if (marpaESLIFValueResultFlat_t.s.p != IntPtr.Zero)
+                    {
+                        GCHandle.FromIntPtr(marpaESLIFValueResultFlat_t.s.p).Free();
+                    }
+                    if (marpaESLIFValueResultFlat_t.s.encodingasciis != IntPtr.Zero && marpaESLIFValueResultFlat_t.s.encodingasciis != UTF8_STRING)
+                    {
+                        GCHandle.FromIntPtr(marpaESLIFValueResultFlat_t.s.encodingasciis).Free();
+                    }
+                    break;
             }
-
-            GCHandle handle = GCHandle.FromIntPtr(marpaESLIFValueResultFlat_t.s.p);
-            handle.Free();
-        }
-
-        private static void FreePtrCallback(IntPtr userDatavp, IntPtr marpaESLIFValueResultp)
-        {
-            IntPtr marpaESLIFValueResultFlatp = marpaESLIF_wrapperShr.marpaESLIFValueResultConvertp(marpaESLIFValueResultp);
-            marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t marpaESLIFValueResultFlat_t = new marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t();
-            Marshal.PtrToStructure<marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t>(marpaESLIFValueResultFlatp, marpaESLIFValueResultFlat_t);
-            marpaESLIF_wrapperShr.marpaESLIF_free(marpaESLIFValueResultFlatp);
-
-            // We support only the PTR type
-            if (marpaESLIFValueResultFlat_t.type != marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_PTR)
-            {
-                throw new Exception($"Unsupported type {marpaESLIFValueResultFlat_t.type}");
-            }
-
-            GCHandle handle = GCHandle.FromIntPtr(marpaESLIFValueResultFlat_t.p.p);
-            handle.Free();
         }
 
         private static short Representation(IntPtr userDatavp, IntPtr marpaESLIFValueResultp, ref IntPtr inputcpp, ref @C2CSHARP_TYPE_SIZE_T@ inputlp, ref IntPtr encodingasciisp, ref marpaESLIFShr.marpaESLIFRepresentationDispose_t disposeCallbackpp, ref @C2CSHARP_TYPE_SHORT@ stringbp)
@@ -271,8 +306,18 @@ namespace org.parser.marpa
                 throw new Exception($"Unsupported type {marpaESLIFValueResultFlat_t.type}");
             }
 
+            // If called on a decimal, use the R modifier to loose as little as possible
             GCHandle handle = GCHandle.FromIntPtr(marpaESLIFValueResultFlat_t.p.p);
-            byte[] bytes = Encoding.UTF8.GetBytes($"{handle.Target}");
+            byte[] bytes;
+            if (Object.ReferenceEquals(handle.Target.GetType(), typeof(decimal)))
+            {
+                bytes = Encoding.UTF8.GetBytes(((decimal)handle.Target).ToString("R"));
+            }
+            else
+            {
+                bytes = Encoding.UTF8.GetBytes($"{handle.Target}");
+            }
+
             if (bytes.Length > 0)
             {
                 inputcpp = Marshal.AllocHGlobal(bytes.Length);
@@ -427,13 +472,13 @@ namespace org.parser.marpa
 
         private void DisposeUnamangedResources()
         {
-            if (this.CSHARP_CONTEXT != IntPtr.Zero)
+            if (CSHARP_CONTEXT != IntPtr.Zero)
             {
-                Marshal.FreeHGlobal(this.CSHARP_CONTEXT);
+                Marshal.FreeHGlobal(CSHARP_CONTEXT);
             }
-            if (this.UTF8_STRING != IntPtr.Zero)
+            if (UTF8_STRING != IntPtr.Zero)
             {
-                Marshal.FreeHGlobal(this.UTF8_STRING);
+                Marshal.FreeHGlobal(UTF8_STRING);
             }
         }
 
