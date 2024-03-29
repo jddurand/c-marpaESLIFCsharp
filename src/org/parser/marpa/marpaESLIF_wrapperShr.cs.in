@@ -44,6 +44,14 @@ namespace org.parser.marpa
 
         [DllImport("marpaESLIF_wrapper.dll", CallingConvention = CallingConvention.Cdecl)]
         // marpaESLIFValueResult -> marpaESLIFValueResultFlat
+        public static extern void marpaESLIFValueResultFlatToMarpaESLIFValueResult(IntPtr marpaESLIFValueResultp, IntPtr marpaESLIFValueResultFlatp);
+
+        [DllImport("marpaESLIF_wrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        // marpaESLIFValueResult -> marpaESLIFValueResultFlat
+        public static extern void marpaESLIFValueResultToMarpaESLIFValueResultFlat(IntPtr marpaESLIFValueResultFlatp, IntPtr marpaESLIFValueResultp);
+
+        [DllImport("marpaESLIF_wrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        // marpaESLIFValueResult -> marpaESLIFValueResultFlat
         public static extern IntPtr marpaESLIFValueResultConvertp(IntPtr marpaESLIFValueResultp);
 
         [DllImport("marpaESLIF_wrapper.dll", CallingConvention = CallingConvention.Cdecl)]

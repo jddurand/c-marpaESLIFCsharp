@@ -219,11 +219,17 @@ namespace org.parser.marpa
             [FieldOffset(@OFFSETOF_marpaESLIFValueResultOffsetAndLength_t_sizel@)] public @C2CSHARP_TYPE_SIZE_T@ sizel;
         }
     
+        [StructLayout(LayoutKind.Explicit, Size = @SIZEOF_marpaESLIFValueResult_t@)]
+        public struct marpaESLIFValueResult_t
+        {
+            [FieldOffset(0)] [MarshalAs(UnmanagedType.ByValArray, SizeConst = @SIZEOF_marpaESLIFValueResult_t@)] public byte[] opaque;
+        }
+    
         [StructLayout(LayoutKind.Explicit, Size = @SIZEOF_marpaESLIFAlternative_t@)]
         public struct marpaESLIFAlternative_t
         {
             [FieldOffset(@OFFSETOF_marpaESLIFAlternative_t_names@)] public IntPtr names;       /* Symbol name (from automatic description or explicit name adverb) */
-            [FieldOffset(@OFFSETOF_marpaESLIFAlternative_t_value@)] [MarshalAs(UnmanagedType.ByValArray, SizeConst = @SIZEOF_marpaESLIFValueResult_t@)] public byte[] value;       /* Value */
+            [FieldOffset(@OFFSETOF_marpaESLIFAlternative_t_value@)] public marpaESLIFValueResult_t value;       /* Value */
             [FieldOffset(@OFFSETOF_marpaESLIFAlternative_t_grammarLengthl@)] public @C2CSHARP_TYPE_SIZE_T@ grammarLengthl; /* Length within the grammar (1 in the token-stream model) */
         }
     
