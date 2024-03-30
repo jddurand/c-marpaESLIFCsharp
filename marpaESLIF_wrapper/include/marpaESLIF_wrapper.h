@@ -49,6 +49,8 @@ extern "C" {
   /* ===================== */
   /* marpaESLIFValueResult */
   /* ===================== */
+  marpaESLIF_wrapper_EXPORT void                         marpaESLIFValueResultFlatToMarpaESLIFValueResult(marpaESLIFValueResult_t *marpaESLIFValueResultp, marpaESLIFValueResultFlat_t *marpaESLIFValueResultFlatp);
+  marpaESLIF_wrapper_EXPORT void                         marpaESLIFValueResultToMarpaESLIFValueResultFlat(marpaESLIFValueResultFlat_t *marpaESLIFValueResultFlatp, marpaESLIFValueResult_t *marpaESLIFValueResultp);
   marpaESLIF_wrapper_EXPORT marpaESLIFValueResultFlat_t *marpaESLIFValueResultConvertp(marpaESLIFValueResult_t *marpaESLIFValueResultp);
   marpaESLIF_wrapper_EXPORT marpaESLIFValueResult_t     *marpaESLIFValueResultFlatConvertp(marpaESLIFValueResultFlat_t *marpaESLIFValueResultFlatp);
   marpaESLIF_wrapper_EXPORT marpaESLIFActionFlat_t      *marpaESLIFActionConvertp(marpaESLIFAction_t *marpaESLIFActionp);

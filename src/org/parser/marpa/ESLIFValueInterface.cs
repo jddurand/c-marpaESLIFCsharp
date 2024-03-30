@@ -17,6 +17,6 @@ namespace org.parser.marpa
         void SetRuleName(string ruleName);
         void SetRuleNumber(int symbolNumber);
         void SetGrammar(ESLIFGrammar grammar);
-        Dictionary<string, Func<object, List<object>>> Actions();
+        Dictionary<string, Func<List<object>, object>> Actions();
     }
 }

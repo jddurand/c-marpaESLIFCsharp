@@ -272,12 +272,12 @@ exp ::=
             this.symbolNumber = symbolNumber;
         }
 
-        public Dictionary<string, Func<object, List<object>>> Actions()
+        public Dictionary<string, Func<List<object>, object>> Actions()
         {
-            return new Dictionary<string, Func<object, List<object>>>
+            return new Dictionary<string, Func<List<object>, object>>
             {
                 { "jdd", (args) => {
-                    return null;
+                    return new Int32[2] { 1, 3};
                 } },
             };
         }

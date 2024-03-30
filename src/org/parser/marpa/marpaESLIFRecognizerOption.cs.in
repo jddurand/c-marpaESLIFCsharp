@@ -20,7 +20,7 @@ namespace org.parser.marpa
         public class marpaESLIFRecognizerOptionContext
         {
             public ESLIFRecognizerInterface recognizerInterface;
-            public List<object> stack = new List<object>();
+            public Stack<object> stack = new Stack<object>();
 
             public marpaESLIFRecognizerOptionContext(ESLIFRecognizerInterface recognizerInterface)
             {

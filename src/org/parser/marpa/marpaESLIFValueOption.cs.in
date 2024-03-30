@@ -19,8 +19,8 @@ namespace org.parser.marpa
         public class marpaESLIFValueOptionContext
         {
             public ESLIFValueInterface valueInterface;
-            public List<object> stack = new List<object>();
-            public Func<object, List<object>> action = null;
+            public Stack<object> stack = new Stack<object>();
+            public Func<List<object>, object> action = null;
 
             public marpaESLIFValueOptionContext(ESLIFValueInterface valueInterface)
             {
@@ -89,14 +89,13 @@ namespace org.parser.marpa
                     {
                         throw new Exception($"Internal value stack is {context.stack.Count} instead of 1");
                     }
-                    args.Add(context.stack[0]);
-                    context.stack.Clear();
+                    args.Add(context.stack.Pop());
                 }
             }
 
             object result = context.action(args);
 
-            // Set this object at stack indice resulti
+            ImportExport.Instance.Exporter(marpaESLIFValuep, result, resulti, IntPtr.Zero);
 
             return 1;
         }

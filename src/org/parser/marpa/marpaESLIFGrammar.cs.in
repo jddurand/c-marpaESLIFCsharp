@@ -488,8 +488,7 @@ namespace org.parser.marpa
                             {
                                 throw new Exception($"Internal value stack is {valueOption.context.stack.Count} instead of {1}");
                             }
-                            object value = valueOption.context.stack[0];
-                            valueOption.context.stack.Clear();
+                            object value = valueOption.context.stack.Pop();
                             valueInterface.SetResult(value);
                         }
                     }
