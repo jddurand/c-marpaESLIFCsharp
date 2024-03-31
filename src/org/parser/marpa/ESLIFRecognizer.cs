@@ -4,8 +4,8 @@ namespace org.parser.marpa
 {
     public class ESLIFRecognizer
     {
-        private ESLIFGrammar eslifGrammar;
-        private ESLIFRecognizerInterface recognizerInterface;
+        public ESLIFGrammar eslifGrammar { get; protected set; }
+        public ESLIFRecognizerInterface recognizerInterface { get; protected set; }
         private readonly marpaESLIFRecognizer marpaESLIFRecognizer;
         private readonly marpaESLIFRecognizerOption marpaESLIFRecognizerOption;
         private ESLIFRecognizer eslifRecognizerShared;
