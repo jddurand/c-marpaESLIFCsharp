@@ -8,7 +8,7 @@ namespace org.parser.marpa
         private ESLIFRecognizerInterface recognizerInterface;
         private readonly marpaESLIFRecognizer marpaESLIFRecognizer;
         private readonly marpaESLIFRecognizerOption marpaESLIFRecognizerOption;
-        private readonly ESLIFRecognizer eslifRecognizerShared;
+        private ESLIFRecognizer eslifRecognizerShared;
 
         public ESLIFRecognizer(ESLIFGrammar eslifGrammar, ESLIFRecognizerInterface recognizerInterface)
         {
@@ -18,11 +18,10 @@ namespace org.parser.marpa
             this.marpaESLIFRecognizer = new marpaESLIFRecognizer(eslifGrammar.marpaESLIFGrammar, this.marpaESLIFRecognizerOption);
         }
 
-        public ESLIFRecognizer(ESLIFGrammar eslifGrammar, ESLIFRecognizer eslifRecognizerShared)
+        public ESLIFRecognizer(ESLIFGrammar eslifGrammar, ESLIFRecognizer eslifRecognizerFrom)
         {
             this.eslifGrammar = eslifGrammar ?? throw new ArgumentNullException(nameof(eslifGrammar));
-            this.eslifRecognizerShared = eslifRecognizerShared ?? throw new ArgumentNullException(nameof(eslifRecognizerShared));
-            this.marpaESLIFRecognizer = new marpaESLIFRecognizer(eslifGrammar.marpaESLIFGrammar, this.eslifRecognizerShared.marpaESLIFRecognizer);
+            this.marpaESLIFRecognizer = new marpaESLIFRecognizer(eslifGrammar.marpaESLIFGrammar, eslifRecognizerFrom.marpaESLIFRecognizer);
         }
 
         public void SetExhaustedFlag(bool onOff)
@@ -35,14 +34,16 @@ namespace org.parser.marpa
             return this.marpaESLIFRecognizer.IsCanContinue();
         }
 
-        public void Share(ESLIFRecognizer eslifRecognizer)
+        public void Share(ESLIFRecognizer eslifRecognizerShared)
         {
-            this.marpaESLIFRecognizer.Share(eslifRecognizer.marpaESLIFRecognizer);
+            this.eslifRecognizerShared = eslifRecognizerShared ?? throw new ArgumentNullException(nameof(eslifRecognizerShared));
+            this.marpaESLIFRecognizer.Share(eslifRecognizerShared.marpaESLIFRecognizer);
         }
 
         public void Unshare()
         {
             this.marpaESLIFRecognizer.Unshare();
+            this.eslifRecognizerShared = null;
         }
     }
 }

@@ -11,7 +11,6 @@ namespace org.parser.marpa
         private readonly bool shallow;
         private readonly marpaESLIFRecognizerOption marpaESLIFRecognizerOption;
         private object Lock = new object();
-        private marpaESLIFRecognizer marpaESLIFRecognizerShared;
         private bool disposedValue;
 
         public marpaESLIFRecognizer(marpaESLIFGrammar marpaESLIFGrammar, marpaESLIFRecognizerOption marpaESLIFRecognizerOption = null)
@@ -25,10 +24,9 @@ namespace org.parser.marpa
             }
         }
 
-        public marpaESLIFRecognizer(marpaESLIFGrammar marpaESLIFGrammar, marpaESLIFRecognizer marpaESLIFRecognizerShared)
+        public marpaESLIFRecognizer(marpaESLIFGrammar marpaESLIFGrammar, marpaESLIFRecognizer marpaESLIFRecognizerFrom)
         {
-            this.marpaESLIFRecognizerShared = marpaESLIFRecognizerShared ?? throw new ArgumentNullException(nameof(marpaESLIFRecognizerShared));
-            this.marpaESLIFRecognizerp = marpaESLIFShr.marpaESLIFRecognizer_newFromp(this.marpaESLIFGrammar.marpaESLIFGrammarp, marpaESLIFRecognizerShared.marpaESLIFRecognizerp);
+            this.marpaESLIFRecognizerp = marpaESLIFShr.marpaESLIFRecognizer_newFromp(this.marpaESLIFGrammar.marpaESLIFGrammarp, marpaESLIFRecognizerFrom.marpaESLIFRecognizerp);
             if (this.marpaESLIFRecognizerp == IntPtr.Zero)
             {
                 throw new Exception("marpaESLIFRecognizer_newFromp failure");
