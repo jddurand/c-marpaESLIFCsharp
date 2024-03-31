@@ -9,6 +9,7 @@ namespace org.parser.marpa
         private readonly marpaESLIFRecognizer marpaESLIFRecognizer;
         private readonly marpaESLIFRecognizerOption marpaESLIFRecognizerOption;
         private ESLIFRecognizer eslifRecognizerShared;
+        private ESLIFRecognizer eslifRecognizerPeeked;
 
         public ESLIFRecognizer(ESLIFGrammar eslifGrammar, ESLIFRecognizerInterface recognizerInterface)
         {
@@ -37,13 +38,25 @@ namespace org.parser.marpa
         public void Share(ESLIFRecognizer eslifRecognizerShared)
         {
             this.eslifRecognizerShared = eslifRecognizerShared ?? throw new ArgumentNullException(nameof(eslifRecognizerShared));
-            this.marpaESLIFRecognizer.Share(eslifRecognizerShared.marpaESLIFRecognizer);
+            this.marpaESLIFRecognizer.Share(this.eslifRecognizerShared.marpaESLIFRecognizer);
         }
 
         public void Unshare()
         {
             this.marpaESLIFRecognizer.Unshare();
             this.eslifRecognizerShared = null;
+        }
+
+        public void Peek(ESLIFRecognizer eslifRecognizerPeeked)
+        {
+            this.eslifRecognizerPeeked = eslifRecognizerPeeked ?? throw new ArgumentNullException(nameof(eslifRecognizerPeeked));
+            this.marpaESLIFRecognizer.Peek(this.eslifRecognizerPeeked.marpaESLIFRecognizer);
+        }
+
+        public void Unpeek()
+        {
+            this.marpaESLIFRecognizer.Unpeek();
+            this.eslifRecognizerPeeked = null;
         }
     }
 }
