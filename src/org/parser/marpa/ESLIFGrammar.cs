@@ -9,8 +9,7 @@ namespace org.parser.marpa
     {
         private static readonly object MutitonsLock = new object();
         private static readonly Dictionary<IntPtr, ESLIFGrammar> Multitons = new Dictionary<IntPtr, ESLIFGrammar>();
-
-        private readonly marpaESLIFGrammar marpaESLIFGrammar;
+        public marpaESLIFGrammar marpaESLIFGrammar { get; protected set; }
         private readonly ESLIF ESLIF;
         private readonly string grammar;
 
