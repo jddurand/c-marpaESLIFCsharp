@@ -7,20 +7,31 @@ namespace org.parser.marpa
     public class marpaESLIFRecognizer : IDisposable
     {
         public IntPtr marpaESLIFRecognizerp { get; protected set; }
-        private readonly marpaESLIF marpaESLIF;
+        private readonly marpaESLIFGrammar marpaESLIFGrammar;
         private readonly bool shallow;
         private readonly marpaESLIFRecognizerOption marpaESLIFRecognizerOption;
         private object Lock = new object();
+        private marpaESLIFRecognizer marpaESLIFRecognizerShared;
         private bool disposedValue;
 
-        public marpaESLIFRecognizer(marpaESLIF marpaESLIF, marpaESLIFRecognizerOption marpaESLIFRecognizerOption = null)
+        public marpaESLIFRecognizer(marpaESLIFGrammar marpaESLIFGrammar, marpaESLIFRecognizerOption marpaESLIFRecognizerOption = null)
         {
-            this.marpaESLIF = marpaESLIF ?? throw new ArgumentNullException(nameof(marpaESLIF));
+            this.marpaESLIFGrammar = marpaESLIFGrammar ?? throw new ArgumentNullException(nameof(marpaESLIFGrammar));
             this.marpaESLIFRecognizerOption = marpaESLIFRecognizerOption; // Can be null
-            this.marpaESLIFRecognizerp = marpaESLIFShr.marpaESLIFRecognizer_newp(this.marpaESLIF.marpaESLIFp, this.marpaESLIFRecognizerOption != null ? this.marpaESLIFRecognizerOption.marpaESLIFRecognizerOptionp: IntPtr.Zero);
+            this.marpaESLIFRecognizerp = marpaESLIFShr.marpaESLIFRecognizer_newp(this.marpaESLIFGrammar.marpaESLIFGrammarp, this.marpaESLIFRecognizerOption != null ? this.marpaESLIFRecognizerOption.marpaESLIFRecognizerOptionp: IntPtr.Zero);
             if (this.marpaESLIFRecognizerp == IntPtr.Zero)
             {
                 throw new Exception("marpaESLIFRecognizer_newp failure");
+            }
+        }
+
+        public marpaESLIFRecognizer(marpaESLIFGrammar marpaESLIFGrammar, marpaESLIFRecognizer marpaESLIFRecognizerShared)
+        {
+            this.marpaESLIFRecognizerShared = marpaESLIFRecognizerShared ?? throw new ArgumentNullException(nameof(marpaESLIFRecognizerShared));
+            this.marpaESLIFRecognizerp = marpaESLIFShr.marpaESLIFRecognizer_newFromp(this.marpaESLIFGrammar.marpaESLIFGrammarp, marpaESLIFRecognizerShared.marpaESLIFRecognizerp);
+            if (this.marpaESLIFRecognizerp == IntPtr.Zero)
+            {
+                throw new Exception("marpaESLIFRecognizer_newFromp failure");
             }
         }
 
