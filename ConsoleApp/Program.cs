@@ -2,7 +2,10 @@
 using org.parser.marpa;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Reflection.Emit;
+using System.Text;
 
 namespace marpaESLIFShrTest
 {
@@ -112,13 +115,13 @@ namespace marpaESLIFShrTest
                 @"
 :discard ::= /[\s]+/
 exp ::=
-    /[\d]+/                                 action => ::luac->function(input) return tonumber(input) end
-    |    ""(""  exp "")""    assoc => group action => ::luac->function(l,e,r) return e               end
-   || exp (- '**' -) exp     assoc => right action => ::luac->function(x,y)   return x^y             end
-   || exp (-  '*' -) exp                    action => jdd # ::luac->function(x,y)   return x*y             end
-    | exp (-  '/' -) exp                    action => ::luac->function(x,y)   return x/y             end
-   || exp (-  '+' -) exp                    action => ::luac->function(x,y)   return x+y             end
-    | exp (-  '-' -) exp                    action => ::luac->function(x,y)   return x-y             end
+    /[\d]+/                                 action => digits # ::luac->function(input) return tonumber(input) end
+    |    ""(""  exp "")""    assoc => group action => exp # ::luac->function(l,e,r) return e               end
+   || exp (- '**' -) exp     assoc => right action => pow # ::luac->function(x,y)   return x^y             end
+   || exp (-  '*' -) exp                    action => mul # ::luac->function(x,y)   return x*y             end
+    | exp (-  '/' -) exp                    action => div # ::luac->function(x,y)   return x/y             end
+   || exp (-  '+' -) exp                    action => plus # ::luac->function(x,y)   return x+y             end
+    | exp (-  '-' -) exp                    action => minus # ::luac->function(x,y)   return x-y             end
 "
             );
             bool isExhausted = false;
@@ -276,10 +279,36 @@ exp ::=
         {
             return new Dictionary<string, Func<List<object>, object>>
             {
-                { "jdd", (args) => {
-                    return new Int32[2] { 1, 3};
-                } },
+                { "digits", (args) => {
+                    string input = Encoding.ASCII.GetString(((char[])args[0]).Select(c => Convert.ToByte(c)).ToArray());
+                    int output = int.Parse(input);
+                    return output;
+                }
+                },
+                { "exp", (args) => {
+                    return args[1]; }
+                },
+                { "pow", (args) => {
+                    return Math.Pow(ObjToDouble(args[0]), ObjToDouble(args[1])); }
+                },
+                { "mul", (args) => {
+                    return ObjToDouble(args[0]) * ObjToDouble(args[1]); }
+                },
+                { "div", (args) => {
+                    return ObjToDouble(args[0])/ ObjToDouble(args[1]); }
+                },
+                { "plus", (args) => {
+                    return ObjToDouble(args[0]) + ObjToDouble(args[1]); }
+                },
+                { "minus", (args) => {
+                    return ObjToDouble(args[0]) - ObjToDouble(args[1]); }
+                },
             };
+        }
+
+        private static double ObjToDouble(object obj)
+        {
+            return Convert.ToDouble(obj, CultureInfo.InvariantCulture);
         }
     }
 }

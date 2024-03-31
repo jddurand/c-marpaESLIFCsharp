@@ -3,52 +3,121 @@
 
 void marpaESLIFValueResultFlatToMarpaESLIFValueResult(marpaESLIFValueResult_t *marpaESLIFValueResultp, marpaESLIFValueResultFlat_t *marpaESLIFValueResultFlatp)
 {
-  /* We do NOT really mind if everything has a meaning. We just assign and this remains correct. */
   marpaESLIFValueResultp->contextp        = marpaESLIFValueResultFlatp->contextp;
   marpaESLIFValueResultp->representationp = marpaESLIFValueResultFlatp->representationp;
-  marpaESLIFValueResultp->type            = marpaESLIFValueResultFlatp->type;
-  marpaESLIFValueResultp->u.c             = marpaESLIFValueResultFlatp->c;
-  marpaESLIFValueResultp->u.b             = marpaESLIFValueResultFlatp->b;
-  marpaESLIFValueResultp->u.i             = marpaESLIFValueResultFlatp->i;
-  marpaESLIFValueResultp->u.l             = marpaESLIFValueResultFlatp->l;
-  marpaESLIFValueResultp->u.f             = marpaESLIFValueResultFlatp->f;
-  marpaESLIFValueResultp->u.d             = marpaESLIFValueResultFlatp->d;
-  marpaESLIFValueResultp->u.p             = marpaESLIFValueResultFlatp->p;
-  marpaESLIFValueResultp->u.a             = marpaESLIFValueResultFlatp->a;
-  marpaESLIFValueResultp->u.y             = marpaESLIFValueResultFlatp->y;
-  marpaESLIFValueResultp->u.s             = marpaESLIFValueResultFlatp->s;
-  marpaESLIFValueResultp->u.r             = marpaESLIFValueResultFlatp->r;
-  marpaESLIFValueResultp->u.t             = marpaESLIFValueResultFlatp->t;
-  marpaESLIFValueResultp->u.ld            = marpaESLIFValueResultFlatp->ld;
+  switch (marpaESLIFValueResultp->type = marpaESLIFValueResultFlatp->type) {
+  case MARPAESLIF_VALUE_TYPE_CHAR:
+    marpaESLIFValueResultp->u.c             = marpaESLIFValueResultFlatp->c;
+    break;
+  case MARPAESLIF_VALUE_TYPE_SHORT:
+    marpaESLIFValueResultp->u.b             = marpaESLIFValueResultFlatp->b;
+    break;
+  case MARPAESLIF_VALUE_TYPE_INT:
+    marpaESLIFValueResultp->u.i             = marpaESLIFValueResultFlatp->i;
+    break;
+  case MARPAESLIF_VALUE_TYPE_LONG:
+    marpaESLIFValueResultp->u.l             = marpaESLIFValueResultFlatp->l;
+    break;
+  case MARPAESLIF_VALUE_TYPE_FLOAT:
+    marpaESLIFValueResultp->u.f             = marpaESLIFValueResultFlatp->f;
+    break;
+  case MARPAESLIF_VALUE_TYPE_DOUBLE:
+    marpaESLIFValueResultp->u.d             = marpaESLIFValueResultFlatp->d;
+    break;
+  case MARPAESLIF_VALUE_TYPE_PTR:
+    marpaESLIFValueResultp->u.p             = marpaESLIFValueResultFlatp->p;
+    break;
+  case MARPAESLIF_VALUE_TYPE_ARRAY:
+    marpaESLIFValueResultp->u.a             = marpaESLIFValueResultFlatp->a;
+    break;
+  case MARPAESLIF_VALUE_TYPE_BOOL:
+    marpaESLIFValueResultp->u.y             = marpaESLIFValueResultFlatp->y;
+    break;
+  case MARPAESLIF_VALUE_TYPE_STRING:
+    marpaESLIFValueResultp->u.s             = marpaESLIFValueResultFlatp->s;
+    break;
+  case MARPAESLIF_VALUE_TYPE_ROW:
+    marpaESLIFValueResultp->u.r             = marpaESLIFValueResultFlatp->r;
+    break;
+  case MARPAESLIF_VALUE_TYPE_TABLE:
+    marpaESLIFValueResultp->u.t             = marpaESLIFValueResultFlatp->t;
+    break;
+  case MARPAESLIF_VALUE_TYPE_LONG_DOUBLE:
+    marpaESLIFValueResultp->u.ld            = marpaESLIFValueResultFlatp->ld;
+    break;
 #ifdef MARPAESLIF_HAVE_LONG_LONG
-  marpaESLIFValueResultp->u.ll            = marpaESLIFValueResultFlatp->ll;
+  case MARPAESLIF_VALUE_TYPE_LONG_LONG:
+    marpaESLIFValueResultp->u.ll            = marpaESLIFValueResultFlatp->ll;
+    break;
 #endif
-  marpaESLIFValueResultp->u.o             = marpaESLIFValueResultFlatp->o;
+  case MARPAESLIF_VALUE_TYPE_OFFSET_AND_LENGTH:
+    marpaESLIFValueResultp->u.o             = marpaESLIFValueResultFlatp->o;
+    break;
+  default:
+    break;
+  }
 }
 
 void marpaESLIFValueResultToMarpaESLIFValueResultFlat(marpaESLIFValueResultFlat_t *marpaESLIFValueResultFlatp, marpaESLIFValueResult_t *marpaESLIFValueResultp)
 {
+  /* This is a flat version of something that should be an union */
+  /* We make sure that we does not contain invalid things, in particular memory safeguards, by doing a memset */
+  memset(marpaESLIFValueResultFlatp, 0, sizeof(marpaESLIFValueResultFlat_t));
+
   /* We do NOT really mind if everything has a meaning. We just assign and this remains correct. */
   marpaESLIFValueResultFlatp->contextp        = marpaESLIFValueResultp->contextp;
   marpaESLIFValueResultFlatp->representationp = marpaESLIFValueResultp->representationp;
-  marpaESLIFValueResultFlatp->type            = marpaESLIFValueResultp->type;
-  marpaESLIFValueResultFlatp->c               = marpaESLIFValueResultp->u.c;
-  marpaESLIFValueResultFlatp->b               = marpaESLIFValueResultp->u.b;
-  marpaESLIFValueResultFlatp->i               = marpaESLIFValueResultp->u.i;
-  marpaESLIFValueResultFlatp->l               = marpaESLIFValueResultp->u.l;
-  marpaESLIFValueResultFlatp->f               = marpaESLIFValueResultp->u.f;
-  marpaESLIFValueResultFlatp->d               = marpaESLIFValueResultp->u.d;
-  marpaESLIFValueResultFlatp->p               = marpaESLIFValueResultp->u.p;
-  marpaESLIFValueResultFlatp->a               = marpaESLIFValueResultp->u.a;
-  marpaESLIFValueResultFlatp->y               = marpaESLIFValueResultp->u.y;
-  marpaESLIFValueResultFlatp->s               = marpaESLIFValueResultp->u.s;
-  marpaESLIFValueResultFlatp->r               = marpaESLIFValueResultp->u.r;
-  marpaESLIFValueResultFlatp->t               = marpaESLIFValueResultp->u.t;
-  marpaESLIFValueResultFlatp->ld              = marpaESLIFValueResultp->u.ld;
+  switch (marpaESLIFValueResultFlatp->type = marpaESLIFValueResultp->type) {
+  case MARPAESLIF_VALUE_TYPE_CHAR:
+    marpaESLIFValueResultFlatp->c               = marpaESLIFValueResultp->u.c;
+    break;
+  case MARPAESLIF_VALUE_TYPE_SHORT:
+    marpaESLIFValueResultFlatp->b               = marpaESLIFValueResultp->u.b;
+    break;
+  case MARPAESLIF_VALUE_TYPE_INT:
+    marpaESLIFValueResultFlatp->i               = marpaESLIFValueResultp->u.i;
+    break;
+  case MARPAESLIF_VALUE_TYPE_LONG:
+    marpaESLIFValueResultFlatp->l               = marpaESLIFValueResultp->u.l;
+    break;
+  case MARPAESLIF_VALUE_TYPE_FLOAT:
+    marpaESLIFValueResultFlatp->f               = marpaESLIFValueResultp->u.f;
+    break;
+  case MARPAESLIF_VALUE_TYPE_DOUBLE:
+    marpaESLIFValueResultFlatp->d               = marpaESLIFValueResultp->u.d;
+    break;
+  case MARPAESLIF_VALUE_TYPE_PTR:
+    marpaESLIFValueResultFlatp->p               = marpaESLIFValueResultp->u.p;
+    break;
+  case MARPAESLIF_VALUE_TYPE_ARRAY:
+    marpaESLIFValueResultFlatp->a               = marpaESLIFValueResultp->u.a;
+    break;
+  case MARPAESLIF_VALUE_TYPE_BOOL:
+    marpaESLIFValueResultFlatp->y               = marpaESLIFValueResultp->u.y;
+    break;
+  case MARPAESLIF_VALUE_TYPE_STRING:
+    marpaESLIFValueResultFlatp->s               = marpaESLIFValueResultp->u.s;
+    break;
+  case MARPAESLIF_VALUE_TYPE_ROW:
+    marpaESLIFValueResultFlatp->r               = marpaESLIFValueResultp->u.r;
+    break;
+  case MARPAESLIF_VALUE_TYPE_TABLE:
+    marpaESLIFValueResultFlatp->t               = marpaESLIFValueResultp->u.t;
+    break;
+  case MARPAESLIF_VALUE_TYPE_LONG_DOUBLE:
+    marpaESLIFValueResultFlatp->ld              = marpaESLIFValueResultp->u.ld;
+    break;
 #ifdef MARPAESLIF_HAVE_LONG_LONG
-  marpaESLIFValueResultFlatp->ll              = marpaESLIFValueResultp->u.ll;
+  case MARPAESLIF_VALUE_TYPE_LONG_LONG:
+    marpaESLIFValueResultFlatp->ll              = marpaESLIFValueResultp->u.ll;
+    break;
 #endif
-  marpaESLIFValueResultFlatp->o               = marpaESLIFValueResultp->u.o;
+  case MARPAESLIF_VALUE_TYPE_OFFSET_AND_LENGTH:
+    marpaESLIFValueResultFlatp->o               = marpaESLIFValueResultp->u.o;
+    break;
+  default:
+    break;
+  }
 }
 
 marpaESLIFValueResultFlat_t*marpaESLIFValueResultConvertp(marpaESLIFValueResult_t *marpaESLIFValueResultp)

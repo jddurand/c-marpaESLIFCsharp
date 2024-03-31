@@ -63,6 +63,8 @@ namespace org.parser.marpa
                 object value = values.Last();
                 values.RemoveAt(values.Count - 1);
 
+                IEnumerable ienumerable = value as IEnumerable;
+
                 bool eslif = false;
 
                 if (value == null)
@@ -96,10 +98,6 @@ namespace org.parser.marpa
                     {
                         eslif = this.ExportNumberDecimal(value, marpaESLIFValueResultp, 8);
                     }
-                    else if (Object.ReferenceEquals(valueType, typeof(decimal)))
-                    {
-                        eslif = this.ExportNumberDecimal(value, marpaESLIFValueResultp, 16);
-                    }
                     else if (Object.ReferenceEquals(valueType, typeof(bool)))
                     {
                         eslif = this.ExportBoolean((bool)value, marpaESLIFValueResultp);
@@ -118,9 +116,9 @@ namespace org.parser.marpa
                         {
                             eslif = this.ExportByteArray((byte[])value, marpaESLIFValueResultp);
                         }
-                        else
+                        else if (ienumerable != null)
                         {
-                            eslif = this.ExportArray((object[])value, marpaESLIFValueResultp, marpaESLIFValueResultps, values);
+                            eslif = this.ExportIEnumerable(ienumerable, marpaESLIFValueResultp, marpaESLIFValueResultps, values);
                         }
                     }
                     else if (IsDictionary(value))
@@ -157,7 +155,7 @@ namespace org.parser.marpa
                 }
             }
 
-            if (outputp != null)
+            if (outputp != IntPtr.Zero)
             {
                 outputp = marpaESLIFValueResultp;
             }
@@ -228,23 +226,29 @@ namespace org.parser.marpa
             return true;
         }
 
-        private bool ExportArray(object[] objects, IntPtr marpaESLIFValueResultp, List<IntPtr> marpaESLIFValueResultps, List<object> values)
+        private bool ExportIEnumerable(IEnumerable ienumerable, IntPtr marpaESLIFValueResultp, List<IntPtr> marpaESLIFValueResultps, List<object> values)
         {
             marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t marpaESLIFValueResultFlat_t = new marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t();
 
             marpaESLIFValueResultFlat_t.type = marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_ROW;
             marpaESLIFValueResultFlat_t.contextp = CSHARP_CONTEXT;
-            marpaESLIFValueResultFlat_t.r.sizel = (@C2CSHARP_TYPE_SIZE_T@)objects.Length;
+            marpaESLIFValueResultFlat_t.r.sizel = 0;
             marpaESLIFValueResultFlat_t.r.freeCallbackp = FreeCallback;
 
-            if (marpaESLIFValueResultFlat_t.r.sizel > 0)
+            int numberOfItems = 0;
+            foreach (object item in ienumerable)
             {
-                marpaESLIFValueResultFlat_t.r.p = Marshal.AllocHGlobal(objects.Length * @SIZEOF_marpaESLIFValueResult_t@);
-                int i = 0;
-                foreach (object component in objects)
+                values.Add(item);
+                numberOfItems++;
+            }
+
+            if (numberOfItems > 0)
+            {
+                marpaESLIFValueResultFlat_t.r.sizel = (@C2CSHARP_TYPE_SIZE_T@)numberOfItems;
+                marpaESLIFValueResultFlat_t.r.p = Marshal.AllocHGlobal(numberOfItems * @SIZEOF_marpaESLIFValueResult_t@);
+                for (int i = 0; i < numberOfItems; i++)
                 {
-                    values.Add(component);
-                    marpaESLIFValueResultps.Add(marpaESLIFValueResultFlat_t.r.p + i++ * @SIZEOF_marpaESLIFValueResult_t@);
+                    marpaESLIFValueResultps.Add(marpaESLIFValueResultFlat_t.r.p + i * @SIZEOF_marpaESLIFValueResult_t@);
                 }
             }
             else
