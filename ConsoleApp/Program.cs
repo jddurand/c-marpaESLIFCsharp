@@ -115,13 +115,14 @@ namespace marpaESLIFShrTest
                 @"
 :discard ::= /[\s]+/
 exp ::=
-    /[\d]+/                                 action => digits # ::luac->function(input) return tonumber(input) end
+    digits                                  action => digits # ::luac->function(input) return tonumber(input) end
     |    ""(""  exp "")""    assoc => group action => exp # ::luac->function(l,e,r) return e               end
    || exp (- '**' -) exp     assoc => right action => pow # ::luac->function(x,y)   return x^y             end
    || exp (-  '*' -) exp                    action => mul # ::luac->function(x,y)   return x*y             end
     | exp (-  '/' -) exp                    action => div # ::luac->function(x,y)   return x/y             end
    || exp (-  '+' -) exp                    action => plus # ::luac->function(x,y)   return x+y             end
     | exp (-  '-' -) exp                    action => minus # ::luac->function(x,y)   return x-y             end
+digits ::= /[\d]+/                          action => ::ascii
 "
             );
             bool isExhausted = false;
@@ -279,29 +280,40 @@ exp ::=
         {
             return new Dictionary<string, Func<List<object>, object>>
             {
-                { "digits", (args) => {
-                    string input = Encoding.ASCII.GetString(((char[])args[0]).Select(c => Convert.ToByte(c)).ToArray());
-                    int output = int.Parse(input);
-                    return output;
-                }
+                { "digits", (args) =>
+                    {
+                        return int.Parse(args[0] as string);
+                    }
                 },
-                { "exp", (args) => {
-                    return args[1]; }
+                { "exp", (args) =>
+                    {
+                        return args[1];
+                    }
                 },
-                { "pow", (args) => {
-                    return Math.Pow(ObjToDouble(args[0]), ObjToDouble(args[1])); }
+                { "pow", (args) =>
+                    {
+                        return Math.Pow(ObjToDouble(args[0]), ObjToDouble(args[1]));
+                    }
                 },
-                { "mul", (args) => {
-                    return ObjToDouble(args[0]) * ObjToDouble(args[1]); }
+                { "mul", (args) =>
+                    {
+                        return ObjToDouble(args[0]) * ObjToDouble(args[1]);
+                    }
                 },
-                { "div", (args) => {
-                    return ObjToDouble(args[0])/ ObjToDouble(args[1]); }
+                { "div", (args) =>
+                    {
+                        return ObjToDouble(args[0])/ ObjToDouble(args[1]);
+                    }
                 },
-                { "plus", (args) => {
-                    return ObjToDouble(args[0]) + ObjToDouble(args[1]); }
+                { "plus", (args) =>
+                    {
+                        return ObjToDouble(args[0]) + ObjToDouble(args[1]);
+                    }
                 },
-                { "minus", (args) => {
-                    return ObjToDouble(args[0]) - ObjToDouble(args[1]); }
+                { "minus", (args) =>
+                    {
+                        return ObjToDouble(args[0]) - ObjToDouble(args[1]);
+                    }
                 },
             };
         }
