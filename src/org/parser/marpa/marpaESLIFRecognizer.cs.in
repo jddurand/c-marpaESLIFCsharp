@@ -35,6 +35,54 @@ namespace org.parser.marpa
             }
         }
 
+        public void SetExhaustedFlag(bool onOff)
+        {
+            if (marpaESLIFShr.marpaESLIFRecognizer_set_exhausted_flagb(this.marpaESLIFRecognizerp, (@C2CSHARP_TYPE_SHORT@) (onOff ? 1 : 0)) == 0)
+            {
+                throw new Exception("marpaESLIFRecognizer_set_exhausted_flagb failure");
+            }
+        }
+
+        public bool IsExhausted()
+        {
+            @C2CSHARP_TYPE_SHORT@ isExhaustedb = 0;
+
+            if (marpaESLIFShr.marpaESLIFRecognizer_isExhaustedb(this.marpaESLIFRecognizerp, ref isExhaustedb) == 0)
+            {
+                throw new Exception("marpaESLIFRecognizer_isExhaustedb failure");
+            }
+
+            return isExhaustedb != 0;
+        }
+
+        public bool IsCanContinue()
+        {
+            @C2CSHARP_TYPE_SHORT@ isCanContinueb = 0;
+
+            if (marpaESLIFShr.marpaESLIFRecognizer_isCanContinueb(this.marpaESLIFRecognizerp, ref isCanContinueb) == 0)
+            {
+                throw new Exception("marpaESLIFRecognizer_isCanContinueb failure");
+            }
+
+            return isCanContinueb != 0;
+        }
+
+        public void Share(marpaESLIFRecognizer marpaESLIFRecognizerShared)
+        {
+            if (marpaESLIFShr.marpaESLIFRecognizer_shareb(this.marpaESLIFRecognizerp, marpaESLIFRecognizerShared.marpaESLIFRecognizerp) == 0)
+            {
+                throw new Exception("marpaESLIFRecognizer_shareb failure");
+            }
+        }
+
+        public void Unshare()
+        {
+            if (marpaESLIFShr.marpaESLIFRecognizer_shareb(this.marpaESLIFRecognizerp, IntPtr.Zero) == 0)
+            {
+                throw new Exception("marpaESLIFRecognizer_shareb failure");
+            }
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)

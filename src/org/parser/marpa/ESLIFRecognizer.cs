@@ -24,5 +24,25 @@ namespace org.parser.marpa
             this.eslifRecognizerShared = eslifRecognizerShared ?? throw new ArgumentNullException(nameof(eslifRecognizerShared));
             this.marpaESLIFRecognizer = new marpaESLIFRecognizer(eslifGrammar.marpaESLIFGrammar, this.eslifRecognizerShared.marpaESLIFRecognizer);
         }
+
+        public void SetExhaustedFlag(bool onOff)
+        {
+            this.marpaESLIFRecognizer.SetExhaustedFlag(onOff);
+        }
+
+        public bool IsCanContinue()
+        {
+            return this.marpaESLIFRecognizer.IsCanContinue();
+        }
+
+        public void Share(ESLIFRecognizer eslifRecognizer)
+        {
+            this.marpaESLIFRecognizer.Share(eslifRecognizer.marpaESLIFRecognizer);
+        }
+
+        public void Unshare()
+        {
+            this.marpaESLIFRecognizer.Unshare();
+        }
     }
 }

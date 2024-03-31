@@ -193,7 +193,7 @@ namespace org.parser.marpa
             return true;
         }
 
-        private bool ExportIDictionary(IDictionary iDictionary, IntPtr marpaESLIFValueResultp, List<IntPtr> marpaESLIFValueResultps, List<object> values)
+        private bool ExportIDictionary(IDictionary iDictionary, IntPtr marpaESLIFValueResultp, Stack<IntPtr> marpaESLIFValueResultps, Stack<object> values)
         {
             marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t marpaESLIFValueResultFlat_t = new marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t();
 
@@ -244,7 +244,7 @@ namespace org.parser.marpa
             return true;
         }
 
-        private bool ExportIEnumerable(IEnumerable iEnumerable, IntPtr marpaESLIFValueResultp, List<IntPtr> marpaESLIFValueResultps, List<object> values)
+        private bool ExportIEnumerable(IEnumerable iEnumerable, IntPtr marpaESLIFValueResultp, Stack<IntPtr> marpaESLIFValueResultps, Stack<object> values)
         {
             marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t marpaESLIFValueResultFlat_t = new marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t();
 
