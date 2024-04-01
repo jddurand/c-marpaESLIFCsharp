@@ -17,7 +17,7 @@ namespace org.parser.marpa
             this.marpaESLIFp = marpaESLIFShr.marpaESLIF_newp(this.marpaESLIFOption != null ? this.marpaESLIFOption.marpaESLIFOptionp : IntPtr.Zero);
             if (this.marpaESLIFp == IntPtr.Zero)
             {
-                throw new Exception("marpaESLIF_newp failure");
+                throw new ESLIFException("marpaESLIF_newp failure");
             }
         }
 
@@ -56,7 +56,7 @@ namespace org.parser.marpa
             IntPtr versionsp = IntPtr.Zero;
             if (marpaESLIFShr.marpaESLIF_versionb(this.marpaESLIFp, ref versionsp) == 0)
             {
-                throw new Exception("marpaESLIF_versionb failure");
+                throw new ESLIFException("marpaESLIF_versionb failure");
             }
 
             string version;
@@ -78,7 +78,7 @@ namespace org.parser.marpa
             @C2CSHARP_TYPE_INT@ versionMajor = 0;
             if (marpaESLIFShr.marpaESLIF_versionMajorb(this.marpaESLIFp, ref versionMajor) == 0)
             {
-                throw new Exception("marpaESLIF_versionMajorb failure");
+                throw new ESLIFException("marpaESLIF_versionMajorb failure");
             }
 
             return (int)versionMajor;
@@ -89,7 +89,7 @@ namespace org.parser.marpa
             @C2CSHARP_TYPE_INT@ versionMinor = 0;
             if (marpaESLIFShr.marpaESLIF_versionMinorb(this.marpaESLIFp, ref versionMinor) == 0)
             {
-                throw new Exception("marpaESLIF_versionMinorb failure");
+                throw new ESLIFException("marpaESLIF_versionMinorb failure");
             }
 
             return (int)versionMinor;
@@ -100,7 +100,7 @@ namespace org.parser.marpa
             @C2CSHARP_TYPE_INT@ versionPatch = 0;
             if (marpaESLIFShr.marpaESLIF_versionPatchb(this.marpaESLIFp, ref versionPatch) == 0)
             {
-                throw new Exception("marpaESLIF_versionMinorb failure");
+                throw new ESLIFException("marpaESLIF_versionMinorb failure");
             }
 
             return (int)versionPatch;

@@ -35,7 +35,7 @@ namespace org.parser.marpa
                     this.luaFunction = new marpaESLIFLuaFunction(marpaESLIFAction_t.luaFunction);
                     break;
                 default:
-                    throw new Exception($"Invalid marpaESLIFActionType_t {(int)marpaESLIFAction_t.type}");
+                    throw new ESLIFException($"Invalid marpaESLIFActionType_t {(int)marpaESLIFAction_t.type}");
             }
         }
 
@@ -52,7 +52,7 @@ namespace org.parser.marpa
                 case marpaESLIFShr.marpaESLIFActionType_t.MARPAESLIF_ACTION_TYPE_LUA_FUNCTION:
                     return new ESLIFAction(ESLIFActionType.LUAFUNCTION, null, null, null, this.luaFunction.ESLIFLuaFunction());
                 default:
-                    throw new Exception($"Invalid marpaESLIFActionType_t {(int)this.type}");
+                    throw new ESLIFException($"Invalid marpaESLIFActionType_t {(int)this.type}");
             }
         }
     }

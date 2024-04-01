@@ -89,7 +89,7 @@ namespace org.parser.marpa
             if (this.genericLoggerp == IntPtr.Zero)
             {
                 this.DisposeUnmanagedResources();
-                throw new Exception("genericLogger_newp failure");
+                throw new ESLIFException("genericLogger_newp failure");
             }
         }
 

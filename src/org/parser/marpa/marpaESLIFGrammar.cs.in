@@ -22,7 +22,7 @@ namespace org.parser.marpa
             this.marpaESLIFGrammarp = marpaESLIFShr.marpaESLIFGrammar_newp(this.marpaESLIF.marpaESLIFp, this.marpaESLIFGrammarOption != null ? this.marpaESLIFGrammarOption.marpaESLIFGrammarOptionp : IntPtr.Zero);
             if (this.marpaESLIFGrammarp == IntPtr.Zero)
             {
-                throw new Exception("marpaESLIFGrammar_newp failure");
+                throw new ESLIFException("marpaESLIFGrammar_newp failure");
             }
         }
 
@@ -32,7 +32,7 @@ namespace org.parser.marpa
             this.shallow = true;
             if (this.marpaESLIFGrammarp == IntPtr.Zero)
             {
-                throw new Exception("marpaESLIFGrammar_newp failure");
+                throw new ESLIFException("marpaESLIFGrammar_newp failure");
             }
         }
 
@@ -72,7 +72,7 @@ namespace org.parser.marpa
 
             if (marpaESLIFShr.marpaESLIFGrammar_ngrammarib(this.marpaESLIFGrammarp, ref ngrammar) == 0)
             {
-                throw new Exception("marpaESLIFGrammar_ngrammarib failure");
+                throw new ESLIFException("marpaESLIFGrammar_ngrammarib failure");
             }
 
             return (int)ngrammar;
@@ -86,7 +86,7 @@ namespace org.parser.marpa
             if (marpaESLIFShr.marpaESLIFGrammar_defaultsb(this.marpaESLIFGrammarp, marpaESLIFGrammarDefaultsPtr) == 0)
             {
                 Marshal.FreeHGlobal(marpaESLIFGrammarDefaultsPtr);
-                throw new Exception("marpaESLIFGrammar_defaultsb failure");
+                throw new ESLIFException("marpaESLIFGrammar_defaultsb failure");
             }
 
             marpaESLIFGrammarDefaults_t = (marpaESLIFShr.marpaESLIFGrammarDefaults_t) Marshal.PtrToStructure(marpaESLIFGrammarDefaultsPtr, typeof(marpaESLIFShr.marpaESLIFGrammarDefaults_t));
@@ -113,7 +113,7 @@ namespace org.parser.marpa
             if (marpaESLIFShr.marpaESLIFGrammar_defaults_by_levelb(this.marpaESLIFGrammarp, marpaESLIFGrammarDefaultsPtr, (@C2CSHARP_TYPE_INT@) level, IntPtr.Zero) == 0)
             {
                 Marshal.FreeHGlobal(marpaESLIFGrammarDefaultsPtr);
-                throw new Exception("marpaESLIFGrammar_defaults_by_levelb failure");
+                throw new ESLIFException("marpaESLIFGrammar_defaults_by_levelb failure");
             }
 
             marpaESLIFGrammarDefaults_t = (marpaESLIFShr.marpaESLIFGrammarDefaults_t)Marshal.PtrToStructure(marpaESLIFGrammarDefaultsPtr, typeof(marpaESLIFShr.marpaESLIFGrammarDefaults_t));
@@ -137,7 +137,7 @@ namespace org.parser.marpa
             IntPtr ruledisplaysPtr = IntPtr.Zero;
             if (marpaESLIFShr.marpaESLIFGrammar_ruledisplayform_currentb(this.marpaESLIFGrammarp, (@C2CSHARP_TYPE_INT@)rule, ref ruledisplaysPtr) == 0)
             {
-                throw new Exception("marpaESLIFGrammar_ruledisplayform_currentb failure");
+                throw new ESLIFException("marpaESLIFGrammar_ruledisplayform_currentb failure");
             }
 
             return ruledisplaysPtr == IntPtr.Zero ? null : Marshal.PtrToStringAnsi(ruledisplaysPtr);
@@ -148,7 +148,7 @@ namespace org.parser.marpa
             IntPtr ruledisplaysPtr = IntPtr.Zero;
             if (marpaESLIFShr.marpaESLIFGrammar_ruledisplayform_by_levelb(this.marpaESLIFGrammarp, (@C2CSHARP_TYPE_INT@)rule, ref ruledisplaysPtr, level, IntPtr.Zero) == 0)
             {
-                throw new Exception("marpaESLIFGrammar_ruledisplayform_by_levelb failure");
+                throw new ESLIFException("marpaESLIFGrammar_ruledisplayform_by_levelb failure");
             }
 
             return ruledisplaysPtr == IntPtr.Zero ? null : Marshal.PtrToStringAnsi(ruledisplaysPtr);
@@ -159,7 +159,7 @@ namespace org.parser.marpa
             IntPtr ruleshowsPtr = IntPtr.Zero;
             if (marpaESLIFShr.marpaESLIFGrammar_ruleshowform_currentb(this.marpaESLIFGrammarp, (@C2CSHARP_TYPE_INT@)rule, ref ruleshowsPtr) == 0)
             {
-                throw new Exception("marpaESLIFGrammar_ruleshowform_currentb failure");
+                throw new ESLIFException("marpaESLIFGrammar_ruleshowform_currentb failure");
             }
 
             return ruleshowsPtr == IntPtr.Zero ? null : Marshal.PtrToStringAnsi(ruleshowsPtr);
@@ -170,7 +170,7 @@ namespace org.parser.marpa
             IntPtr ruleshowsPtr = IntPtr.Zero;
             if (marpaESLIFShr.marpaESLIFGrammar_ruleshowform_by_levelb(this.marpaESLIFGrammarp, (@C2CSHARP_TYPE_INT@)rule, ref ruleshowsPtr, level, IntPtr.Zero) == 0)
             {
-                throw new Exception("marpaESLIFGrammar_ruleshowform_by_levelb failure");
+                throw new ESLIFException("marpaESLIFGrammar_ruleshowform_by_levelb failure");
             }
 
             return ruleshowsPtr == IntPtr.Zero ? null : Marshal.PtrToStringAnsi(ruleshowsPtr);
@@ -231,7 +231,7 @@ namespace org.parser.marpa
                 ?
                 ESLIFSymbolType.META
                 :
-                throw new Exception($"Invalid symbol type {(int)marpaESLIFSymbolProperty_t.type}");
+                throw new ESLIFException($"Invalid symbol type {(int)marpaESLIFSymbolProperty_t.type}");
 
             return new ESLIFGrammarSymbolProperties
                 (ESLIFSymbolType,
@@ -319,7 +319,7 @@ namespace org.parser.marpa
             if (marpaESLIFShr.marpaESLIFGrammar_grammarproperty_currentb(this.marpaESLIFGrammarp, marpaESLIFGrammarPropertyPtr) == 0)
             {
                 Marshal.FreeHGlobal(marpaESLIFGrammarPropertyPtr);
-                throw new Exception("marpaESLIFGrammar_grammarproperty_currentb failure");
+                throw new ESLIFException("marpaESLIFGrammar_grammarproperty_currentb failure");
             }
 
             marpaESLIFGrammarProperty_t = (marpaESLIFShr.marpaESLIFGrammarProperty_t)Marshal.PtrToStructure(marpaESLIFGrammarPropertyPtr, typeof(marpaESLIFShr.marpaESLIFGrammarProperty_t));
@@ -337,7 +337,7 @@ namespace org.parser.marpa
             if (marpaESLIFShr.marpaESLIFGrammar_grammarproperty_by_levelb(this.marpaESLIFGrammarp, marpaESLIFGrammarPropertyPtr, (@C2CSHARP_TYPE_INT@)level, IntPtr.Zero) == 0)
             {
                 Marshal.FreeHGlobal(marpaESLIFGrammarPropertyPtr);
-                throw new Exception("marpaESLIFGrammar_grammarproperty_currentb failure");
+                throw new ESLIFException("marpaESLIFGrammar_grammarproperty_currentb failure");
             }
 
             marpaESLIFGrammarProperty_t = (marpaESLIFShr.marpaESLIFGrammarProperty_t)Marshal.PtrToStructure(marpaESLIFGrammarPropertyPtr, typeof(marpaESLIFShr.marpaESLIFGrammarProperty_t));
@@ -355,7 +355,7 @@ namespace org.parser.marpa
             if (marpaESLIFShr.marpaESLIFGrammar_ruleproperty_currentb(this.marpaESLIFGrammarp, (@C2CSHARP_TYPE_INT@)rule, marpaESLIFRulePropertyPtr) == 0)
             {
                 Marshal.FreeHGlobal(marpaESLIFRulePropertyPtr);
-                throw new Exception("marpaESLIFGrammar_ruleproperty_currentb failure");
+                throw new ESLIFException("marpaESLIFGrammar_ruleproperty_currentb failure");
             }
 
             marpaESLIFRuleProperty_t = (marpaESLIFShr.marpaESLIFRuleProperty_t)Marshal.PtrToStructure(marpaESLIFRulePropertyPtr, typeof(marpaESLIFShr.marpaESLIFRuleProperty_t));
@@ -373,7 +373,7 @@ namespace org.parser.marpa
             if (marpaESLIFShr.marpaESLIFGrammar_ruleproperty_by_levelb(this.marpaESLIFGrammarp, (@C2CSHARP_TYPE_INT@)rule, marpaESLIFRulePropertyPtr, (@C2CSHARP_TYPE_INT@)level, IntPtr.Zero) == 0)
             {
                 Marshal.FreeHGlobal(marpaESLIFRulePropertyPtr);
-                throw new Exception("marpaESLIFGrammar_ruleproperty_by_levelb failure");
+                throw new ESLIFException("marpaESLIFGrammar_ruleproperty_by_levelb failure");
             }
 
             marpaESLIFRuleProperty_t = (marpaESLIFShr.marpaESLIFRuleProperty_t)Marshal.PtrToStructure(marpaESLIFRulePropertyPtr, typeof(marpaESLIFShr.marpaESLIFRuleProperty_t));
@@ -391,7 +391,7 @@ namespace org.parser.marpa
             if (marpaESLIFShr.marpaESLIFGrammar_symbolproperty_currentb(this.marpaESLIFGrammarp, (@C2CSHARP_TYPE_INT@)rule, marpaESLIFSymbolPropertyPtr) == 0)
             {
                 Marshal.FreeHGlobal(marpaESLIFSymbolPropertyPtr);
-                throw new Exception("marpaESLIFGrammar_symbolproperty_currentb failure");
+                throw new ESLIFException("marpaESLIFGrammar_symbolproperty_currentb failure");
             }
 
             marpaESLIFSymbolProperty_t = (marpaESLIFShr.marpaESLIFSymbolProperty_t)Marshal.PtrToStructure(marpaESLIFSymbolPropertyPtr, typeof(marpaESLIFShr.marpaESLIFSymbolProperty_t));
@@ -409,7 +409,7 @@ namespace org.parser.marpa
             if (marpaESLIFShr.marpaESLIFGrammar_symbolproperty_by_levelb(this.marpaESLIFGrammarp, (@C2CSHARP_TYPE_INT@)rule, marpaESLIFSymbolPropertyPtr, level, IntPtr.Zero) == 0)
             {
                 Marshal.FreeHGlobal(marpaESLIFSymbolPropertyPtr);
-                throw new Exception("marpaESLIFGrammar_symbolproperty_by_levelb failure");
+                throw new ESLIFException("marpaESLIFGrammar_symbolproperty_by_levelb failure");
             }
 
             marpaESLIFSymbolProperty_t = (marpaESLIFShr.marpaESLIFSymbolProperty_t)Marshal.PtrToStructure(marpaESLIFSymbolPropertyPtr, typeof(marpaESLIFShr.marpaESLIFSymbolProperty_t));
@@ -425,7 +425,7 @@ namespace org.parser.marpa
 
             if (marpaESLIFShr.marpaESLIFGrammar_symboldisplayform_currentb(this.marpaESLIFGrammarp, (@C2CSHARP_TYPE_INT@)symbol, ref symboldisplaysp) == 0)
             {
-                throw new Exception("marpaESLIFGrammar_symboldisplayform_currentb failure");
+                throw new ESLIFException("marpaESLIFGrammar_symboldisplayform_currentb failure");
             }
 
             return symboldisplaysp == IntPtr.Zero ? null : Marshal.PtrToStringAnsi(symboldisplaysp);
@@ -437,7 +437,7 @@ namespace org.parser.marpa
 
             if (marpaESLIFShr.marpaESLIFGrammar_symboldisplayform_by_levelb(this.marpaESLIFGrammarp, (@C2CSHARP_TYPE_INT@)symbol, ref symboldisplaysp, (@C2CSHARP_TYPE_INT@)level, IntPtr.Zero) == 0)
             {
-                throw new Exception("marpaESLIFGrammar_symboldisplayform_by_levelb failure");
+                throw new ESLIFException("marpaESLIFGrammar_symboldisplayform_by_levelb failure");
             }
 
             return symboldisplaysp == IntPtr.Zero ? null : Marshal.PtrToStringAnsi(symboldisplaysp);
@@ -449,7 +449,7 @@ namespace org.parser.marpa
 
             if (marpaESLIFShr.marpaESLIFGrammar_grammarshowform_currentb(this.marpaESLIFGrammarp, ref grammarshowsp) == 0)
             {
-                throw new Exception("marpaESLIFGrammar_grammarshowform_currentb failure");
+                throw new ESLIFException("marpaESLIFGrammar_grammarshowform_currentb failure");
             }
 
             return grammarshowsp == IntPtr.Zero ? null : Marshal.PtrToStringAnsi(grammarshowsp);
@@ -461,7 +461,7 @@ namespace org.parser.marpa
 
             if (marpaESLIFShr.marpaESLIFGrammar_grammarshowform_by_levelb(this.marpaESLIFGrammarp, ref grammarshowsp, (@C2CSHARP_TYPE_INT@)level, IntPtr.Zero) == 0)
             {
-                throw new Exception("marpaESLIFGrammar_grammarshowform_by_levelb failure");
+                throw new ESLIFException("marpaESLIFGrammar_grammarshowform_by_levelb failure");
             }
 
             return grammarshowsp == IntPtr.Zero ? null : Marshal.PtrToStringAnsi(grammarshowsp);
@@ -486,7 +486,7 @@ namespace org.parser.marpa
                         {
                             if (valueOption.context.stack.Count != 1)
                             {
-                                throw new Exception($"Internal value stack is {valueOption.context.stack.Count} instead of {1}");
+                                throw new ESLIFException($"Internal value stack is {valueOption.context.stack.Count} instead of {1}");
                             }
                             object value = valueOption.context.stack.Pop();
                             valueInterface.SetResult(value);

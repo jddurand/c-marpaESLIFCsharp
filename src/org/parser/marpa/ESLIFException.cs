@@ -1,6 +1,6 @@
 using System;
 
-namespace org.parser.marpa.dev
+namespace org.parser.marpa
 {
     public class ESLIFException : Exception
     {

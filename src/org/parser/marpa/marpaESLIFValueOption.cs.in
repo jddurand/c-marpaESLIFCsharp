@@ -57,7 +57,7 @@ namespace org.parser.marpa
             marpaESLIFValueOptionContext context = (marpaESLIFValueOptionContext)contextHandle.Target;
             if (context == null)
             {
-                throw new Exception("context is null");
+                throw new ESLIFException("context is null");
             }
 
             ImportExport.Instance.Importer(context.stack, marpaESLIFValueResultp);
@@ -71,11 +71,11 @@ namespace org.parser.marpa
 
             if (marpaESLIFShr.marpaESLIFValue_importb(marpaESLIFValuep, marpaESLIFValueResultp) == 0)
             {
-                throw new Exception("marpaESLIFValue_importb failure");
+                throw new ESLIFException("marpaESLIFValue_importb failure");
             }
             if (stack.Count != 1)
             {
-                throw new Exception($"Internal value stack is {stack.Count} instead of 1");
+                throw new ESLIFException($"Internal value stack is {stack.Count} instead of 1");
             }
 
             return stack.Pop();
@@ -85,11 +85,11 @@ namespace org.parser.marpa
         {
             if (marpaESLIFShr.marpaESLIFValue_importb(marpaESLIFValuep, marpaESLIFValueResultp) == 0)
             {
-                throw new Exception("marpaESLIFValue_importb failure");
+                throw new ESLIFException("marpaESLIFValue_importb failure");
             }
             if (stack.Count != 1)
             {
-                throw new Exception($"Internal value stack is {stack.Count} instead of 1");
+                throw new ESLIFException($"Internal value stack is {stack.Count} instead of 1");
             }
 
             return stack.Pop();
@@ -101,7 +101,7 @@ namespace org.parser.marpa
             marpaESLIFValueOptionContext context = (marpaESLIFValueOptionContext)contextHandle.Target;
             if (context == null)
             {
-                throw new Exception("context is null");
+                throw new ESLIFException("context is null");
             }
 
             List<object> args;
@@ -133,13 +133,13 @@ namespace org.parser.marpa
             marpaESLIFValueOptionContext context = (marpaESLIFValueOptionContext)contextHandle.Target;
             if (context == null)
             {
-                throw new Exception("context is null");
+                throw new ESLIFException("context is null");
             }
 
             string action = Marshal.PtrToStringAnsi(actions);
             if (!context.valueInterface.Actions().TryGetValue(action, out context.action))
             {
-                throw new Exception($"Unimplemented action {action}");
+                throw new ESLIFException($"Unimplemented action {action}");
             }
 
         }
@@ -156,7 +156,7 @@ namespace org.parser.marpa
             marpaESLIFValueOptionContext context = (marpaESLIFValueOptionContext)contextHandle.Target;
             if (context == null)
             {
-                throw new Exception("context is null");
+                throw new ESLIFException("context is null");
             }
 
             List<object> args = new List<object> { GetObject(context.stack, marpaESLIFValuep, marpaESLIFValueResultp) };

@@ -63,7 +63,7 @@ namespace org.parser.marpa
             marpaESLIFRecognizerOptionContext context = (marpaESLIFRecognizerOptionContext)contextHandle.Target;
             if (context == null)
             {
-                throw new Exception("context is null");
+                throw new ESLIFException("context is null");
             }
 
             ImportExport.Instance.Importer(context.stack, marpaESLIFValueResultp);
@@ -77,13 +77,13 @@ namespace org.parser.marpa
             marpaESLIFRecognizerOptionContext context = (marpaESLIFRecognizerOptionContext)contextHandle.Target;
             if (context == null)
             {
-                throw new Exception("context is null");
+                throw new ESLIFException("context is null");
             }
 
             string action = Marshal.PtrToStringAnsi(actions);
             if (!context.recognizerInterface.Actions().TryGetValue(action, out context.action))
             {
-                throw new Exception($"Unimplemented action {action}");
+                throw new ESLIFException($"Unimplemented action {action}");
             }
         }
 
@@ -154,7 +154,7 @@ namespace org.parser.marpa
             marpaESLIFRecognizerOptionContext context = (marpaESLIFRecognizerOptionContext)contextHandle.Target;
             if (context== null)
             {
-                throw new Exception("context is null");
+                throw new ESLIFException("context is null");
             }
 
             ESLIFRecognizerInterface recognizerInterface = context.recognizerInterface;

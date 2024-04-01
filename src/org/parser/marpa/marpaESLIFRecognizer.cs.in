@@ -21,7 +21,7 @@ namespace org.parser.marpa
             this.marpaESLIFRecognizerp = marpaESLIFShr.marpaESLIFRecognizer_newp(this.marpaESLIFGrammar.marpaESLIFGrammarp, this.marpaESLIFRecognizerOption != null ? this.marpaESLIFRecognizerOption.marpaESLIFRecognizerOptionp: IntPtr.Zero);
             if (this.marpaESLIFRecognizerp == IntPtr.Zero)
             {
-                throw new Exception("marpaESLIFRecognizer_newp failure");
+                throw new ESLIFException("marpaESLIFRecognizer_newp failure");
             }
         }
 
@@ -30,7 +30,7 @@ namespace org.parser.marpa
             this.marpaESLIFRecognizerp = marpaESLIFShr.marpaESLIFRecognizer_newFromp(this.marpaESLIFGrammar.marpaESLIFGrammarp, marpaESLIFRecognizerFrom.marpaESLIFRecognizerp);
             if (this.marpaESLIFRecognizerp == IntPtr.Zero)
             {
-                throw new Exception("marpaESLIFRecognizer_newFromp failure");
+                throw new ESLIFException("marpaESLIFRecognizer_newFromp failure");
             }
         }
 
@@ -38,7 +38,7 @@ namespace org.parser.marpa
         {
             if (marpaESLIFShr.marpaESLIFRecognizer_set_exhausted_flagb(this.marpaESLIFRecognizerp, (@C2CSHARP_TYPE_SHORT@) (onOff ? 1 : 0)) == 0)
             {
-                throw new Exception("marpaESLIFRecognizer_set_exhausted_flagb failure");
+                throw new ESLIFException("marpaESLIFRecognizer_set_exhausted_flagb failure");
             }
         }
 
@@ -48,7 +48,7 @@ namespace org.parser.marpa
 
             if (marpaESLIFShr.marpaESLIFRecognizer_isExhaustedb(this.marpaESLIFRecognizerp, ref isExhaustedb) == 0)
             {
-                throw new Exception("marpaESLIFRecognizer_isExhaustedb failure");
+                throw new ESLIFException("marpaESLIFRecognizer_isExhaustedb failure");
             }
 
             return isExhaustedb != 0;
@@ -60,7 +60,7 @@ namespace org.parser.marpa
 
             if (marpaESLIFShr.marpaESLIFRecognizer_isCanContinueb(this.marpaESLIFRecognizerp, ref isCanContinueb) == 0)
             {
-                throw new Exception("marpaESLIFRecognizer_isCanContinueb failure");
+                throw new ESLIFException("marpaESLIFRecognizer_isCanContinueb failure");
             }
 
             return isCanContinueb != 0;
@@ -70,7 +70,7 @@ namespace org.parser.marpa
         {
             if (marpaESLIFShr.marpaESLIFRecognizer_shareb(this.marpaESLIFRecognizerp, marpaESLIFRecognizerShared.marpaESLIFRecognizerp) == 0)
             {
-                throw new Exception("marpaESLIFRecognizer_shareb failure");
+                throw new ESLIFException("marpaESLIFRecognizer_shareb failure");
             }
         }
 
@@ -78,7 +78,7 @@ namespace org.parser.marpa
         {
             if (marpaESLIFShr.marpaESLIFRecognizer_shareb(this.marpaESLIFRecognizerp, IntPtr.Zero) == 0)
             {
-                throw new Exception("marpaESLIFRecognizer_shareb failure");
+                throw new ESLIFException("marpaESLIFRecognizer_shareb failure");
             }
         }
 
@@ -86,7 +86,7 @@ namespace org.parser.marpa
         {
             if (marpaESLIFShr.marpaESLIFRecognizer_peekb(this.marpaESLIFRecognizerp, marpaESLIFRecognizerPeeked.marpaESLIFRecognizerp) == 0)
             {
-                throw new Exception("marpaESLIFRecognizer_peekb failure");
+                throw new ESLIFException("marpaESLIFRecognizer_peekb failure");
             }
         }
 
@@ -94,7 +94,7 @@ namespace org.parser.marpa
         {
             if (marpaESLIFShr.marpaESLIFRecognizer_peekb(this.marpaESLIFRecognizerp, IntPtr.Zero) == 0)
             {
-                throw new Exception("marpaESLIFRecognizer_peekb failure");
+                throw new ESLIFException("marpaESLIFRecognizer_peekb failure");
             }
         }
 
@@ -178,6 +178,45 @@ namespace org.parser.marpa
             }
 
             return output;
+        }
+
+        public bool TryName(string name)
+        {
+            IntPtr names = Marshal.StringToHGlobalAnsi(name);
+            @C2CSHARP_TYPE_SHORT@ matchb = 0;
+
+            if (marpaESLIFShr.marpaESLIFRecognizer_name_tryb(this.marpaESLIFRecognizerp, names, ref matchb) == 0)
+            {
+                throw new ESLIFException("marpaESLIFRecognizer_name_tryb failure");
+            }
+
+            Marshal.FreeHGlobal(names);
+
+            return matchb != 0;
+        }
+
+        public int Discard()
+        {
+            @C2CSHARP_TYPE_SIZE_T@ discardl = 0;
+
+            if (marpaESLIFShr.marpaESLIFRecognizer_discardb(this.marpaESLIFRecognizerp, ref discardl) == 0)
+            {
+                throw new ESLIFException("marpaESLIFRecognizer_discardb failure");
+            }
+
+            return (int) discardl;
+        }
+
+        public bool TryDiscard()
+        {
+            @C2CSHARP_TYPE_SHORT@ matchb = 0;
+
+            if (marpaESLIFShr.marpaESLIFRecognizer_discard_tryb(this.marpaESLIFRecognizerp, ref matchb) == 0)
+            {
+                throw new ESLIFException("marpaESLIFRecognizer_discard_tryb failure");
+            }
+
+            return matchb != 0;
         }
 
         protected virtual void Dispose(bool disposing)

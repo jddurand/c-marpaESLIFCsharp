@@ -466,7 +466,7 @@ namespace org.parser.marpa
             // We support only the PTR type
             if (marpaESLIFValueResultFlat_t.type != marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_PTR)
             {
-                throw new Exception($"Unsupported type {marpaESLIFValueResultFlat_t.type}");
+                throw new ESLIFException($"Unsupported type {marpaESLIFValueResultFlat_t.type}");
             }
 
             // If called on a decimal, use the R modifier to loose as little as possible
@@ -640,7 +640,7 @@ namespace org.parser.marpa
                     break;
 #endif
                 default:
-                    throw new Exception($"Unsupported value result type {(int)marpaESLIFValueResultFlat_t.type}");
+                    throw new ESLIFException($"Unsupported value result type {(int)marpaESLIFValueResultFlat_t.type}");
             }
         }
 

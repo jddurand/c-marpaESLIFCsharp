@@ -93,5 +93,21 @@ namespace org.parser.marpa
         {
             return this.marpaESLIFRecognizer.AlternativeRead(name, value, length, grammarLength);
         }
+
+        public bool TryName(string name)
+        {
+            return this.marpaESLIFRecognizer.TryName(name);
+        }
+
+        public int Discard()
+        {
+            return this.marpaESLIFRecognizer.Discard();
+        }
+
+        public bool TryDiscard(string name)
+        {
+            return this.marpaESLIFRecognizer.TryDiscard();
+        }
+
     }
 }

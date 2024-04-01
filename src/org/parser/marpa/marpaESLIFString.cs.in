@@ -53,7 +53,7 @@ namespace org.parser.marpa
                 return Encoding.UTF32.GetString(bytes);
             }
 
-            throw new Exception($"Unsupported encoding {encodingAscii}");
+            throw new ArgumentException($"Unsupported encoding {encodingAscii}");
         }
 
         public static string marpaESLIFStringPtrToString(IntPtr marpaESLIFStringPtr)
