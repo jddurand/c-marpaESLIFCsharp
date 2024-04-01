@@ -157,6 +157,29 @@ namespace org.parser.marpa
             return output;
         }
 
+        public bool Resume(int deltaLengthl)
+        {
+            @C2CSHARP_TYPE_SHORT@ continuebp = 0;
+            @C2CSHARP_TYPE_SHORT@ exhaustedbp = 0;
+
+            return marpaESLIFShr.marpaESLIFRecognizer_resumeb(this.marpaESLIFRecognizerp, (@C2CSHARP_TYPE_SIZE_T@) deltaLengthl, ref continuebp, ref exhaustedbp) != 0;
+        }
+
+        public bool Resume(int deltaLengthl, ref bool isCanContinue, ref bool isExhausted)
+        {
+            @C2CSHARP_TYPE_SHORT@ continuebp = 0;
+            @C2CSHARP_TYPE_SHORT@ exhaustedbp = 0;
+
+            bool output = marpaESLIFShr.marpaESLIFRecognizer_resumeb(this.marpaESLIFRecognizerp, (@C2CSHARP_TYPE_SIZE_T@) deltaLengthl, ref continuebp, ref exhaustedbp) != 0;
+            if (output)
+            {
+                isCanContinue = continuebp != 0;
+                isExhausted = exhaustedbp != 0;
+            }
+
+            return output;
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)

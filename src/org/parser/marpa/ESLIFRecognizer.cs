@@ -69,6 +69,16 @@ namespace org.parser.marpa
             return this.marpaESLIFRecognizer.Scan(initialEventsb, ref isCanContinue, ref isExhausted);
         }
 
+        public bool Resume(int deltaLengthl)
+        {
+            return this.marpaESLIFRecognizer.Resume(deltaLengthl);
+        }
+
+        public bool Resume(int deltaLengthl, ref bool isCanContinue, ref bool isExhausted)
+        {
+            return this.marpaESLIFRecognizer.Resume(deltaLengthl, ref isCanContinue, ref isExhausted);
+        }
+
         public bool Alternative(string name, object value, int grammarLength = 1)
         {
             return this.marpaESLIFRecognizer.Alternative(name, value, grammarLength);
