@@ -55,6 +55,7 @@ extern "C" {
   marpaESLIF_wrapper_EXPORT marpaESLIFValueResult_t     *marpaESLIFValueResultFlatConvertp(marpaESLIFValueResultFlat_t *marpaESLIFValueResultFlatp);
   marpaESLIF_wrapper_EXPORT marpaESLIFActionFlat_t      *marpaESLIFActionConvertp(marpaESLIFAction_t *marpaESLIFActionp);
   marpaESLIF_wrapper_EXPORT marpaESLIFAction_t          *marpaESLIFActionFlatConvertp(marpaESLIFActionFlat_t *marpaESLIFActionFlatp);
+  marpaESLIF_wrapper_EXPORT marpaESLIFAlternative_t     *marpaESLIFAlternativep(char *names, marpaESLIFValueResult_t *marpaESLIFValueResultp, size_t grammarLengthl);
   /* ============================= */
   /* Acces to CLR memory functions */
   /* ============================= */

@@ -161,7 +161,7 @@ digits ::= /[\d]+/                          action => ::ascii
             return "UTF-8";
         }
 
-        public ESLIFRecognizer getESLIFRecognizer()
+        public ESLIFRecognizer GetESLIFRecognizer()
         {
             throw new NotImplementedException();
         }

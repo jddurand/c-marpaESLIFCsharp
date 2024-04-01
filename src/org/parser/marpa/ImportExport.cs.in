@@ -43,7 +43,7 @@ namespace org.parser.marpa
             }
         }
 
-        public void Exporter(IntPtr marpaESLIFValuep, object input, int resulti, IntPtr outputp)
+        public IntPtr Exporter(object input)
         {
             // We maintain in parallel stacks of marpaESLIFValueResult_t and objects
             IntPtr marpaESLIFValueResultp = IntPtr.Zero;
@@ -172,18 +172,7 @@ namespace org.parser.marpa
                 }
             }
 
-            if (resulti >= 0)
-            {
-                if (marpaESLIFShr.marpaESLIFValue_stack_setb(marpaESLIFValuep, resulti, marpaESLIFValueResultp) == 0)
-                {
-                    throw new Exception("marpaESLIFValue_stack_setb failure");
-                }
-            }
-
-            if (outputp != IntPtr.Zero)
-            {
-                outputp = marpaESLIFValueResultp;
-            }
+            return marpaESLIFValueResultp;
         }
 
         private bool ExportExternalPointer(ExternalPointer value, IntPtr marpaESLIFValueResultp)

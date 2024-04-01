@@ -67,6 +67,10 @@ namespace org.parser.marpa
         public static extern IntPtr marpaESLIFActionFlatConvertp(IntPtr marpaESLIFActionFlatp);
 
         [DllImport("marpaESLIF_wrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        // (names, marpaESLIFValueResultp, grammarLengthl) -> marpaESLIFAlternative
+        public static extern IntPtr marpaESLIFAlternativep(IntPtr names, IntPtr marpaESLIFValueResultp, @C2CSHARP_TYPE_SIZE_T@ grammarLengthl);
+
+        [DllImport("marpaESLIF_wrapper.dll", CallingConvention = CallingConvention.Cdecl)]
         // System malloc()
         public static extern IntPtr marpaESLIF_malloc(@C2CSHARP_TYPE_SIZE_T@ sizel);
 

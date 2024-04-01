@@ -1,6 +1,7 @@
 #cmakedefine MARPAESLIF_HAVE_LONG_LONG
 #cmakedefine C2CSHARP_TYPE_INT_IS_INT
 using System;
+using System.Runtime.InteropServices;
 
 namespace org.parser.marpa
 {
@@ -95,6 +96,21 @@ namespace org.parser.marpa
             {
                 throw new Exception("marpaESLIFRecognizer_peekb failure");
             }
+        }
+
+        public bool Alternative(string name, object value, int grammarLength = 1)
+        {
+            IntPtr names = Marshal.StringToHGlobalAnsi(name);
+            IntPtr marpaESLIFValueResultp = ImportExport.Instance.Exporter(value);
+            IntPtr marpaESLIFAlternativep = marpaESLIF_wrapperShr.marpaESLIFAlternativep(names, marpaESLIFValueResultp, (@C2CSHARP_TYPE_SIZE_T@) grammarLength);
+
+            bool output = marpaESLIFShr.marpaESLIFRecognizer_alternativeb(this.marpaESLIFRecognizerp, marpaESLIFAlternativep) != 0;
+
+            marpaESLIF_wrapperShr.marpaESLIF_free(marpaESLIFAlternativep);
+            marpaESLIFShr.marpaESLIFRecognizer_marpaESLIFValueResult_freeb(this.marpaESLIFRecognizerp, marpaESLIFValueResultp, (@C2CSHARP_TYPE_SHORT@) 1);
+            Marshal.FreeHGlobal(names);
+
+            return output;
         }
 
         protected virtual void Dispose(bool disposing)

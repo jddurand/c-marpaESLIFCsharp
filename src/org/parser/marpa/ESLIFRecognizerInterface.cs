@@ -12,6 +12,6 @@ namespace org.parser.marpa
         bool IsWithNewline();
         bool IsWithTrack();
         void SetESLIFRecognizer(ESLIFRecognizer recognizer);
-        ESLIFRecognizer getESLIFRecognizer();
+        ESLIFRecognizer GetESLIFRecognizer();
     }
 }

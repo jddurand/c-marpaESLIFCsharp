@@ -58,5 +58,10 @@ namespace org.parser.marpa
             this.marpaESLIFRecognizer.Unpeek();
             this.eslifRecognizerPeeked = null;
         }
+
+        public bool Alternative(string name, object value, int grammarLength = 1)
+        {
+            return this.marpaESLIFRecognizer.Alternative(name, value, grammarLength);
+        }
     }
 }

@@ -95,9 +95,11 @@ namespace org.parser.marpa
 
             object result = context.action(args);
 
-            ImportExport.Instance.Exporter(marpaESLIFValuep, result, resulti, IntPtr.Zero);
+            IntPtr marpaESLIFValueResultp = ImportExport.Instance.Exporter(result);
+            @C2CSHARP_TYPE_SHORT@ output = marpaESLIFShr.marpaESLIFValue_stack_setb(marpaESLIFValuep, resulti, marpaESLIFValueResultp);
+            marpaESLIFShr.marpaESLIFValue_marpaESLIFValueResult_freeb(marpaESLIFValuep, marpaESLIFValueResultp, (@C2CSHARP_TYPE_SHORT@) 1);
 
-            return 1;
+            return output;
         }
 
         private static marpaESLIFShr.marpaESLIFValueRuleCallback_t RuleActionResolver(IntPtr userDatavp, IntPtr marpaESLIFValuep, IntPtr actions)

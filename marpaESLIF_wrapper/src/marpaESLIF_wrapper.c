@@ -158,6 +158,19 @@ marpaESLIFActionFlat_t *marpaESLIFActionConvertp(marpaESLIFAction_t *marpaESLIFA
   return marpaESLIFActionFlatp;
 }
 
+marpaESLIFAlternative_t *marpaESLIFAlternativep(char *names, marpaESLIFValueResult_t *marpaESLIFValueResultp, size_t grammarLengthl)
+{
+  marpaESLIFAlternative_t *marpaESLIFAlternativep = malloc(sizeof(marpaESLIFAlternative_t));
+
+  if (marpaESLIFAlternativep != NULL) {
+    marpaESLIFAlternativep->names          = names;
+    marpaESLIFAlternativep->value          = *marpaESLIFValueResultp;
+    marpaESLIFAlternativep->grammarLengthl = grammarLengthl;
+  }
+
+  return marpaESLIFAlternativep;
+}
+
 marpaESLIFAction_t *marpaESLIFActionFlatConvertp(marpaESLIFActionFlat_t *marpaESLIFActionFlatp)
 {
   marpaESLIFAction_t *marpaESLIFActionp = malloc(sizeof(marpaESLIFAction_t));

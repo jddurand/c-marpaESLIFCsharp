@@ -10,12 +10,12 @@ namespace org.parser.marpa
     public class marpaESLIFRecognizerOption : IDisposable
     {
         public IntPtr marpaESLIFRecognizerOptionp { get; protected set; }
+        public marpaESLIFRecognizerOptionContext context { get; protected set; }
         private readonly marpaESLIFShr.marpaESLIFRecognizerOption_t marpaESLIFRecognizerOption_t;
         private readonly ESLIFRecognizerInterface recognizerInterface;
-        private readonly GCHandle recognizerInterfaceHandle;
+        private readonly GCHandle contextHandle;
         private readonly IntPtr userDatavp;
         private bool disposedValue;
-        private marpaESLIFRecognizerOptionContext context;
 
         public class marpaESLIFRecognizerOptionContext
         {
@@ -31,8 +31,10 @@ namespace org.parser.marpa
         public marpaESLIFRecognizerOption(ESLIFRecognizerInterface recognizerInterface)
         {
             this.recognizerInterface = recognizerInterface ?? throw new ArgumentNullException(nameof(recognizerInterface));
-            this.recognizerInterfaceHandle = GCHandle.Alloc(recognizerInterface, GCHandleType.Normal);
-            this.userDatavp = GCHandle.ToIntPtr(this.recognizerInterfaceHandle);
+
+            this.context = new marpaESLIFRecognizerOptionContext(recognizerInterface);
+            this.contextHandle = GCHandle.Alloc(context, GCHandleType.Normal);
+            this.userDatavp = GCHandle.ToIntPtr(this.contextHandle);
 
             this.marpaESLIFRecognizerOption_t = new marpaESLIFShr.marpaESLIFRecognizerOption_t();
             this.marpaESLIFRecognizerOption_t.userDatavp = userDatavp;
@@ -155,7 +157,7 @@ namespace org.parser.marpa
         {
             if (this.userDatavp != IntPtr.Zero)
             {
-                this.recognizerInterfaceHandle.Free();
+                this.contextHandle.Free();
             }
 
             if (this.marpaESLIFRecognizerOptionp != IntPtr.Zero)
