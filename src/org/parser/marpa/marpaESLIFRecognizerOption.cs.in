@@ -21,6 +21,7 @@ namespace org.parser.marpa
         {
             public ESLIFRecognizerInterface recognizerInterface;
             public Stack<object> stack = new Stack<object>();
+            public Func<List<object>, object> action = null;
 
             public marpaESLIFRecognizerOptionContext(ESLIFRecognizerInterface recognizerInterface)
             {
@@ -70,24 +71,64 @@ namespace org.parser.marpa
             return 1;
         }
 
+        private static void CheckActionExists(IntPtr userDatavp, IntPtr marpaESLIFRecognizerp, IntPtr actions)
+        {
+            GCHandle contextHandle = GCHandle.FromIntPtr(userDatavp);
+            marpaESLIFRecognizerOptionContext context = (marpaESLIFRecognizerOptionContext)contextHandle.Target;
+            if (context == null)
+            {
+                throw new Exception("context is null");
+            }
+
+            string action = Marshal.PtrToStringAnsi(actions);
+            if (!context.recognizerInterface.Actions().TryGetValue(action, out context.action))
+            {
+                throw new Exception($"Unimplemented action {action}");
+            }
+        }
+
+        private static @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizerGeneratorCallback(IntPtr userDatavp, IntPtr marpaESLIFRecognizerp, IntPtr contextp, ref IntPtr marpaESLIFValueResultOutp)
+        {
+            return 1;
+        }
+
         private static marpaESLIFShr.marpaESLIFRecognizerGeneratorCallback_t GeneratorActionResolver(IntPtr userDatavp, IntPtr marpaESLIFRecognizerp, IntPtr actions)
         {
-            throw new NotImplementedException();
+            CheckActionExists(userDatavp, marpaESLIFRecognizerp, actions);
+            return marpaESLIFRecognizerGeneratorCallback;
+        }
+
+        private static @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizerRegexCallback(IntPtr userDatavp, IntPtr marpaESLIFRecognizerp, IntPtr marpaESLIFCalloutBlockp, ref IntPtr marpaESLIFValueResultOutp)
+        {
+            return 1;
         }
 
         private static marpaESLIFShr.marpaESLIFRecognizerRegexCallback_t RegexActionResolver(IntPtr userDatavp, IntPtr marpaESLIFRecognizerp, IntPtr actions)
         {
-            throw new NotImplementedException();
+            CheckActionExists(userDatavp, marpaESLIFRecognizerp, actions);
+            return marpaESLIFRecognizerRegexCallback;
+        }
+
+        private static @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizerEventCallback(IntPtr userDatavp, IntPtr marpaESLIFRecognizerp, IntPtr eventArrayp, @C2CSHARP_TYPE_SIZE_T@ eventArrayl, ref marpaESLIFShr.marpaESLIFValueResultBool_t marpaESLIFValueResultBoolp)
+        {
+            return 1;
         }
 
         private static marpaESLIFShr.marpaESLIFRecognizerEventCallback_t EventActionResolver(IntPtr userDatavp, IntPtr marpaESLIFRecognizerp, IntPtr actions)
         {
-            throw new NotImplementedException();
+            CheckActionExists(userDatavp, marpaESLIFRecognizerp, actions);
+            return marpaESLIFRecognizerEventCallback;
+        }
+
+        private static @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizerIfCallback(IntPtr userDatavp, IntPtr marpaESLIFRecognizerp, IntPtr marpaESLIFValueResultp, ref marpaESLIFShr.marpaESLIFValueResultBool_t marpaESLIFValueResultBoolp)
+        {
+            return 1;
         }
 
         private static marpaESLIFShr.marpaESLIFRecognizerIfCallback_t IfActionResolver(IntPtr userDatavp, IntPtr marpaESLIFRecognizerp, IntPtr actions)
         {
-            throw new NotImplementedException();
+            CheckActionExists(userDatavp, marpaESLIFRecognizerp, actions);
+            return marpaESLIFRecognizerIfCallback;
         }
 
         private static void DisposeCallback(IntPtr userDatavp, IntPtr inputcp, @C2CSHARP_TYPE_SIZE_T@ inputl, @C2CSHARP_TYPE_SHORT@ eofb, @C2CSHARP_TYPE_SHORT@ characterStreamb, IntPtr encodings, @C2CSHARP_TYPE_SIZE_T@ encodingl)
@@ -109,13 +150,14 @@ namespace org.parser.marpa
                 throw new ArgumentNullException(nameof(userDatavp));
             }
 
-            GCHandle recognizerInterfaceHandle = GCHandle.FromIntPtr(userDatavp);
-            ESLIFRecognizerInterface recognizerInterface = (ESLIFRecognizerInterface)recognizerInterfaceHandle.Target;
-            if (recognizerInterface == null)
+            GCHandle contextHandle = GCHandle.FromIntPtr(userDatavp);
+            marpaESLIFRecognizerOptionContext context = (marpaESLIFRecognizerOptionContext)contextHandle.Target;
+            if (context== null)
             {
-                throw new Exception("recognizerInterface is null");
+                throw new Exception("context is null");
             }
 
+            ESLIFRecognizerInterface recognizerInterface = context.recognizerInterface;
             if (! recognizerInterface.Read())
             {
                 return 0;

@@ -59,9 +59,29 @@ namespace org.parser.marpa
             this.eslifRecognizerPeeked = null;
         }
 
+        public bool Scan(bool initialEventsb = true)
+        {
+            return this.marpaESLIFRecognizer.Scan(initialEventsb);
+        }
+
+        public bool Scan(bool initialEventsb, ref bool isCanContinue, ref bool isExhausted)
+        {
+            return this.marpaESLIFRecognizer.Scan(initialEventsb, ref isCanContinue, ref isExhausted);
+        }
+
         public bool Alternative(string name, object value, int grammarLength = 1)
         {
             return this.marpaESLIFRecognizer.Alternative(name, value, grammarLength);
+        }
+
+        public bool AlternativeComplete(int length)
+        {
+            return this.marpaESLIFRecognizer.AlternativeComplete(length);
+        }
+
+        public bool AlternativeRead(string name, object value, int length, int grammarLength = 1)
+        {
+            return this.marpaESLIFRecognizer.AlternativeRead(name, value, length, grammarLength);
         }
     }
 }

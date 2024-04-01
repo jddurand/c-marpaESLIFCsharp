@@ -113,6 +113,50 @@ namespace org.parser.marpa
             return output;
         }
 
+        public bool AlternativeComplete(int length)
+        {
+            return marpaESLIFShr.marpaESLIFRecognizer_alternative_completeb(this.marpaESLIFRecognizerp, (@C2CSHARP_TYPE_SIZE_T@) length) != 0;
+        }
+
+        public bool AlternativeRead(string name, object value, int length, int grammarLength)
+        {
+            IntPtr names = Marshal.StringToHGlobalAnsi(name);
+            IntPtr marpaESLIFValueResultp = ImportExport.Instance.Exporter(value);
+            IntPtr marpaESLIFAlternativep = marpaESLIF_wrapperShr.marpaESLIFAlternativep(names, marpaESLIFValueResultp, (@C2CSHARP_TYPE_SIZE_T@) grammarLength);
+
+            bool output = marpaESLIFShr.marpaESLIFRecognizer_alternative_readb(this.marpaESLIFRecognizerp, marpaESLIFAlternativep, (@C2CSHARP_TYPE_SIZE_T@) length) != 0;
+
+            marpaESLIF_wrapperShr.marpaESLIF_free(marpaESLIFAlternativep);
+            marpaESLIFShr.marpaESLIFRecognizer_marpaESLIFValueResult_freeb(this.marpaESLIFRecognizerp, marpaESLIFValueResultp, (@C2CSHARP_TYPE_SHORT@) 1);
+            Marshal.FreeHGlobal(names);
+
+            return output;
+        }
+
+        public bool Scan(bool initialEventsb)
+        {
+            @C2CSHARP_TYPE_SHORT@ continuebp = 0;
+            @C2CSHARP_TYPE_SHORT@ exhaustedbp = 0;
+
+            return marpaESLIFShr.marpaESLIFRecognizer_scanb(this.marpaESLIFRecognizerp, (@C2CSHARP_TYPE_SHORT@) (initialEventsb ? 1 : 0), ref continuebp, ref exhaustedbp) != 0;
+        }
+
+
+        public bool Scan(bool initialEventsb, ref bool isCanContinue, ref bool isExhausted)
+        {
+            @C2CSHARP_TYPE_SHORT@ continuebp = 0;
+            @C2CSHARP_TYPE_SHORT@ exhaustedbp = 0;
+
+            bool output = marpaESLIFShr.marpaESLIFRecognizer_scanb(this.marpaESLIFRecognizerp, (@C2CSHARP_TYPE_SHORT@) (initialEventsb ? 1 : 0), ref continuebp, ref exhaustedbp) != 0;
+            if (output)
+            {
+                isCanContinue = continuebp != 0;
+                isExhausted = exhaustedbp != 0;
+            }
+
+            return output;
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)

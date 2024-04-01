@@ -151,6 +151,11 @@ digits ::= /[\d]+/                          action => ::ascii
             this.input = input ?? throw new ArgumentNullException(nameof(input));
         }
 
+        public Dictionary<string, Func<List<object>, object>> Actions()
+        {
+            return new Dictionary<string, Func<List<object>, object>>();
+        }
+
         public byte[] Data()
         {
             return System.Text.Encoding.UTF8.GetBytes(this.input);

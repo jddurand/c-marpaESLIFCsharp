@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System;
+
 namespace org.parser.marpa
 {
     public interface ESLIFRecognizerInterface
@@ -13,5 +16,6 @@ namespace org.parser.marpa
         bool IsWithTrack();
         void SetESLIFRecognizer(ESLIFRecognizer recognizer);
         ESLIFRecognizer GetESLIFRecognizer();
+        Dictionary<string, Func<List<object>, object>> Actions();
     }
 }

@@ -65,6 +65,36 @@ namespace org.parser.marpa
             return 1;
         }
 
+        private static object GetObject(Stack<object> stack, IntPtr marpaESLIFValuep, int argi)
+        {
+            IntPtr marpaESLIFValueResultp = marpaESLIFShr.marpaESLIFValue_stack_getp(marpaESLIFValuep, argi);
+
+            if (marpaESLIFShr.marpaESLIFValue_importb(marpaESLIFValuep, marpaESLIFValueResultp) == 0)
+            {
+                throw new Exception("marpaESLIFValue_importb failure");
+            }
+            if (stack.Count != 1)
+            {
+                throw new Exception($"Internal value stack is {stack.Count} instead of 1");
+            }
+
+            return stack.Pop();
+        }
+
+        private static object GetObject(Stack<object> stack, IntPtr marpaESLIFValuep, IntPtr marpaESLIFValueResultp)
+        {
+            if (marpaESLIFShr.marpaESLIFValue_importb(marpaESLIFValuep, marpaESLIFValueResultp) == 0)
+            {
+                throw new Exception("marpaESLIFValue_importb failure");
+            }
+            if (stack.Count != 1)
+            {
+                throw new Exception($"Internal value stack is {stack.Count} instead of 1");
+            }
+
+            return stack.Pop();
+        }
+
         private static @C2CSHARP_TYPE_SHORT@ RuleCallback(IntPtr userDatavp, IntPtr marpaESLIFValuep, @C2CSHARP_TYPE_INT@ arg0i, @C2CSHARP_TYPE_INT@ argni, @C2CSHARP_TYPE_INT@ resulti, @C2CSHARP_TYPE_SHORT@ nullableb)
         {
             GCHandle contextHandle = GCHandle.FromIntPtr(userDatavp);
@@ -82,27 +112,22 @@ namespace org.parser.marpa
             else
             {
                 args = new List<object>();
-                for (@C2CSHARP_TYPE_INT@ i = arg0i; i <= argni; i++)
+                for (@C2CSHARP_TYPE_INT@ argi = arg0i; argi <= argni; argi++)
                 {
-                    ImportExport.Instance.Importer(context.stack, marpaESLIFShr.marpaESLIFValue_stack_getp(marpaESLIFValuep, i));
-                    if (context.stack.Count != 1)
-                    {
-                        throw new Exception($"Internal value stack is {context.stack.Count} instead of 1");
-                    }
-                    args.Add(context.stack.Pop());
+                    args.Add(GetObject(context.stack, marpaESLIFValuep, argi));
                 }
             }
 
-            object result = context.action(args);
+            object actionResult = context.action(args);
 
-            IntPtr marpaESLIFValueResultp = ImportExport.Instance.Exporter(result);
+            IntPtr marpaESLIFValueResultp = ImportExport.Instance.Exporter(actionResult);
             @C2CSHARP_TYPE_SHORT@ output = marpaESLIFShr.marpaESLIFValue_stack_setb(marpaESLIFValuep, resulti, marpaESLIFValueResultp);
             marpaESLIFShr.marpaESLIFValue_marpaESLIFValueResult_freeb(marpaESLIFValuep, marpaESLIFValueResultp, (@C2CSHARP_TYPE_SHORT@) 1);
 
             return output;
         }
 
-        private static marpaESLIFShr.marpaESLIFValueRuleCallback_t RuleActionResolver(IntPtr userDatavp, IntPtr marpaESLIFValuep, IntPtr actions)
+        private static void CheckActionExists(IntPtr userDatavp, IntPtr marpaESLIFValuep, IntPtr actions)
         {
             GCHandle contextHandle = GCHandle.FromIntPtr(userDatavp);
             marpaESLIFValueOptionContext context = (marpaESLIFValueOptionContext)contextHandle.Target;
@@ -117,16 +142,37 @@ namespace org.parser.marpa
                 throw new Exception($"Unimplemented action {action}");
             }
 
+        }
+
+        private static marpaESLIFShr.marpaESLIFValueRuleCallback_t RuleActionResolver(IntPtr userDatavp, IntPtr marpaESLIFValuep, IntPtr actions)
+        {
+            CheckActionExists(userDatavp, marpaESLIFValuep, actions);
             return RuleCallback;
         }
 
-        private static @C2CSHARP_TYPE_SHORT@ SymbolCallback(IntPtr userDatavp, IntPtr marpaESLIFValuep, IntPtr marpaESLIFValueResult, @C2CSHARP_TYPE_INT@ resulti)
+        private static @C2CSHARP_TYPE_SHORT@ SymbolCallback(IntPtr userDatavp, IntPtr marpaESLIFValuep, IntPtr marpaESLIFValueResultp, @C2CSHARP_TYPE_INT@ resulti)
         {
-            return 0;
+            GCHandle contextHandle = GCHandle.FromIntPtr(userDatavp);
+            marpaESLIFValueOptionContext context = (marpaESLIFValueOptionContext)contextHandle.Target;
+            if (context == null)
+            {
+                throw new Exception("context is null");
+            }
+
+            List<object> args = new List<object> { GetObject(context.stack, marpaESLIFValuep, marpaESLIFValueResultp) };
+
+            object actionResult = context.action(args);
+
+            marpaESLIFValueResultp = ImportExport.Instance.Exporter(actionResult);
+            @C2CSHARP_TYPE_SHORT@ output = marpaESLIFShr.marpaESLIFValue_stack_setb(marpaESLIFValuep, resulti, marpaESLIFValueResultp);
+            marpaESLIFShr.marpaESLIFValue_marpaESLIFValueResult_freeb(marpaESLIFValuep, marpaESLIFValueResultp, (@C2CSHARP_TYPE_SHORT@) 1);
+
+            return output;
         }
 
         private static marpaESLIFShr.marpaESLIFValueSymbolCallback_t SymbolActionResolver(IntPtr userDatavp, IntPtr marpaESLIFValuep, IntPtr actions)
         {
+            CheckActionExists(userDatavp, marpaESLIFValuep, actions);
             return SymbolCallback;
         }
 

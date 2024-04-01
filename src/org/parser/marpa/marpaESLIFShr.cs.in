@@ -148,7 +148,7 @@ namespace org.parser.marpa
         public delegate @C2CSHARP_TYPE_SHORT@ marpaESLIFValueRuleCallback_t(IntPtr userDatavp, IntPtr marpaESLIFValuep, @C2CSHARP_TYPE_INT@ arg0i, @C2CSHARP_TYPE_INT@ argni, @C2CSHARP_TYPE_INT@ resulti, @C2CSHARP_TYPE_SHORT@ nullableb);
     
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate @C2CSHARP_TYPE_SHORT@ marpaESLIFValueSymbolCallback_t(IntPtr userDatavp, IntPtr marpaESLIFValuep, IntPtr marpaESLIFValueResult, @C2CSHARP_TYPE_INT@ resulti);
+        public delegate @C2CSHARP_TYPE_SHORT@ marpaESLIFValueSymbolCallback_t(IntPtr userDatavp, IntPtr marpaESLIFValuep, IntPtr marpaESLIFValueResultp, @C2CSHARP_TYPE_INT@ resulti);
     
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate marpaESLIFValueRuleCallback_t marpaESLIFValueRuleActionResolver_t(IntPtr userDatavp, IntPtr marpaESLIFValuep, IntPtr actions);
