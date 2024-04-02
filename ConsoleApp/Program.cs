@@ -138,6 +138,10 @@ digits ::= /[\d]+/                          action => ::ascii
                 logger.LogInformation($"Parse of {input} at level 0 gives: {valueInterface.result}, isExhausted={isExhausted}");
             }
 
+            ESLIFRecognizer eslifRecognizer = new ESLIFRecognizer(grammar, recognizerInterface);
+            logger.LogInformation($"Exected: {string.Join(", ", eslifRecognizer.Expected())}");
+
+
             // Give some time to the logger ;)
             Console.ReadLine();
         }

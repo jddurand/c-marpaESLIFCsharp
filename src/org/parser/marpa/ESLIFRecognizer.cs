@@ -109,5 +109,9 @@ namespace org.parser.marpa
             return this.marpaESLIFRecognizer.TryDiscard();
         }
 
+        public string[] Expected()
+        {
+            return this.marpaESLIFRecognizer.Expected();
+        }
     }
 }
