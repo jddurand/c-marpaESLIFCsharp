@@ -139,7 +139,7 @@ digits ::= /[\d]+/                          action => ::ascii
             }
 
             ESLIFRecognizer eslifRecognizer = new ESLIFRecognizer(grammar, recognizerInterface);
-            logger.LogInformation($"Exected: {string.Join(", ", eslifRecognizer.Expected())}");
+            logger.LogInformation($"Expected: {string.Join(", ", eslifRecognizer.Expected())}");
 
 
             // Give some time to the logger ;)
