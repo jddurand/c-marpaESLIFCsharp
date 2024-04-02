@@ -229,6 +229,11 @@ namespace org.parser.marpa
                 throw new ESLIFException("marpaESLIFRecognizer_name_expectedb failure");
             }
 
+            if (nNamel <= 0)
+            {
+                return new string[0];
+            }
+
             IntPtr[] ptrs = new IntPtr[(int) nNamel];
             Marshal.Copy(namesArrayp, ptrs, 0, (int)nNamel);
 
