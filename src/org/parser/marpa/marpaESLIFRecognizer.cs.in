@@ -354,37 +354,37 @@ namespace org.parser.marpa
 
             if ((eventType & ESLIFEventType.COMPLETED) == ESLIFEventType.COMPLETED)
             {
-                eventSeti &= marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_COMPLETED;
+                eventSeti |= marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_COMPLETED;
             }
 
             if ((eventType & ESLIFEventType.NULLED) == ESLIFEventType.NULLED)
             {
-                eventSeti &= marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_NULLED;
+                eventSeti |= marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_NULLED;
             }
 
             if ((eventType & ESLIFEventType.PREDICTED) == ESLIFEventType.PREDICTED)
             {
-                eventSeti &= marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_PREDICTED;
+                eventSeti |= marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_PREDICTED;
             }
 
             if ((eventType & ESLIFEventType.BEFORE) == ESLIFEventType.BEFORE)
             {
-                eventSeti &= marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_BEFORE;
+                eventSeti |= marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_BEFORE;
             }
 
             if ((eventType & ESLIFEventType.AFTER) == ESLIFEventType.AFTER)
             {
-                eventSeti &= marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_AFTER;
+                eventSeti |= marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_AFTER;
             }
 
             if ((eventType & ESLIFEventType.EXHAUSTED) == ESLIFEventType.EXHAUSTED)
             {
-                eventSeti &= marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_EXHAUSTED;
+                eventSeti |= marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_EXHAUSTED;
             }
 
             if ((eventType & ESLIFEventType.DISCARD) == ESLIFEventType.DISCARD)
             {
-                eventSeti &= marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_DISCARD;
+                eventSeti |= marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_DISCARD;
             }
 
             if (marpaESLIFShr.marpaESLIFRecognizer_event_onoffb(this.marpaESLIFRecognizerp, symbols, eventSeti, onoffb) == 0)
@@ -399,6 +399,67 @@ namespace org.parser.marpa
 
             Marshal.FreeHGlobal(symbols);
             return output;
+        }
+
+        public ESLIFEvent[] Events()
+        {
+            @C2CSHARP_TYPE_SIZE_T@ eventArrayl = 0;
+            IntPtr eventArrayp = IntPtr.Zero;
+
+            if (marpaESLIFShr.marpaESLIFRecognizer_eventb(this.marpaESLIFRecognizerp, ref eventArrayl, ref eventArrayp) == 0)
+            {
+                // throw new ESLIFException("marpaESLIFRecognizer_eventb failure");
+                return null;
+            }
+
+            if (eventArrayl <= 0 || eventArrayp == IntPtr.Zero)
+            {
+                return new ESLIFEvent[0];
+            }
+
+            ESLIFEvent[] events = new ESLIFEvent[(int) eventArrayl];
+            for (int i = 0; i < events.Length; i++)
+            {
+                marpaESLIFShr.marpaESLIFEvent_t marpaESLIFEvent = (marpaESLIFShr.marpaESLIFEvent_t)Marshal.PtrToStructure(eventArrayp, typeof(marpaESLIFShr.marpaESLIFEvent_t));
+
+                ESLIFEventType eventType = ESLIFEventType.NONE;
+                if ((marpaESLIFEvent.type & marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_COMPLETED) == marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_COMPLETED)
+                {
+                    eventType |= ESLIFEventType.COMPLETED;
+                }
+                if ((marpaESLIFEvent.type & marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_NULLED) == marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_NULLED)
+                {
+                    eventType |= ESLIFEventType.NULLED;
+                }
+                if ((marpaESLIFEvent.type & marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_PREDICTED) == marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_PREDICTED)
+                {
+                    eventType |= ESLIFEventType.PREDICTED;
+                }
+                if ((marpaESLIFEvent.type & marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_BEFORE) == marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_BEFORE)
+                {
+                    eventType |= ESLIFEventType.BEFORE;
+                }
+                if ((marpaESLIFEvent.type & marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_AFTER) == marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_AFTER)
+                {
+                    eventType |= ESLIFEventType.AFTER;
+                }
+                if ((marpaESLIFEvent.type & marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_EXHAUSTED) == marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_EXHAUSTED)
+                {
+                    eventType |= ESLIFEventType.EXHAUSTED;
+                }
+                if ((marpaESLIFEvent.type & marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_DISCARD) == marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_DISCARD)
+                {
+                    eventType |= ESLIFEventType.DISCARD;
+                }
+
+                string symbol = Marshal.PtrToStringAnsi(marpaESLIFEvent.symbols);
+                string names = marpaESLIFEvent.events != IntPtr.Zero ? Marshal.PtrToStringAnsi(marpaESLIFEvent.events) : null;
+
+                events[i] = new ESLIFEvent(eventType, symbol, names);
+                eventArrayp += Marshal.SizeOf(marpaESLIFEvent);
+            }
+
+            return events;
         }
 
         protected virtual void Dispose(bool disposing)

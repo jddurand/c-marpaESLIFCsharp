@@ -114,9 +114,9 @@ namespace marpaESLIFShrTest
             grammar = ESLIFGrammar.Instance(eslif,
                 @"
 :discard ::= /[\s]+/
-:symbol ::= ""("" name => LPAREN
-:symbol ::= "")"" name => RPAREN
-:symbol ::= /[\d]+/ name => DIGITS
+:symbol ::= ""("" name => LPAREN pause => before event => ^LPAREN
+:symbol ::= "")"" name => RPAREN pause => before event => ^RPAREN
+:symbol ::= /[\d]+/ name => DIGITS pause => before event => ^DIGITS
 exp ::=
     digits                                  action => digits # ::luac->function(input) return tonumber(input) end
     | $LPAREN  exp $RPAREN   assoc => group action => exp # ::luac->function(l,e,r) return e               end
@@ -149,6 +149,11 @@ digits ::= $DIGITS                          action => ::ascii
             logger.LogInformation($"IsEof: {eslifRecognizer.IsEof()}");
             logger.LogInformation($"IsStartComplete: {eslifRecognizer.IsStartComplete()}");
             logger.LogInformation($"EventOnOff on exp: {eslifRecognizer.EventOnOff("exp", ESLIFEventType.NONE, true)}");
+            eslifRecognizer.Scan();
+            foreach (ESLIFEvent e in eslifRecognizer.Events())
+            {
+                logger.LogInformation($"Event: {e}");
+            }
 
             // Give some time to the logger ;)
             Console.ReadLine();

@@ -103,7 +103,7 @@ namespace org.parser.marpa
         }
     
         [Flags]
-        public enum marpaESLIFEventType_t
+        public enum marpaESLIFEventType_t : @C2CSHARP_TYPE_ENUM@
         {
             MARPAESLIF_EVENTTYPE_NONE = 0x00,
             MARPAESLIF_EVENTTYPE_COMPLETED = 0x01, /* Grammar event */
@@ -123,7 +123,7 @@ namespace org.parser.marpa
             [FieldOffset(@OFFSETOF_marpaESLIFEvent_t_events@)] public IntPtr events;  /* Event name, always NULL if exhaustion eent */
         }
     
-        public enum marpaESLIFValueType_t
+        public enum marpaESLIFValueType_t : @C2CSHARP_TYPE_ENUM@
         {
             MARPAESLIF_VALUE_TYPE_UNDEF = 0,
             MARPAESLIF_VALUE_TYPE_CHAR,
@@ -666,7 +666,7 @@ namespace org.parser.marpa
         public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_event_onoffb(IntPtr marpaESLIFRecognizerp, IntPtr symbols, marpaESLIFEventType_t eventSeti, @C2CSHARP_TYPE_SHORT@ onoffb);
     
         [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_eventb(IntPtr marpaESLIFRecognizerp, ref @C2CSHARP_TYPE_SIZE_T@ eventArraylp, IntPtr eventArraypp);
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_eventb(IntPtr marpaESLIFRecognizerp, ref @C2CSHARP_TYPE_SIZE_T@ eventArraylp, ref IntPtr eventArraypp);
     
         [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_progressLogb(IntPtr marpaESLIFRecognizerp, @C2CSHARP_TYPE_INT@ starti, @C2CSHARP_TYPE_INT@ endi, genericLoggerShr.genericLoggerLevel_t logleveli);
