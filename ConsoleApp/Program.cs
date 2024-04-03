@@ -114,15 +114,18 @@ namespace marpaESLIFShrTest
             grammar = ESLIFGrammar.Instance(eslif,
                 @"
 :discard ::= /[\s]+/
+:symbol ::= ""("" name => LPAREN
+:symbol ::= "")"" name => RPAREN
+:symbol ::= /[\d]+/ name => DIGITS
 exp ::=
     digits                                  action => digits # ::luac->function(input) return tonumber(input) end
-    |    ""(""  exp "")""    assoc => group action => exp # ::luac->function(l,e,r) return e               end
+    | $LPAREN  exp $RPAREN   assoc => group action => exp # ::luac->function(l,e,r) return e               end
    || exp (- '**' -) exp     assoc => right action => pow # ::luac->function(x,y)   return x^y             end
    || exp (-  '*' -) exp                    action => mul # ::luac->function(x,y)   return x*y             end
     | exp (-  '/' -) exp                    action => div # ::luac->function(x,y)   return x/y             end
    || exp (-  '+' -) exp                    action => plus # ::luac->function(x,y)   return x+y             end
     | exp (-  '-' -) exp                    action => minus # ::luac->function(x,y)   return x-y             end
-digits ::= /[\d]+/                          action => ::ascii
+digits ::= $DIGITS                          action => ::ascii
 "
             );
             bool isExhausted = false;
@@ -139,8 +142,12 @@ digits ::= /[\d]+/                          action => ::ascii
             }
 
             ESLIFRecognizer eslifRecognizer = new ESLIFRecognizer(grammar, recognizerInterface);
-            logger.LogInformation($"Expected: {string.Join(", ", eslifRecognizer.Expected())}");
-
+            logger.LogInformation($"Expected: {string.Join(", ", eslifRecognizer.ExpectedNames())}");
+            logger.LogInformation($"Last pause at symbol X: {eslifRecognizer.LastPauseName("X")}");
+            logger.LogInformation($"Last try at symbol DIGITS: {eslifRecognizer.LastTryName("DIGITS")}");
+            logger.LogInformation($"Last discard: {eslifRecognizer.LastDiscard()}");
+            logger.LogInformation($"IsEof: {eslifRecognizer.IsEof()}");
+            logger.LogInformation($"IsStartComplete: {eslifRecognizer.IsStartComplete()}");
 
             // Give some time to the logger ;)
             Console.ReadLine();

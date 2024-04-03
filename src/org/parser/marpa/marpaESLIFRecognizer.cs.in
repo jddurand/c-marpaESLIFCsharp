@@ -219,7 +219,7 @@ namespace org.parser.marpa
             return matchb != 0;
         }
 
-        public string[] Expected()
+        public string[] ExpectedNames()
         {
             @C2CSHARP_TYPE_SIZE_T@ nNamel = 0;
             IntPtr namesArrayp = IntPtr.Zero;
@@ -244,6 +244,101 @@ namespace org.parser.marpa
             }
 
             return output;
+        }
+
+        public byte[] LastPauseName(string name)
+        {
+            @C2CSHARP_TYPE_SIZE_T@ pausel = 0;
+            IntPtr pauses = IntPtr.Zero;
+            IntPtr names = Marshal.StringToHGlobalAnsi(name);
+
+            if (marpaESLIFShr.marpaESLIFRecognizer_name_last_pauseb(this.marpaESLIFRecognizerp, names, ref pauses, ref pausel) == 0)
+            {
+                // throw new ESLIFException("marpaESLIFRecognizer_name_last_pauseb failure");
+                // marpaESLIF will output an error message
+                return null;
+            }
+
+            if (pauses == IntPtr.Zero || pausel <= 0)
+            {
+                return new byte[0];
+            }
+
+            byte[] output = new byte[(int) pausel];
+            Marshal.Copy(pauses, output, 0, (int) pauses);
+
+            return output;
+        }
+
+        public byte[] LastTryName(string name)
+        {
+            @C2CSHARP_TYPE_SIZE_T@ tryl = 0;
+            IntPtr trys = IntPtr.Zero;
+            IntPtr names = Marshal.StringToHGlobalAnsi(name);
+
+            if (marpaESLIFShr.marpaESLIFRecognizer_name_last_tryb(this.marpaESLIFRecognizerp, names, ref trys, ref tryl) == 0)
+            {
+                // throw new ESLIFException("marpaESLIFRecognizer_name_last_tryb failure");
+                // marpaESLIF will output an error message
+                return null;
+            }
+
+            if (trys == IntPtr.Zero || tryl <= 0)
+            {
+                return new byte[0];
+            }
+
+            byte[] output = new byte[(int) tryl];
+            Marshal.Copy(trys, output, 0, (int) trys);
+
+            return output;
+        }
+
+        public byte[] LastDiscard()
+        {
+            @C2CSHARP_TYPE_SIZE_T@ lastl = 0;
+            IntPtr lasts = IntPtr.Zero;
+
+            if (marpaESLIFShr.marpaESLIFRecognizer_discard_lastb(this.marpaESLIFRecognizerp, ref lasts, ref lastl) == 0)
+            {
+                // throw new ESLIFException("marpaESLIFRecognizer_discard_lastb failure");
+                // marpaESLIF will output an error message
+                return null;
+            }
+
+            if (lasts == IntPtr.Zero || lastl <= 0)
+            {
+                return new byte[0];
+            }
+
+            byte[] output = new byte[(int) lastl];
+            Marshal.Copy(lasts, output, 0, (int) lasts);
+
+            return output;
+        }
+
+        public bool IsEof()
+        {
+            @C2CSHARP_TYPE_SHORT@ eofb = 0;
+
+            if (marpaESLIFShr.marpaESLIFRecognizer_isEofb(this.marpaESLIFRecognizerp, ref eofb) == 0)
+            {
+                throw new ESLIFException("marpaESLIFRecognizer_isEofb failure");
+            }
+
+            return eofb != 0;
+        }
+
+        public bool IsStartComplete()
+        {
+            @C2CSHARP_TYPE_SHORT@ completeb = 0;
+
+            if (marpaESLIFShr.marpaESLIFRecognizer_isStartCompleteb(this.marpaESLIFRecognizerp, ref completeb) == 0)
+            {
+                throw new ESLIFException("marpaESLIFRecognizer_isStartCompleteb failure");
+            }
+
+            return completeb != 0;
         }
 
         protected virtual void Dispose(bool disposing)

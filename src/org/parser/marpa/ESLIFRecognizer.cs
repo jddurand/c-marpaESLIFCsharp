@@ -109,9 +109,34 @@ namespace org.parser.marpa
             return this.marpaESLIFRecognizer.TryDiscard();
         }
 
-        public string[] Expected()
+        public string[] ExpectedNames()
         {
-            return this.marpaESLIFRecognizer.Expected();
+            return this.marpaESLIFRecognizer.ExpectedNames();
+        }
+
+        public byte[] LastPauseName(string name)
+        {
+            return this.marpaESLIFRecognizer.LastPauseName(name);
+        }
+
+        public byte[] LastTryName(string name)
+        {
+            return this.marpaESLIFRecognizer.LastTryName(name);
+        }
+
+        public byte[] LastDiscard()
+        {
+            return this.marpaESLIFRecognizer.LastDiscard();
+        }
+
+        public bool IsEof()
+        {
+            return this.marpaESLIFRecognizer.IsEof();
+        }
+
+        public bool IsStartComplete()
+        {
+            return this.marpaESLIFRecognizer.IsStartComplete();
         }
     }
 }

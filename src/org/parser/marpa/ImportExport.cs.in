@@ -684,6 +684,12 @@ namespace org.parser.marpa
         internal class ExternalPointer
         {
             public marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t marpaESLIFValueResultFlat_t;
+
+            public override string ToString()
+            {
+                // By definition this is a pointer
+                return $"{this.marpaESLIFValueResultFlat_t.p.p}";
+            }
         }
     }
 }
