@@ -187,6 +187,7 @@ namespace org.parser.marpa
 
             if (marpaESLIFShr.marpaESLIFRecognizer_name_tryb(this.marpaESLIFRecognizerp, names, ref matchb) == 0)
             {
+                Marshal.FreeHGlobal(names);
                 throw new ESLIFException("marpaESLIFRecognizer_name_tryb failure");
             }
 
@@ -254,10 +255,12 @@ namespace org.parser.marpa
 
             if (marpaESLIFShr.marpaESLIFRecognizer_name_last_pauseb(this.marpaESLIFRecognizerp, names, ref pauses, ref pausel) == 0)
             {
+                Marshal.FreeHGlobal(names);
                 // throw new ESLIFException("marpaESLIFRecognizer_name_last_pauseb failure");
-                // marpaESLIF will output an error message
                 return null;
             }
+
+            Marshal.FreeHGlobal(names);
 
             if (pauses == IntPtr.Zero || pausel <= 0)
             {
@@ -278,10 +281,12 @@ namespace org.parser.marpa
 
             if (marpaESLIFShr.marpaESLIFRecognizer_name_last_tryb(this.marpaESLIFRecognizerp, names, ref trys, ref tryl) == 0)
             {
+                Marshal.FreeHGlobal(names);
                 // throw new ESLIFException("marpaESLIFRecognizer_name_last_tryb failure");
-                // marpaESLIF will output an error message
                 return null;
             }
+
+            Marshal.FreeHGlobal(names);
 
             if (trys == IntPtr.Zero || tryl <= 0)
             {
@@ -302,7 +307,6 @@ namespace org.parser.marpa
             if (marpaESLIFShr.marpaESLIFRecognizer_discard_lastb(this.marpaESLIFRecognizerp, ref lasts, ref lastl) == 0)
             {
                 // throw new ESLIFException("marpaESLIFRecognizer_discard_lastb failure");
-                // marpaESLIF will output an error message
                 return null;
             }
 
@@ -339,6 +343,62 @@ namespace org.parser.marpa
             }
 
             return completeb != 0;
+        }
+
+        public bool EventOnOff(string symbol, ESLIFEventType eventType, bool onOff)
+        {
+            IntPtr symbols = Marshal.StringToHGlobalAnsi(symbol);
+            marpaESLIFShr.marpaESLIFEventType_t eventSeti = 0;
+            @C2CSHARP_TYPE_SHORT@ onoffb = (@C2CSHARP_TYPE_SHORT@) (onOff ? 1 : 0);
+            bool output;
+
+            if ((eventType & ESLIFEventType.COMPLETED) == ESLIFEventType.COMPLETED)
+            {
+                eventSeti &= marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_COMPLETED;
+            }
+
+            if ((eventType & ESLIFEventType.NULLED) == ESLIFEventType.NULLED)
+            {
+                eventSeti &= marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_NULLED;
+            }
+
+            if ((eventType & ESLIFEventType.PREDICTED) == ESLIFEventType.PREDICTED)
+            {
+                eventSeti &= marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_PREDICTED;
+            }
+
+            if ((eventType & ESLIFEventType.BEFORE) == ESLIFEventType.BEFORE)
+            {
+                eventSeti &= marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_BEFORE;
+            }
+
+            if ((eventType & ESLIFEventType.AFTER) == ESLIFEventType.AFTER)
+            {
+                eventSeti &= marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_AFTER;
+            }
+
+            if ((eventType & ESLIFEventType.EXHAUSTED) == ESLIFEventType.EXHAUSTED)
+            {
+                eventSeti &= marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_EXHAUSTED;
+            }
+
+            if ((eventType & ESLIFEventType.DISCARD) == ESLIFEventType.DISCARD)
+            {
+                eventSeti &= marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_DISCARD;
+            }
+
+            if (marpaESLIFShr.marpaESLIFRecognizer_event_onoffb(this.marpaESLIFRecognizerp, symbols, eventSeti, onoffb) == 0)
+            {
+                // throw new ESLIFException("marpaESLIFRecognizer_event_onoffb failure");
+                output = false;
+            }
+            else
+            {
+                output = true;
+            }
+
+            Marshal.FreeHGlobal(symbols);
+            return output;
         }
 
         protected virtual void Dispose(bool disposing)

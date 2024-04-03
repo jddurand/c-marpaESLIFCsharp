@@ -143,11 +143,12 @@ digits ::= $DIGITS                          action => ::ascii
 
             ESLIFRecognizer eslifRecognizer = new ESLIFRecognizer(grammar, recognizerInterface);
             logger.LogInformation($"Expected: {string.Join(", ", eslifRecognizer.ExpectedNames())}");
-            logger.LogInformation($"Last pause at symbol X: {eslifRecognizer.LastPauseName("X")}");
+            logger.LogInformation($"Last pause at symbol DIGITS: {eslifRecognizer.LastPauseName("DIGITS")}");
             logger.LogInformation($"Last try at symbol DIGITS: {eslifRecognizer.LastTryName("DIGITS")}");
             logger.LogInformation($"Last discard: {eslifRecognizer.LastDiscard()}");
             logger.LogInformation($"IsEof: {eslifRecognizer.IsEof()}");
             logger.LogInformation($"IsStartComplete: {eslifRecognizer.IsStartComplete()}");
+            logger.LogInformation($"EventOnOff on exp: {eslifRecognizer.EventOnOff("exp", ESLIFEventType.NONE, true)}");
 
             // Give some time to the logger ;)
             Console.ReadLine();

@@ -102,6 +102,7 @@ namespace org.parser.marpa
             [FieldOffset(@OFFSETOF_marpaESLIFRecognizerOption_t_importerp@)] public marpaESLIFRecognizerImport_t importerp;           /* If end-user want to import a marpaESLIFValueResult */
         }
     
+        [Flags]
         public enum marpaESLIFEventType_t
         {
             MARPAESLIF_EVENTTYPE_NONE = 0x00,
@@ -313,6 +314,7 @@ namespace org.parser.marpa
             [FieldOffset(@OFFSETOF_marpaESLIFGrammarDefaults_t_fallbackEncodings@)] public IntPtr fallbackEncodings;       /* Fallback encoding */
         }
     
+        [Flags]
         public enum marpaESLIFRulePropertyBit_t : @C2CSHARP_TYPE_ENUM@
         {
             MARPAESLIF_RULE_IS_ACCESSIBLE = 0x01,
@@ -322,6 +324,7 @@ namespace org.parser.marpa
             MARPAESLIF_RULE_IS_PRODUCTIVE = 0x10,
         }
     
+        [Flags]
         public enum marpaESLIFSymbolPropertyBit_t : @C2CSHARP_TYPE_ENUM@
         {
             MARPAESLIF_SYMBOL_IS_ACCESSIBLE = 0x01,
@@ -332,6 +335,7 @@ namespace org.parser.marpa
             MARPAESLIF_SYMBOL_IS_TERMINAL = 0x20,
         }
     
+        [Flags]
         public enum marpaESLIFSymbolEventBit_t : @C2CSHARP_TYPE_ENUM@
         {
             MARPAESLIF_SYMBOL_EVENT_COMPLETION = 0x01,

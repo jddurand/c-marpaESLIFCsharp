@@ -1,8 +1,11 @@
+using System;
+
 namespace org.parser.marpa
 {
     /// <summary>
     /// ESLIFEventType is an enumeration of all ESLIF possible events. See <see cref="ESLIFEvent"/>.
     /// </summary>
+    [Flags]
     public enum ESLIFEventType
     {
 

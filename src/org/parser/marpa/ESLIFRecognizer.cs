@@ -138,5 +138,10 @@ namespace org.parser.marpa
         {
             return this.marpaESLIFRecognizer.IsStartComplete();
         }
+
+        public bool EventOnOff(string symbol, ESLIFEventType eventType, bool onOff)
+        {
+            return this.marpaESLIFRecognizer.EventOnOff(symbol, eventType, onOff);
+        }
     }
 }
