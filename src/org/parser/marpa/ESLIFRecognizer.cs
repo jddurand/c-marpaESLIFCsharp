@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using System;
 
 namespace org.parser.marpa
@@ -147,6 +148,11 @@ namespace org.parser.marpa
         public ESLIFEvent[] Events()
         {
             return this.marpaESLIFRecognizer.Events();
+        }
+
+        public void ProgressLog(int start, int end, LogLevel logLevel)
+        {
+            this.marpaESLIFRecognizer.ProgressLog(start, end, logLevel);
         }
     }
 }

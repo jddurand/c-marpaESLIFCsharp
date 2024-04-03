@@ -1,5 +1,6 @@
 #cmakedefine MARPAESLIF_HAVE_LONG_LONG
 #cmakedefine C2CSHARP_TYPE_INT_IS_INT
+using Microsoft.Extensions.Logging;
 using System;
 using System.Runtime.InteropServices;
 
@@ -462,6 +463,40 @@ namespace org.parser.marpa
             return events;
         }
 
+        public void ProgressLog(int start, int end, LogLevel logLevel)
+        {
+            genericLoggerShr.genericLoggerLevel_t? logLeveli;
+
+            switch (logLevel)
+            {
+                case LogLevel.Trace:
+                    logLeveli = genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_TRACE;
+                    break;
+                case LogLevel.Debug:
+                    logLeveli = genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_DEBUG;
+                    break;
+                case LogLevel.Information:
+                    logLeveli = genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_INFO;
+                    break;
+                case LogLevel.Warning:
+                    logLeveli = genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_WARNING;
+                    break;
+                case LogLevel.Error:
+                    logLeveli = genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_ERROR;
+                    break;
+                case LogLevel.Critical:
+                    logLeveli = genericLoggerShr.genericLoggerLevel_t.GENERICLOGGER_LOGLEVEL_CRITICAL;
+                    break;
+                default:
+                    throw new ESLIFException($"Invalid log level: {(int)logLevel}");
+            }
+
+            if (marpaESLIFShr.marpaESLIFRecognizer_progressLogb(this.marpaESLIFRecognizerp, (@C2CSHARP_TYPE_INT@) start, (@C2CSHARP_TYPE_INT@) end, logLeveli.Value) == 0)
+            {
+                throw new ESLIFException("marpaESLIFRecognizer_progressLogb failure");
+            }
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
@@ -478,7 +513,7 @@ namespace org.parser.marpa
             }
         }
 
-        // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        // DONE: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
         ~marpaESLIFRecognizer()
         {
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method

@@ -154,6 +154,7 @@ digits ::= $DIGITS                          action => ::ascii
             {
                 logger.LogInformation($"Event: {e}");
             }
+            eslifRecognizer.ProgressLog(0, -1, LogLevel.Information);
 
             // Give some time to the logger ;)
             Console.ReadLine();
