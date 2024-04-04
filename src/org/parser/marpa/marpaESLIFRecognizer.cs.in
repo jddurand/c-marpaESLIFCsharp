@@ -586,6 +586,24 @@ namespace org.parser.marpa
             return output;
         }
 
+        public void DiscardHook(bool onOff)
+        {
+            @C2CSHARP_TYPE_SHORT@ discardOnOffb = (@C2CSHARP_TYPE_SHORT@) (onOff ? 1 : 0);
+
+            if (marpaESLIFShr.marpaESLIFRecognizer_hook_discardb(this.marpaESLIFRecognizerp, discardOnOffb) == 0)
+            {
+                throw new ESLIFException("marpaESLIFRecognizer_hook_discardb failure");
+            }
+        }
+
+        public void SwitchDiscardHook()
+        {
+            if (marpaESLIFShr.marpaESLIFRecognizer_hook_discard_switchb(this.marpaESLIFRecognizerp) == 0)
+            {
+                throw new ESLIFException("marpaESLIFRecognizer_hook_discard_switchb failure");
+            }
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)

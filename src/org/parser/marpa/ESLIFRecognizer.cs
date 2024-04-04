@@ -179,5 +179,15 @@ namespace org.parser.marpa
         {
             return this.marpaESLIFRecognizer.Read();
         }
+
+        public void DiscardHook(bool onOff)
+        {
+            this.marpaESLIFRecognizer.DiscardHook(onOff);
+        }
+
+        public void SwitchDiscardHook()
+        {
+            this.marpaESLIFRecognizer.SwitchDiscardHook();
+        }
     }
 }

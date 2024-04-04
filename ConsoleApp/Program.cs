@@ -173,6 +173,10 @@ digits ::= $DIGITS                          action => ::ascii
             {
                 logger.LogError($"Exception: {e.Message}");
             }
+            eslifRecognizer.DiscardHook(true);
+            eslifRecognizer.DiscardHook(false);
+            eslifRecognizer.SwitchDiscardHook();
+
 
             // Give some time to the logger ;)
             Console.ReadLine();
