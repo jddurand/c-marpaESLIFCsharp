@@ -164,6 +164,15 @@ digits ::= $DIGITS                          action => ::ascii
             eslifRecognizer.Error();
             (int line, int column) = eslifRecognizer.Location();
             logger.LogInformation($"Line: {line}, Column: {column}");
+            try
+            {
+                byte[] recognizerRead = eslifRecognizer.Read();
+                logger.LogInformation($"Read: {new string(recognizerRead.Select(b => (char)b).ToArray())}");
+            }
+            catch (Exception e)
+            {
+                logger.LogError($"Exception: {e.Message}");
+            }
 
             // Give some time to the logger ;)
             Console.ReadLine();

@@ -174,5 +174,10 @@ namespace org.parser.marpa
         {
             return this.marpaESLIFRecognizer.Location();
         }
+
+        public byte[] Read()
+        {
+            return this.marpaESLIFRecognizer.Read();
+        }
     }
 }

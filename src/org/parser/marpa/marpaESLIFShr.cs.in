@@ -684,7 +684,7 @@ namespace org.parser.marpa
         public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_locationb(IntPtr marpaESLIFRecognizerp, ref @C2CSHARP_TYPE_SIZE_T@ linelp, ref @C2CSHARP_TYPE_SIZE_T@ columnlp);
     
         [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_readb(IntPtr marpaESLIFRecognizerp, IntPtr inputsp, ref @C2CSHARP_TYPE_SIZE_T@ inputlp);
+        public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_readb(IntPtr marpaESLIFRecognizerp, ref IntPtr inputsp, ref @C2CSHARP_TYPE_SIZE_T@ inputlp);
     
         [DllImport("marpaESLIF.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizer_last_completedb(IntPtr marpaESLIFRecognizerp, IntPtr names, ref IntPtr offsetpp, ref @C2CSHARP_TYPE_SIZE_T@ lengthlp);
