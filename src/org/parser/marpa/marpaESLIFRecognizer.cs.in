@@ -523,6 +523,27 @@ namespace org.parser.marpa
             return output;
         }
 
+        public byte[] Input()
+        {
+            @C2CSHARP_TYPE_SIZE_T@ inputl = 0;
+            IntPtr inputs = IntPtr.Zero;
+
+            if (marpaESLIFShr.marpaESLIFRecognizer_inputb(this.marpaESLIFRecognizerp, ref inputs, ref inputl) == 0)
+            {
+                throw new ESLIFException("marpaESLIFRecognizer_inputb failure");
+            }
+
+            if (inputl <= 0 || inputs == IntPtr.Zero)
+            {
+                return new byte[0];
+            }
+
+            byte[] output = new byte[(int) inputl];
+            Marshal.Copy(inputs, output, 0, (int) inputl);
+
+            return output;
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)

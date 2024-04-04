@@ -159,6 +159,8 @@ digits ::= $DIGITS                          action => ::ascii
             {
                 logger.LogInformation($"{eslifProgress}");
             }
+            byte[] recognizerInput = eslifRecognizer.Input();
+            logger.LogInformation($"Input: {new string(recognizerInput.Select(b => (char)b).ToArray())}");
 
             // Give some time to the logger ;)
             Console.ReadLine();

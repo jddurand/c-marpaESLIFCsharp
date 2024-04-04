@@ -159,5 +159,10 @@ namespace org.parser.marpa
         {
             return this.marpaESLIFRecognizer.Progress(start, end);
         }
+
+        public byte[] Input()
+        {
+            return this.marpaESLIFRecognizer.Input();
+        }
     }
 }
