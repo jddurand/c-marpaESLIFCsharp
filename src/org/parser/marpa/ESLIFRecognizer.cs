@@ -154,5 +154,10 @@ namespace org.parser.marpa
         {
             this.marpaESLIFRecognizer.ProgressLog(start, end, logLevel);
         }
+
+        public ESLIFProgress[] Progress(int start, int end)
+        {
+            return this.marpaESLIFRecognizer.Progress(start, end);
+        }
     }
 }

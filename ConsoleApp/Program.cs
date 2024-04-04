@@ -155,6 +155,10 @@ digits ::= $DIGITS                          action => ::ascii
                 logger.LogInformation($"Event: {e}");
             }
             eslifRecognizer.ProgressLog(0, -1, LogLevel.Information);
+            foreach (ESLIFProgress eslifProgress in eslifRecognizer.Progress(0, -1))
+            {
+                logger.LogInformation($"{eslifProgress}");
+            }
 
             // Give some time to the logger ;)
             Console.ReadLine();

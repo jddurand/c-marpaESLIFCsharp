@@ -497,6 +497,32 @@ namespace org.parser.marpa
             }
         }
 
+        public ESLIFProgress[] Progress(int start, int end)
+        {
+            @C2CSHARP_TYPE_SIZE_T@ progressl = 0;
+            IntPtr progressp = IntPtr.Zero;
+
+            if (marpaESLIFShr.marpaESLIFRecognizer_progressb(this.marpaESLIFRecognizerp, (@C2CSHARP_TYPE_INT@) start, (@C2CSHARP_TYPE_INT@) end, ref progressl, ref progressp) == 0)
+            {
+                throw new ESLIFException("marpaESLIFRecognizer_progressb failure");
+            }
+
+            if (progressl <= 0 || progressp == IntPtr.Zero)
+            {
+                return new ESLIFProgress[0];
+            }
+
+            ESLIFProgress[] output = new ESLIFProgress[(int) progressl];
+            for (int i = 0; i < output.Length; i++)
+            {
+                marpaESLIFShr.marpaESLIFRecognizerProgress_t marpaESLIFRecognizerProgress = (marpaESLIFShr.marpaESLIFRecognizerProgress_t) Marshal.PtrToStructure(progressp, typeof(marpaESLIFShr.marpaESLIFRecognizerProgress_t));
+                output[i] = new ESLIFProgress(marpaESLIFRecognizerProgress.earleySetIdi, marpaESLIFRecognizerProgress.earleySetOrigIdi, marpaESLIFRecognizerProgress.rulei, marpaESLIFRecognizerProgress.positioni);
+                progressp += Marshal.SizeOf(marpaESLIFRecognizerProgress);
+            }
+
+            return output;
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
