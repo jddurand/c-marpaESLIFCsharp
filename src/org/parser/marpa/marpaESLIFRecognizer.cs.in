@@ -544,6 +544,14 @@ namespace org.parser.marpa
             return output;
         }
 
+        public void Error()
+        {
+            if (marpaESLIFShr.marpaESLIFRecognizer_errorb(this.marpaESLIFRecognizerp) == 0)
+            {
+                throw new ESLIFException("marpaESLIFRecognizer_errorb failure");
+            }
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
