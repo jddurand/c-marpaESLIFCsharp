@@ -552,6 +552,19 @@ namespace org.parser.marpa
             }
         }
 
+        public (int, int) Location()
+        {
+            @C2CSHARP_TYPE_SIZE_T@ linel = 0;
+            @C2CSHARP_TYPE_SIZE_T@ columnl = 0;
+
+            if (marpaESLIFShr.marpaESLIFRecognizer_locationb(this.marpaESLIFRecognizerp, ref linel, ref columnl) == 0)
+            {
+                throw new ESLIFException("marpaESLIFRecognizer_locationb failure");
+            }
+
+            return ((int) linel, (int) columnl);
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)

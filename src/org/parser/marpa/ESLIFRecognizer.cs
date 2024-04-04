@@ -169,5 +169,10 @@ namespace org.parser.marpa
         {
             this.marpaESLIFRecognizer.Error();
         }
+
+        public (int, int) Location()
+        {
+            return this.marpaESLIFRecognizer.Location();
+        }
     }
 }
