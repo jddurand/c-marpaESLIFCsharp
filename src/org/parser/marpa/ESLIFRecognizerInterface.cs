@@ -17,5 +17,6 @@ namespace org.parser.marpa
         void SetESLIFRecognizer(ESLIFRecognizer recognizer);
         ESLIFRecognizer GetESLIFRecognizer();
         Dictionary<string, Func<List<object>, object>> Actions();
+        Dictionary<string, Func<byte[], bool>> IfActions();
     }
 }

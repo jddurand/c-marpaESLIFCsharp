@@ -4,8 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
 
 namespace marpaESLIFShrTest
 {
@@ -261,6 +259,25 @@ digits ::= $DIGITS                          action => ::ascii
         {
             throw new NotImplementedException();
         }
+
+        public Dictionary<string, Func<byte[], bool>> IfActions()
+        {
+            return new Dictionary<string, Func<byte[], bool>>
+            {
+                { "if-greater-than-zero", (bytes) =>
+                    {
+                        string input = System.Text.Encoding.UTF8.GetString(bytes);
+                        if (int.TryParse(input, out int value))
+                        {
+                            return value > 0;
+                        }
+
+                        return false;
+                    }
+                },
+            };
+        }
+
     }
 
     public class ValueInterface : ESLIFValueInterface
@@ -332,7 +349,7 @@ digits ::= $DIGITS                          action => ::ascii
             this.symbolNumber = symbolNumber;
         }
 
-        public Dictionary<string, Func<List<object>, object>> Actions()
+        public Dictionary<string, Func<List<object>, object>> RuleActions()
         {
             return new Dictionary<string, Func<List<object>, object>>
             {
@@ -371,6 +388,13 @@ digits ::= $DIGITS                          action => ::ascii
                         return ObjToDouble(args[0]) - ObjToDouble(args[1]);
                     }
                 },
+            };
+        }
+
+        public Dictionary<string, Func<object, object>> SymbolActions()
+        {
+            return new Dictionary<string, Func<object, object>>
+            {
             };
         }
 
