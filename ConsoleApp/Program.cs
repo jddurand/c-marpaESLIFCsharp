@@ -114,7 +114,7 @@ namespace marpaESLIFShrTest
 :discard ::= /[\s]+/
 :symbol ::= ""("" name => LPAREN pause => before event => ^LPAREN
 :symbol ::= "")"" name => RPAREN pause => before event => ^RPAREN
-:symbol ::= /[\d]+/ name => DIGITS pause => before event => ^DIGITS
+:symbol ::= /[\d]+/ name => DIGITS pause => before event => ^DIGITS symbol-action => digits
 exp ::=
     digits                                  action => digits # ::luac->function(input) return tonumber(input) end
     | $LPAREN  exp $RPAREN   assoc => group action => exp # ::luac->function(l,e,r) return e               end
@@ -395,6 +395,11 @@ digits ::= $DIGITS                          action => ::ascii
         {
             return new Dictionary<string, Func<object, object>>
             {
+                { "digits", (arg) =>
+                    {
+                        return arg;
+                    }
+                },
             };
         }
 

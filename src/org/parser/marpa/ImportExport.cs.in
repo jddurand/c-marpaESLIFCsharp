@@ -274,8 +274,8 @@ namespace org.parser.marpa
 
             marpaESLIFValueResultFlat_t.type = marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_ARRAY;
             marpaESLIFValueResultFlat_t.contextp = CSHARP_CONTEXT;
-            marpaESLIFValueResultFlat_t.s.sizel = (@C2CSHARP_TYPE_SIZE_T@) bytes.Length;
-            if (marpaESLIFValueResultFlat_t.s.sizel > 0)
+            marpaESLIFValueResultFlat_t.a.sizel = (@C2CSHARP_TYPE_SIZE_T@) bytes.Length;
+            if (marpaESLIFValueResultFlat_t.a.sizel > 0)
             {
                 marpaESLIFValueResultFlat_t.a.p = Marshal.AllocHGlobal(bytes.Length);
                 Marshal.Copy(bytes, 0, marpaESLIFValueResultFlat_t.a.p, bytes.Length);
@@ -284,7 +284,7 @@ namespace org.parser.marpa
             {
                 marpaESLIFValueResultFlat_t.a.p = IntPtr.Zero;
             }
-            marpaESLIFValueResultFlat_t.s.freeCallbackp = FreeCallback;
+            marpaESLIFValueResultFlat_t.a.freeCallbackp = FreeCallback;
 
             CopymarpaESLIFValueResultFlatToMarpaESLIFValueResult(marpaESLIFValueResultFlat_t, marpaESLIFValueResultp);
 

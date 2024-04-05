@@ -20,7 +20,8 @@ namespace org.parser.marpa
         {
             public ESLIFValueInterface valueInterface;
             public Stack<object> stack = new Stack<object>();
-            public Func<List<object>, object> action = null;
+            public Func<List<object>, object> ruleAction = null;
+            public Func<object, object> symbolAction = null;
 
             public marpaESLIFValueOptionContext(ESLIFValueInterface valueInterface)
             {
@@ -41,11 +42,11 @@ namespace org.parser.marpa
             this.marpaESLIFValueOption_t.ruleActionResolverp = RuleActionResolver;
             this.marpaESLIFValueOption_t.symbolActionResolverp = SymbolActionResolver;
             this.marpaESLIFValueOption_t.importerp = Importer;
-            this.marpaESLIFValueOption_t.highRankOnlyb = (short)(this.valueInterface.IsWithHighRankOnly() ? 1 : 0);
-            this.marpaESLIFValueOption_t.orderByRankb = (short)(this.valueInterface.IsWithOrderByRank() ? 1 : 0);
-            this.marpaESLIFValueOption_t.ambiguousb = (short)(this.valueInterface.IsWithAmbiguous() ? 1 : 0);
-            this.marpaESLIFValueOption_t.nullb = (short)(this.valueInterface.IsWithNull() ? 1 : 0);
-            this.marpaESLIFValueOption_t.maxParsesi = (int)this.valueInterface.MaxParses();
+            this.marpaESLIFValueOption_t.highRankOnlyb = (@C2CSHARP_TYPE_SHORT@) (this.valueInterface.IsWithHighRankOnly() ? 1 : 0);
+            this.marpaESLIFValueOption_t.orderByRankb = (@C2CSHARP_TYPE_SHORT@) (this.valueInterface.IsWithOrderByRank() ? 1 : 0);
+            this.marpaESLIFValueOption_t.ambiguousb = (@C2CSHARP_TYPE_SHORT@) (this.valueInterface.IsWithAmbiguous() ? 1 : 0);
+            this.marpaESLIFValueOption_t.nullb = (@C2CSHARP_TYPE_SHORT@) (this.valueInterface.IsWithNull() ? 1 : 0);
+            this.marpaESLIFValueOption_t.maxParsesi = (@C2CSHARP_TYPE_INT@) this.valueInterface.MaxParses();
 
             this.marpaESLIFValueOptionp = Marshal.AllocHGlobal(Marshal.SizeOf(this.marpaESLIFValueOption_t));
             Marshal.StructureToPtr(marpaESLIFValueOption_t, this.marpaESLIFValueOptionp, false);
@@ -118,16 +119,22 @@ namespace org.parser.marpa
                 }
             }
 
-            object actionResult = context.action(args);
+            object actionResult = context.ruleAction(args);
 
             IntPtr marpaESLIFValueResultp = ImportExport.Instance.Exporter(actionResult);
             @C2CSHARP_TYPE_SHORT@ output = marpaESLIFShr.marpaESLIFValue_stack_setb(marpaESLIFValuep, resulti, marpaESLIFValueResultp);
-            marpaESLIFShr.marpaESLIFValue_marpaESLIFValueResult_freeb(marpaESLIFValuep, marpaESLIFValueResultp, (@C2CSHARP_TYPE_SHORT@) 1);
+            if (output == 0)
+            {
+                marpaESLIFShr.marpaESLIFValue_marpaESLIFValueResult_freeb(marpaESLIFValuep, marpaESLIFValueResultp, (@C2CSHARP_TYPE_SHORT@) 1);
+                return 0;
+            }
 
-            return output;
+            // Just deallocate it
+            Marshal.FreeHGlobal(marpaESLIFValueResultp);
+            return 1;
         }
 
-        private static void CheckActionExists(IntPtr userDatavp, IntPtr marpaESLIFValuep, IntPtr actions)
+        private static void CheckRuleActionExists(IntPtr userDatavp, IntPtr marpaESLIFValuep, IntPtr actions)
         {
             GCHandle contextHandle = GCHandle.FromIntPtr(userDatavp);
             marpaESLIFValueOptionContext context = (marpaESLIFValueOptionContext)contextHandle.Target;
@@ -137,7 +144,7 @@ namespace org.parser.marpa
             }
 
             string action = Marshal.PtrToStringAnsi(actions);
-            if (!context.valueInterface.Actions().TryGetValue(action, out context.action))
+            if (!context.valueInterface.RuleActions().TryGetValue(action, out context.ruleAction))
             {
                 throw new ESLIFException($"Unimplemented action {action}");
             }
@@ -146,7 +153,7 @@ namespace org.parser.marpa
 
         private static marpaESLIFShr.marpaESLIFValueRuleCallback_t RuleActionResolver(IntPtr userDatavp, IntPtr marpaESLIFValuep, IntPtr actions)
         {
-            CheckActionExists(userDatavp, marpaESLIFValuep, actions);
+            CheckRuleActionExists(userDatavp, marpaESLIFValuep, actions);
             return RuleCallback;
         }
 
@@ -159,20 +166,43 @@ namespace org.parser.marpa
                 throw new ESLIFException("context is null");
             }
 
-            List<object> args = new List<object> { GetObject(context.stack, marpaESLIFValuep, marpaESLIFValueResultp) };
+            object arg = GetObject(context.stack, marpaESLIFValuep, marpaESLIFValueResultp);
 
-            object actionResult = context.action(args);
+            object actionResult = context.symbolAction(arg);
 
             marpaESLIFValueResultp = ImportExport.Instance.Exporter(actionResult);
             @C2CSHARP_TYPE_SHORT@ output = marpaESLIFShr.marpaESLIFValue_stack_setb(marpaESLIFValuep, resulti, marpaESLIFValueResultp);
-            marpaESLIFShr.marpaESLIFValue_marpaESLIFValueResult_freeb(marpaESLIFValuep, marpaESLIFValueResultp, (@C2CSHARP_TYPE_SHORT@) 1);
+            if (output == 0)
+            {
+                marpaESLIFShr.marpaESLIFValue_marpaESLIFValueResult_freeb(marpaESLIFValuep, marpaESLIFValueResultp, (@C2CSHARP_TYPE_SHORT@) 1);
+                return 0;
+            }
 
-            return output;
+            // Just deallocate it
+            Marshal.FreeHGlobal(marpaESLIFValueResultp);
+            return 1;
+        }
+
+        private static void CheckSymbolActionExists(IntPtr userDatavp, IntPtr marpaESLIFValuep, IntPtr actions)
+        {
+            GCHandle contextHandle = GCHandle.FromIntPtr(userDatavp);
+            marpaESLIFValueOptionContext context = (marpaESLIFValueOptionContext)contextHandle.Target;
+            if (context == null)
+            {
+                throw new ESLIFException("context is null");
+            }
+
+            string action = Marshal.PtrToStringAnsi(actions);
+            if (!context.valueInterface.SymbolActions().TryGetValue(action, out context.symbolAction))
+            {
+                throw new ESLIFException($"Unimplemented action {action}");
+            }
+
         }
 
         private static marpaESLIFShr.marpaESLIFValueSymbolCallback_t SymbolActionResolver(IntPtr userDatavp, IntPtr marpaESLIFValuep, IntPtr actions)
         {
-            CheckActionExists(userDatavp, marpaESLIFValuep, actions);
+            CheckSymbolActionExists(userDatavp, marpaESLIFValuep, actions);
             return SymbolCallback;
         }
 

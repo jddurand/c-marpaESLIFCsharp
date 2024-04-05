@@ -108,10 +108,17 @@ namespace org.parser.marpa
             bool output = marpaESLIFShr.marpaESLIFRecognizer_alternativeb(this.marpaESLIFRecognizerp, marpaESLIFAlternativep) != 0;
 
             marpaESLIF_wrapperShr.marpaESLIF_free(marpaESLIFAlternativep);
-            marpaESLIFShr.marpaESLIFRecognizer_marpaESLIFValueResult_freeb(this.marpaESLIFRecognizerp, marpaESLIFValueResultp, (@C2CSHARP_TYPE_SHORT@) 1);
             Marshal.FreeHGlobal(names);
+            if (!output)
+            {
+                marpaESLIFShr.marpaESLIFRecognizer_marpaESLIFValueResult_freeb(this.marpaESLIFRecognizerp, marpaESLIFValueResultp, (@C2CSHARP_TYPE_SHORT@) 1);
+                return false;
+            }
 
-            return output;
+            // Just deallocate it
+            Marshal.FreeHGlobal(marpaESLIFValueResultp);
+
+            return true;
         }
 
         public bool AlternativeComplete(int length)
@@ -121,17 +128,24 @@ namespace org.parser.marpa
 
         public bool AlternativeRead(string name, object value, int length, int grammarLength)
         {
-            IntPtr names = Marshal.StringToHGlobalAnsi(name);
             IntPtr marpaESLIFValueResultp = ImportExport.Instance.Exporter(value);
+            IntPtr names = Marshal.StringToHGlobalAnsi(name);
             IntPtr marpaESLIFAlternativep = marpaESLIF_wrapperShr.marpaESLIFAlternativep(names, marpaESLIFValueResultp, (@C2CSHARP_TYPE_SIZE_T@) grammarLength);
 
             bool output = marpaESLIFShr.marpaESLIFRecognizer_alternative_readb(this.marpaESLIFRecognizerp, marpaESLIFAlternativep, (@C2CSHARP_TYPE_SIZE_T@) length) != 0;
 
             marpaESLIF_wrapperShr.marpaESLIF_free(marpaESLIFAlternativep);
-            marpaESLIFShr.marpaESLIFRecognizer_marpaESLIFValueResult_freeb(this.marpaESLIFRecognizerp, marpaESLIFValueResultp, (@C2CSHARP_TYPE_SHORT@) 1);
             Marshal.FreeHGlobal(names);
+            if (!output)
+            {
+                marpaESLIFShr.marpaESLIFRecognizer_marpaESLIFValueResult_freeb(this.marpaESLIFRecognizerp, marpaESLIFValueResultp, (@C2CSHARP_TYPE_SHORT@) 1);
+                return false;
+            }
 
-            return output;
+            // Just deallocate it
+            Marshal.FreeHGlobal(marpaESLIFValueResultp);
+
+            return true;
         }
 
         public bool Scan(bool initialEventsb)
