@@ -86,12 +86,12 @@ namespace org.parser.marpa
             return BytesToString(marpaESLIFString_t.bytep, marpaESLIFString_t.bytel, marpaESLIFString_t.encodingasciis);
         }
 
-        private void DisposeUnamangedResources()
+        private void DisposeUnmanagedResources()
         {
             if (this.marpaESLIFStringp != IntPtr.Zero)
             {
-                marpaESLIFShr.marpaESLIFString_t marpaESLIFString_t = new marpaESLIFShr.marpaESLIFString_t();
-                Marshal.PtrToStructure(this.marpaESLIFStringp, marpaESLIFString_t);
+                marpaESLIFShr.marpaESLIFString_t marpaESLIFString_t = (marpaESLIFShr.marpaESLIFString_t)Marshal.PtrToStructure(this.marpaESLIFStringp, typeof(marpaESLIFShr.marpaESLIFString_t));
+
                 if (marpaESLIFString_t.bytep != IntPtr.Zero)
                 {
                     Marshal.FreeHGlobal(marpaESLIFString_t.bytep);
@@ -114,7 +114,7 @@ namespace org.parser.marpa
                 }
 
                 // DONE: free unmanaged resources (unmanaged objects) and override finalizer
-                this.DisposeUnamangedResources();
+                this.DisposeUnmanagedResources();
                 // DONE: set large fields to null
                 disposedValue = true;
             }

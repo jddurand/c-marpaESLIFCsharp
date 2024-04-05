@@ -644,7 +644,7 @@ namespace org.parser.marpa
             }
         }
 
-        private void DisposeUnamangedResources()
+        private void DisposeUnmanagedResources()
         {
             Marshal.FreeHGlobal(CSHARP_CONTEXT);
             Marshal.FreeHGlobal(CSHARP_CHAR_CONTEXT);
@@ -661,7 +661,7 @@ namespace org.parser.marpa
                 }
 
                 // DONE: free unmanaged resources (unmanaged objects) and override finalizer
-                this.DisposeUnamangedResources();
+                this.DisposeUnmanagedResources();
                 // DONE: set large fields to null
                 disposedValue = true;
             }

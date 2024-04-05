@@ -189,5 +189,10 @@ namespace org.parser.marpa
         {
             this.marpaESLIFRecognizer.SwitchDiscardHook();
         }
+
+        public bool SymbolTry(ESLIFSymbol symbol)
+        {
+            return this.marpaESLIFRecognizer.SymbolTry(symbol.marpaESLIFSymbol);
+        }
     }
 }

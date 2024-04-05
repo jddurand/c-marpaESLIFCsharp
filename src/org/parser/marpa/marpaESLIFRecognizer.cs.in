@@ -604,6 +604,18 @@ namespace org.parser.marpa
             }
         }
 
+        public bool SymbolTry(marpaESLIFSymbol marpaESLIFSymbol)
+        {
+            @C2CSHARP_TYPE_SHORT@ matchb = 0;
+
+            if (marpaESLIFShr.marpaESLIFRecognizer_symbol_tryb(this.marpaESLIFRecognizerp, marpaESLIFSymbol.marpaESLIFSymbolp, ref matchb) == 0)
+            {
+                throw new ESLIFException("marpaESLIFRecognizer_symbol_tryb failure");
+            }
+
+            return matchb != 0;
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)

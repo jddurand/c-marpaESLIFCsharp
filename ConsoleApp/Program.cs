@@ -182,6 +182,12 @@ digits ::= $DIGITS                          action => ::ascii
             ESLIFSymbol stringSymbol = new ESLIFSymbol(eslif, "\"3\"", null);
             ESLIFSymbol regexSymbol = new ESLIFSymbol(eslif, "\\d+", null, "\"JDD\"", null);
             ESLIFSymbol metaSymbol = new ESLIFSymbol(eslif, grammar, "ANYTHING UP TO NEWLINE");
+            ESLIFSymbol stringSymbol2 = new ESLIFSymbol(eslif, "\"XXXX\"", null);
+
+            logger.LogInformation($"string symbol try: {eslifRecognizer.SymbolTry(stringSymbol)}");
+            logger.LogInformation($"regex symbol try: {eslifRecognizer.SymbolTry(regexSymbol)}");
+            logger.LogInformation($"meta symbol try: {eslifRecognizer.SymbolTry(metaSymbol)}");
+            logger.LogInformation($"string symbol2 try: {eslifRecognizer.SymbolTry(stringSymbol2)}");
 
             // Give some time to the logger ;)
             Console.ReadLine();
