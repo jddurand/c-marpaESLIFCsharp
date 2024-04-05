@@ -9,7 +9,7 @@ namespace org.parser.marpa
     public class marpaESLIFRecognizer : IDisposable
     {
         public IntPtr marpaESLIFRecognizerp { get; protected set; }
-        private readonly marpaESLIFGrammar marpaESLIFGrammar;
+        public marpaESLIFGrammar marpaESLIFGrammar { get; protected set; }
         private readonly bool shallow;
         private readonly marpaESLIFRecognizerOption marpaESLIFRecognizerOption;
         private object Lock = new object();

@@ -1,0 +1,66 @@
+using System;
+
+namespace org.parser.marpa
+{
+    public class marpaESLIFValue : IDisposable
+    {
+        public IntPtr marpaESLIFValuep { get; protected set; }
+        public marpaESLIFRecognizer marpaESLIFRecognizer { get; protected set; }
+        private readonly marpaESLIFValueOption marpaESLIFValueOption;
+        private bool disposedValue;
+
+        public marpaESLIFValue(marpaESLIFRecognizer marpaESLIFRecognizer, marpaESLIFValueOption marpaESLIFValueOption = null)
+        {
+            this.marpaESLIFRecognizer = marpaESLIFRecognizer ?? throw new ArgumentNullException(nameof(marpaESLIFGrammar));
+            this.marpaESLIFValueOption = marpaESLIFValueOption; // Can be null
+            this.marpaESLIFValuep = marpaESLIFShr.marpaESLIFValue_newp(this.marpaESLIFRecognizer.marpaESLIFRecognizerp, this.marpaESLIFValueOption != null ? this.marpaESLIFValueOption.marpaESLIFValueOptionp: IntPtr.Zero);
+            if (this.marpaESLIFValuep == IntPtr.Zero)
+            {
+                throw new ESLIFException("marpaESLIFValue_newp failure");
+            }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // DONE: dispose managed state (managed objects)
+                }
+
+                // DONE: free unmanaged resources (unmanaged objects) and override finalizer
+                this.DisposeUnmanagedResources();
+                // DONE: set large fields to null
+                disposedValue = true;
+            }
+        }
+
+        // DONE: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        ~marpaESLIFValue()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: false);
+        }
+
+        public short Value()
+        {
+            return (short)marpaESLIFShr.marpaESLIFValue_valueb(this.marpaESLIFValuep);
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void DisposeUnmanagedResources()
+        {
+            if (this.marpaESLIFValuep != IntPtr.Zero)
+            {
+                marpaESLIFShr.marpaESLIFValue_freev(this.marpaESLIFValuep);
+            }
+        }
+    }
+}
