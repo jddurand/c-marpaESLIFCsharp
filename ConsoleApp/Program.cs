@@ -126,6 +126,8 @@ exp ::=
    || exp (-  '+' -) exp                    action => plus # ::luac->function(x,y)   return x+y             end
     | exp (-  '-' -) exp                    action => minus # ::luac->function(x,y)   return x-y             end
 digits ::= $DIGITS                          action => ::ascii
+<anything up to newline> ::= <ANYTHING UP TO NEWLINE>
+<ANYTHING UP TO NEWLINE> ~ /[^\\n]*/
 "
             );
             bool isExhausted = false;
@@ -177,6 +179,9 @@ digits ::= $DIGITS                          action => ::ascii
             eslifRecognizer.DiscardHook(false);
             eslifRecognizer.SwitchDiscardHook();
 
+            ESLIFSymbol stringSymbol = new ESLIFSymbol(eslif, "\"3\"", null);
+            ESLIFSymbol regexSymbol = new ESLIFSymbol(eslif, "\\d+", null, "\"JDD\"", null);
+            ESLIFSymbol metaSymbol = new ESLIFSymbol(eslif, grammar, "ANYTHING UP TO NEWLINE");
 
             // Give some time to the logger ;)
             Console.ReadLine();

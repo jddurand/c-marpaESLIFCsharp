@@ -1,0 +1,145 @@
+using System;
+using System.Runtime.InteropServices;
+
+namespace org.parser.marpa
+{
+    public class marpaESLIFSymbol : IDisposable
+    {
+        public IntPtr marpaESLIFSymbolp { get; protected set; }
+        private readonly marpaESLIF marpaESLIF;
+        private readonly marpaESLIFSymbolOption marpaESLIFSymbolOption = new marpaESLIFSymbolOption();
+        private readonly marpaESLIFGrammar marpaESLIFGrammar;
+        private readonly marpaESLIFString @string;
+        private readonly marpaESLIFString modifiers;
+        private readonly marpaESLIFString substitution;
+        private readonly marpaESLIFString substitutionModifiers;
+        private bool disposedValue;
+
+        public marpaESLIFSymbol(marpaESLIF marpaESLIF, string @string, string modifiers)
+        {
+            this.marpaESLIF = marpaESLIF ?? throw new ArgumentNullException(nameof(marpaESLIF));
+
+            this.@string = new marpaESLIFString(@string);
+            this.modifiers = modifiers != null ? new marpaESLIFString(modifiers) : null;
+
+            this.marpaESLIFSymbolp = marpaESLIFShr.marpaESLIFSymbol_string_newp(this.marpaESLIF.marpaESLIFp, this.@string.marpaESLIFStringp, this.modifiers != null ? this.modifiers.marpaESLIFStringp : IntPtr.Zero, this.marpaESLIFSymbolOption.marpaESLIFSymbolOptionp);
+
+            if (this.marpaESLIFSymbolp == IntPtr.Zero)
+            {
+                throw new ESLIFException("marpaESLIFSymbol_string_newp failure");
+            }
+        }
+
+        // Regex symbol
+        public marpaESLIFSymbol(marpaESLIF marpaESLIF, string @string, string modifiers, string substitution, string substitutionModifiers)
+        {
+            this.marpaESLIF = marpaESLIF ?? throw new ArgumentNullException(nameof(marpaESLIF));
+
+            this.@string = new marpaESLIFString(@string);
+            this.modifiers = modifiers != null ? new marpaESLIFString(modifiers) : null;
+            this.substitution = substitution != null ? new marpaESLIFString(substitution) : null;
+            this.substitutionModifiers = substitutionModifiers != null ? new marpaESLIFString(substitutionModifiers) : null;
+
+            this.marpaESLIFSymbolp = marpaESLIFShr.marpaESLIFSymbol_regex_newp(this.marpaESLIF.marpaESLIFp, this.@string.marpaESLIFStringp, this.modifiers != null ? this.modifiers.marpaESLIFStringp : IntPtr.Zero, this.substitution != null ? this.substitution.marpaESLIFStringp : IntPtr.Zero, this.substitutionModifiers != null ? this.substitutionModifiers.marpaESLIFStringp : IntPtr.Zero, this.marpaESLIFSymbolOption.marpaESLIFSymbolOptionp);
+
+            if (this.marpaESLIFSymbolp == IntPtr.Zero)
+            {
+                throw new ESLIFException("marpaESLIFSymbol_regex_newp failure");
+            }
+        }
+
+        // Meta symbol
+        public marpaESLIFSymbol(marpaESLIF marpaESLIF, marpaESLIFGrammar marpaESLIFGrammar, string symbol)
+        {
+            this.marpaESLIF = marpaESLIF ?? throw new ArgumentNullException(nameof(marpaESLIF));
+            this.marpaESLIFGrammar = marpaESLIFGrammar ?? throw new ArgumentNullException(nameof(marpaESLIFGrammar));
+
+            IntPtr symbolp = symbol != null ? Marshal.StringToHGlobalAnsi(symbol) : IntPtr.Zero;
+
+            this.marpaESLIFSymbolp = marpaESLIFShr.marpaESLIFSymbol_meta_newp(this.marpaESLIF.marpaESLIFp, this.marpaESLIFGrammar.marpaESLIFGrammarp, symbolp, this.marpaESLIFSymbolOption.marpaESLIFSymbolOptionp);
+
+            if (symbolp != IntPtr.Zero)
+            {
+                Marshal.FreeHGlobal(symbolp);
+            }
+
+            if (this.marpaESLIFSymbolp == IntPtr.Zero)
+            {
+                throw new ESLIFException("marpaESLIFSymbol_meta_newp failure");
+            }
+        }
+
+        // Meta symbol by level
+        public marpaESLIFSymbol(marpaESLIF marpaESLIF, marpaESLIFGrammar marpaESLIFGrammar, string symbol, int level)
+        {
+            this.marpaESLIF = marpaESLIF ?? throw new ArgumentNullException(nameof(marpaESLIF));
+            this.marpaESLIFGrammar = marpaESLIFGrammar ?? throw new ArgumentNullException(nameof(marpaESLIFGrammar));
+
+            IntPtr symbolp = symbol != null ? Marshal.StringToHGlobalAnsi(symbol) : IntPtr.Zero;
+
+            this.marpaESLIFSymbolp = marpaESLIFShr.marpaESLIFSymbol_meta_new_by_levelp(this.marpaESLIF.marpaESLIFp, this.marpaESLIFGrammar.marpaESLIFGrammarp, symbolp, (@C2CSHARP_TYPE_INT@) level, IntPtr.Zero, this.marpaESLIFSymbolOption.marpaESLIFSymbolOptionp);
+
+            if (symbolp != IntPtr.Zero)
+            {
+                Marshal.FreeHGlobal(symbolp);
+            }
+
+            if (this.marpaESLIFSymbolp == IntPtr.Zero)
+            {
+                throw new ESLIFException("marpaESLIFSymbol_meta_newp failure");
+            }
+        }
+
+        public bool Try(byte[] input)
+        {
+            @C2CSHARP_TYPE_SHORT@ matchb = 0;
+
+            IntPtr inputp = Marshal.AllocHGlobal(input.Length);
+            Marshal.Copy(input, 0, inputp, input.Length);
+
+            if (marpaESLIFShr.marpaESLIFSymbol_tryb(this.marpaESLIFSymbolp, inputp, (@C2CSHARP_TYPE_SIZE_T@) input.Length, ref matchb) == 0) {
+                throw new ESLIFException("marpaESLIFSymbol_tryb failure");
+            }
+
+            return matchb != 0;
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // DONE: dispose managed state (managed objects)
+                }
+
+                // DONE: free unmanaged resources (unmanaged objects) and override finalizer
+                this.DisposeUnmanagedResources();
+                // DONE: set large fields to null
+                disposedValue = true;
+            }
+        }
+
+        // DONE: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        ~marpaESLIFSymbol()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: false);
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void DisposeUnmanagedResources()
+        {
+            if (this.marpaESLIFSymbolp != IntPtr.Zero)
+            {
+                marpaESLIFShr.marpaESLIFSymbol_freev(this.marpaESLIFSymbolp);
+            }
+        }
+    }
+}

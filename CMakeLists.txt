@@ -83,6 +83,8 @@ configure_file(src/org/parser/marpa/marpaESLIFLuaFunction.cs.in      ${CMAKE_CUR
 configure_file(src/org/parser/marpa/marpaESLIFRecognizer.cs.in       ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/generated/marpaESLIFRecognizer.cs @ONLY)
 configure_file(src/org/parser/marpa/marpaESLIFRecognizerOption.cs.in ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/generated/marpaESLIFRecognizerOption.cs @ONLY)
 configure_file(src/org/parser/marpa/marpaESLIFString.cs.in           ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/generated/marpaESLIFString.cs @ONLY)
+configure_file(src/org/parser/marpa/marpaESLIFSymbol.cs.in           ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/generated/marpaESLIFSymbol.cs @ONLY)
+configure_file(src/org/parser/marpa/marpaESLIFSymbolOption.cs.in     ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/generated/marpaESLIFSymbolOption.cs @ONLY)
 configure_file(src/org/parser/marpa/marpaESLIFValueOption.cs.in      ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/generated/marpaESLIFValueOption.cs @ONLY)
 configure_file(src/org/parser/marpa/marpaESLIF_wrapperShr.cs.in      ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/generated/marpaESLIF_wrapperShr.cs @ONLY)
 #
@@ -101,6 +103,8 @@ add_library(marpaESLIFCSharp SHARED
   src/org/parser/marpa/generated/marpaESLIFRecognizer.cs
   src/org/parser/marpa/generated/marpaESLIFRecognizerOption.cs
   src/org/parser/marpa/generated/marpaESLIFString.cs
+  src/org/parser/marpa/generated/marpaESLIFSymbol.cs
+  src/org/parser/marpa/generated/marpaESLIFSymbolOption.cs
   src/org/parser/marpa/generated/marpaESLIFValueOption.cs
   src/org/parser/marpa/generated/marpaESLIF_wrapperShr.cs
   

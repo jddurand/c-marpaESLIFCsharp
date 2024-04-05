@@ -1,0 +1,93 @@
+using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+
+namespace org.parser.marpa
+{
+    public class marpaESLIFSymbolOption : IDisposable
+    {
+        public IntPtr marpaESLIFSymbolOptionp { get; protected set; }
+        public marpaESLIFSymbolOptionContext context { get; protected set; }
+        private readonly marpaESLIFShr.marpaESLIFSymbolOption_t marpaESLIFSymbolOption_t;
+        private readonly GCHandle contextHandle;
+        private readonly IntPtr userDatavp;
+        private bool disposedValue;
+
+        public class marpaESLIFSymbolOptionContext
+        {
+            public Stack<object> stack = new Stack<object>();
+        }
+
+        public marpaESLIFSymbolOption()
+        {
+            this.context = new marpaESLIFSymbolOptionContext();
+            this.contextHandle = GCHandle.Alloc(context, GCHandleType.Normal);
+            this.userDatavp = GCHandle.ToIntPtr(this.contextHandle);
+
+            this.marpaESLIFSymbolOption_t = new marpaESLIFShr.marpaESLIFSymbolOption_t();
+            this.marpaESLIFSymbolOption_t.userDatavp = userDatavp;
+            this.marpaESLIFSymbolOption_t.importerp = Importer;
+
+            this.marpaESLIFSymbolOptionp = Marshal.AllocHGlobal(Marshal.SizeOf(this.marpaESLIFSymbolOption_t));
+            Marshal.StructureToPtr(marpaESLIFSymbolOption_t, this.marpaESLIFSymbolOptionp, false);
+        }
+
+        private static @C2CSHARP_TYPE_SHORT@ Importer(IntPtr marpaESLIFSymbolp, IntPtr userDatavp, IntPtr marpaESLIFValueResultp, short haveUndefb)
+        {
+            GCHandle contextHandle = GCHandle.FromIntPtr(userDatavp);
+            marpaESLIFSymbolOptionContext context = (marpaESLIFSymbolOptionContext)contextHandle.Target;
+            if (context == null)
+            {
+                throw new ESLIFException("context is null");
+            }
+
+            ImportExport.Instance.Importer(context.stack, marpaESLIFValueResultp);
+
+            return 1;
+        }
+
+        private void DisposeUnmanagedResources()
+        {
+            if (this.userDatavp != IntPtr.Zero)
+            {
+                this.contextHandle.Free();
+            }
+
+            if (this.marpaESLIFSymbolOptionp != IntPtr.Zero)
+            {
+                Marshal.FreeHGlobal(this.marpaESLIFSymbolOptionp);
+                this.marpaESLIFSymbolOptionp = IntPtr.Zero;
+            }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // DONE: dispose managed state (managed objects)
+                }
+
+                // DONE: free unmanaged resources (unmanaged objects) and override finalizer
+                this.DisposeUnmanagedResources();
+                // DONE: set large fields to null
+                disposedValue = true;
+            }
+        }
+
+        // DONE: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        ~marpaESLIFSymbolOption()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: false);
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+    }
+}

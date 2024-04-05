@@ -1,13 +1,31 @@
-#cmakedefine MARPAESLIF_HAVE_LONG_LONG
-#cmakedefine C2CSHARP_TYPE_INT_IS_INT
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
 
 namespace org.parser.marpa
 {
-    public static class marpaESLIFString
+    public class marpaESLIFString : IDisposable
     {
+        public IntPtr marpaESLIFStringp { get; protected set; }
+        private bool disposedValue;
+
+        public marpaESLIFString(string @string)
+        {
+            byte[] bytes = Encoding.UTF8.GetBytes(@string);
+
+            marpaESLIFShr.marpaESLIFString_t marpaESLIFString_t = new marpaESLIFShr.marpaESLIFString_t
+            {
+                bytep = Marshal.AllocHGlobal(bytes.Length),
+                bytel = (uint) bytes.Length,
+                encodingasciis = Marshal.StringToHGlobalAnsi("UTF-8"),
+                asciis = IntPtr.Zero,
+            };
+
+            Marshal.Copy(bytes, 0, marpaESLIFString_t.bytep, bytes.Length);
+            this.marpaESLIFStringp = Marshal.AllocHGlobal(Marshal.SizeOf(marpaESLIFString_t));
+            Marshal.StructureToPtr(marpaESLIFString_t, this.marpaESLIFStringp, false);
+        }
+
         public static string BytesToString(IntPtr bytep, @C2CSHARP_TYPE_SIZE_T@ bytel, IntPtr encodingasciis)
         {
             return BytesToString(bytep, bytel, Marshal.PtrToStringAnsi(encodingasciis));
@@ -66,6 +84,54 @@ namespace org.parser.marpa
             marpaESLIFShr.marpaESLIFString_t marpaESLIFString_t = new marpaESLIFShr.marpaESLIFString_t();
             Marshal.StructureToPtr(marpaESLIFString_t, marpaESLIFStringPtr, false);
             return BytesToString(marpaESLIFString_t.bytep, marpaESLIFString_t.bytel, marpaESLIFString_t.encodingasciis);
+        }
+
+        private void DisposeUnamangedResources()
+        {
+            if (this.marpaESLIFStringp != IntPtr.Zero)
+            {
+                marpaESLIFShr.marpaESLIFString_t marpaESLIFString_t = new marpaESLIFShr.marpaESLIFString_t();
+                Marshal.PtrToStructure(this.marpaESLIFStringp, marpaESLIFString_t);
+                if (marpaESLIFString_t.bytep != IntPtr.Zero)
+                {
+                    Marshal.FreeHGlobal(marpaESLIFString_t.bytep);
+                }
+                if (marpaESLIFString_t.encodingasciis != IntPtr.Zero)
+                {
+                    Marshal.FreeHGlobal(marpaESLIFString_t.encodingasciis);
+                }
+                Marshal.FreeHGlobal(this.marpaESLIFStringp);
+            }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // DONE: dispose managed state (managed objects)
+                }
+
+                // DONE: free unmanaged resources (unmanaged objects) and override finalizer
+                this.DisposeUnamangedResources();
+                // DONE: set large fields to null
+                disposedValue = true;
+            }
+        }
+
+        // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        ~marpaESLIFString()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: false);
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }
