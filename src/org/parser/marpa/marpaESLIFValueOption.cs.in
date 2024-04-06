@@ -1,7 +1,6 @@
-#cmakedefine MARPAESLIF_HAVE_LONG_LONG
-#cmakedefine C2CSHARP_TYPE_INT_IS_INT
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 namespace org.parser.marpa
@@ -20,8 +19,7 @@ namespace org.parser.marpa
         {
             public ESLIFValueInterface valueInterface;
             public Stack<object> stack = new Stack<object>();
-            public Func<List<object>, object> ruleAction = null;
-            public Func<object, object> symbolAction = null;
+            public string action;
 
             public marpaESLIFValueOptionContext(ESLIFValueInterface valueInterface)
             {
@@ -96,7 +94,38 @@ namespace org.parser.marpa
             return stack.Pop();
         }
 
-        private static @C2CSHARP_TYPE_SHORT@ RuleCallback(IntPtr userDatavp, IntPtr marpaESLIFValuep, @C2CSHARP_TYPE_INT@ arg0i, @C2CSHARP_TYPE_INT@ argni, @C2CSHARP_TYPE_INT@ resulti, @C2CSHARP_TYPE_SHORT@ nullableb)
+        private static @C2CSHARP_TYPE_SHORT@ Callback(marpaESLIFValueOptionContext context, IntPtr marpaESLIFValuep, @C2CSHARP_TYPE_INT@ resulti, object[] args)
+        {
+            // We do not support the same method with multiple definitions
+            MethodInfo methodInfo = context.valueInterface.GetType().GetMethod(context.action) ?? throw new ESLIFException($"{context.action} is not supported.");
+            // We let C# deal with variance
+            object actionResult;
+            try
+            {
+                actionResult = methodInfo.Invoke(context.valueInterface, args);
+            }
+            catch (Exception e)
+            {
+                throw new ESLIFException($"{context.action} failure", e);
+            }
+
+            IntPtr marpaESLIFValueResultp = ImportExport.Instance.Exporter(actionResult);
+            @C2CSHARP_TYPE_SHORT@ output = marpaESLIFShr.marpaESLIFValue_stack_setb(marpaESLIFValuep, resulti, marpaESLIFValueResultp);
+            if (output == 0)
+            {
+                // Free as much as possible
+                marpaESLIFShr.marpaESLIFValue_marpaESLIFValueResult_freeb(marpaESLIFValuep, marpaESLIFValueResultp, (@C2CSHARP_TYPE_SHORT@) 1);
+            }
+            else
+            {
+              // Just deallocate it
+              Marshal.FreeHGlobal(marpaESLIFValueResultp);
+            }
+
+            return output;
+        }
+
+        private static marpaESLIFValueOptionContext GetContext(IntPtr userDatavp)
         {
             GCHandle contextHandle = GCHandle.FromIntPtr(userDatavp);
             marpaESLIFValueOptionContext context = (marpaESLIFValueOptionContext)contextHandle.Target;
@@ -105,105 +134,50 @@ namespace org.parser.marpa
                 throw new ESLIFException("context is null");
             }
 
-            List<object> args;
+            return context;
+        }
+
+        private static marpaESLIFShr.marpaESLIFValueRuleCallback_t RuleActionResolver(IntPtr userDatavp, IntPtr marpaESLIFValuep, IntPtr actions)
+        {
+            GetContext(userDatavp).action = Marshal.PtrToStringAnsi(actions);
+
+            return RuleCallback;
+        }
+
+        private static @C2CSHARP_TYPE_SHORT@ RuleCallback(IntPtr userDatavp, IntPtr marpaESLIFValuep, @C2CSHARP_TYPE_INT@ arg0i, @C2CSHARP_TYPE_INT@ argni, @C2CSHARP_TYPE_INT@ resulti, @C2CSHARP_TYPE_SHORT@ nullableb)
+        {
+            marpaESLIFValueOptionContext context = GetContext(userDatavp);
+            object[] args;
+
             if (nullableb != 0)
             {
                 args = null;
             }
             else
             {
-                args = new List<object>();
-                for (@C2CSHARP_TYPE_INT@ argi = arg0i; argi <= argni; argi++)
+                args = new object[argni - arg0i + 1];
+                for (int argi = arg0i; argi <= argni; argi++)
                 {
-                    args.Add(GetObject(context.stack, marpaESLIFValuep, argi));
+                    args[argi - arg0i] = GetObject(context.stack, marpaESLIFValuep, argi);
                 }
             }
 
-            object actionResult = context.ruleAction(args);
-
-            IntPtr marpaESLIFValueResultp = ImportExport.Instance.Exporter(actionResult);
-            @C2CSHARP_TYPE_SHORT@ output = marpaESLIFShr.marpaESLIFValue_stack_setb(marpaESLIFValuep, resulti, marpaESLIFValueResultp);
-            if (output == 0)
-            {
-                marpaESLIFShr.marpaESLIFValue_marpaESLIFValueResult_freeb(marpaESLIFValuep, marpaESLIFValueResultp, (@C2CSHARP_TYPE_SHORT@) 1);
-                return 0;
-            }
-
-            // Just deallocate it
-            Marshal.FreeHGlobal(marpaESLIFValueResultp);
-            return 1;
-        }
-
-        private static void CheckRuleActionExists(IntPtr userDatavp, IntPtr marpaESLIFValuep, IntPtr actions)
-        {
-            GCHandle contextHandle = GCHandle.FromIntPtr(userDatavp);
-            marpaESLIFValueOptionContext context = (marpaESLIFValueOptionContext)contextHandle.Target;
-            if (context == null)
-            {
-                throw new ESLIFException("context is null");
-            }
-
-            string action = Marshal.PtrToStringAnsi(actions);
-            if (!context.valueInterface.RuleActions().TryGetValue(action, out context.ruleAction))
-            {
-                throw new ESLIFException($"Unimplemented action {action}");
-            }
-
-        }
-
-        private static marpaESLIFShr.marpaESLIFValueRuleCallback_t RuleActionResolver(IntPtr userDatavp, IntPtr marpaESLIFValuep, IntPtr actions)
-        {
-            CheckRuleActionExists(userDatavp, marpaESLIFValuep, actions);
-            return RuleCallback;
-        }
-
-        private static @C2CSHARP_TYPE_SHORT@ SymbolCallback(IntPtr userDatavp, IntPtr marpaESLIFValuep, IntPtr marpaESLIFValueResultp, @C2CSHARP_TYPE_INT@ resulti)
-        {
-            GCHandle contextHandle = GCHandle.FromIntPtr(userDatavp);
-            marpaESLIFValueOptionContext context = (marpaESLIFValueOptionContext)contextHandle.Target;
-            if (context == null)
-            {
-                throw new ESLIFException("context is null");
-            }
-
-            object arg = GetObject(context.stack, marpaESLIFValuep, marpaESLIFValueResultp);
-
-            object actionResult = context.symbolAction(arg);
-
-            marpaESLIFValueResultp = ImportExport.Instance.Exporter(actionResult);
-            @C2CSHARP_TYPE_SHORT@ output = marpaESLIFShr.marpaESLIFValue_stack_setb(marpaESLIFValuep, resulti, marpaESLIFValueResultp);
-            if (output == 0)
-            {
-                marpaESLIFShr.marpaESLIFValue_marpaESLIFValueResult_freeb(marpaESLIFValuep, marpaESLIFValueResultp, (@C2CSHARP_TYPE_SHORT@) 1);
-                return 0;
-            }
-
-            // Just deallocate it
-            Marshal.FreeHGlobal(marpaESLIFValueResultp);
-            return 1;
-        }
-
-        private static void CheckSymbolActionExists(IntPtr userDatavp, IntPtr marpaESLIFValuep, IntPtr actions)
-        {
-            GCHandle contextHandle = GCHandle.FromIntPtr(userDatavp);
-            marpaESLIFValueOptionContext context = (marpaESLIFValueOptionContext)contextHandle.Target;
-            if (context == null)
-            {
-                throw new ESLIFException("context is null");
-            }
-
-            string action = Marshal.PtrToStringAnsi(actions);
-            if (!context.valueInterface.SymbolActions().TryGetValue(action, out context.symbolAction))
-            {
-                throw new ESLIFException($"Unimplemented action {action}");
-            }
-
+            return Callback(context, marpaESLIFValuep, resulti, args);
         }
 
         private static marpaESLIFShr.marpaESLIFValueSymbolCallback_t SymbolActionResolver(IntPtr userDatavp, IntPtr marpaESLIFValuep, IntPtr actions)
         {
-            CheckSymbolActionExists(userDatavp, marpaESLIFValuep, actions);
+            GetContext(userDatavp).action = Marshal.PtrToStringAnsi(actions);
+
             return SymbolCallback;
+        }
+
+        private static @C2CSHARP_TYPE_SHORT@ SymbolCallback(IntPtr userDatavp, IntPtr marpaESLIFValuep, IntPtr marpaESLIFValueResultp, @C2CSHARP_TYPE_INT@ resulti)
+        {
+            marpaESLIFValueOptionContext context = GetContext(userDatavp);
+            object[] args = new object[1] { GetObject(context.stack, marpaESLIFValuep, marpaESLIFValueResultp) };
+
+            return Callback(context, marpaESLIFValuep, resulti, args);
         }
 
         private void DisposeUnmanagedResources()

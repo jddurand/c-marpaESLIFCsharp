@@ -114,34 +114,34 @@ namespace marpaESLIFShrTest
 :discard ::= /[\s]+/
 :symbol ::= ""("" name => LPAREN pause => before event => ^LPAREN
 :symbol ::= "")"" name => RPAREN pause => before event => ^RPAREN
-:symbol ::= /[\d]+/ name => DIGITS pause => before event => ^DIGITS symbol-action => digits
+:symbol ::= /[\d]+/ name => DIGITS pause => before event => ^DIGITS # symbol-action => symboldigits
 exp ::=
-    digits                                  action => digits # ::luac->function(input) return tonumber(input) end
-    | $LPAREN  exp $RPAREN   assoc => group action => exp # ::luac->function(l,e,r) return e               end
-   || exp (- '**' -) exp     assoc => right action => pow # ::luac->function(x,y)   return x^y             end
-   || exp (-  '*' -) exp                    action => mul # ::luac->function(x,y)   return x*y             end
-    | exp (-  '/' -) exp                    action => div # ::luac->function(x,y)   return x/y             end
-   || exp (-  '+' -) exp                    action => plus # ::luac->function(x,y)   return x+y             end
-    | exp (-  '-' -) exp                    action => minus # ::luac->function(x,y)   return x-y             end
+    digits                                  action => Digits # ::luac->function(input) return tonumber(input) end
+    | $LPAREN  exp $RPAREN   assoc => group action => Exp # ::luac->function(l,e,r) return e               end
+   || exp (- '**' -) exp     assoc => right action => Pow # ::luac->function(x,y)   return x^y             end
+   || exp (-  '*' -) exp                    action => Mul # ::luac->function(x,y)   return x*y             end
+    | exp (-  '/' -) exp                    action => Div # ::luac->function(x,y)   return x/y             end
+   || exp (-  '+' -) exp                    action => Plus # ::luac->function(x,y)   return x+y             end
+    | exp (-  '-' -) exp                    action => Minus # ::luac->function(x,y)   return x-y             end
 digits ::= $DIGITS                          action => ::ascii
 <anything up to newline> ::= <ANYTHING UP TO NEWLINE>
 <ANYTHING UP TO NEWLINE> ~ /[^\\n]*/
 "
             );
             bool isExhausted = false;
-            string input = "3 * 4";
-            RecognizerInterface recognizerInterface = new RecognizerInterface(input);
-            ValueInterface valueInterface = new ValueInterface();
-            if (grammar.Parse(recognizerInterface, valueInterface, ref isExhausted))
+            string input = "(3 * 4 / 2) ** 2 + 15";
+            MyRecognizer myRecognizer = new MyRecognizer(input);
+            MyValue myValue = new MyValue();
+            if (grammar.Parse(myRecognizer, myValue, ref isExhausted))
             {
-                logger.LogInformation($"Parse of {input} gives: {valueInterface.result}, isExhausted={isExhausted}");
+                logger.LogInformation($"Parse of {input} gives: {myValue.result}, isExhausted={isExhausted}");
             }
-            if (grammar.ParseByLevel(recognizerInterface, valueInterface, ref isExhausted, 0))
+            if (grammar.ParseByLevel(myRecognizer, myValue, ref isExhausted, 0))
             {
-                logger.LogInformation($"Parse of {input} at level 0 gives: {valueInterface.result}, isExhausted={isExhausted}");
+                logger.LogInformation($"Parse of {input} at level 0 gives: {myValue.result}, isExhausted={isExhausted}");
             }
 
-            ESLIFRecognizer eslifRecognizer = new ESLIFRecognizer(grammar, recognizerInterface);
+            ESLIFRecognizer eslifRecognizer = new ESLIFRecognizer(grammar, myRecognizer);
             logger.LogInformation($"Expected: {string.Join(", ", eslifRecognizer.ExpectedNames())}");
             logger.LogInformation($"Last pause at symbol DIGITS: {eslifRecognizer.LastPauseName("DIGITS")}");
             logger.LogInformation($"Last try at symbol DIGITS: {eslifRecognizer.LastTryName("DIGITS")}");
@@ -192,10 +192,10 @@ digits ::= $DIGITS                          action => ::ascii
         }
     }
 
-    public class RecognizerInterface : ESLIFRecognizerInterface
+    public class MyRecognizer : ESLIFRecognizerInterface
     {
         private readonly string input;
-        public RecognizerInterface(string input)
+        public MyRecognizer(string input)
         {
             this.input = input ?? throw new ArgumentNullException(nameof(input));
         }
@@ -280,132 +280,20 @@ digits ::= $DIGITS                          action => ::ascii
 
     }
 
-    public class ValueInterface : ESLIFValueInterface
+    public class MyValue : ESLIFValue
     {
-        public object result { get; protected set; }
-        public string ruleName { get; protected set; }
-        public int ruleNumber { get; protected set; }
-        public string symbolName { get; protected set; }
-        public int symbolNumber { get; protected set; }
-        public ESLIFGrammar grammar { get; protected set; }
+        public int Digits(string input) => int.Parse(input);
 
-        public object GetResult()
-        {
-            return this.result;
-        }
+        public double Exp(byte[] leftParent, double input, byte[] rightParen) => input;
 
-        public bool IsWithAmbiguous()
-        {
-            return false;
-        }
+        public double Pow(double x, double y) => Math.Pow(x, y);
 
-        public bool IsWithHighRankOnly()
-        {
-            return true;
-        }
+        public double Mul(double x, double y) => x * y;
 
-        public bool IsWithNull()
-        {
-            return false;
-        }
+        public double Div(double x, double y) => x / y;
 
-        public bool IsWithOrderByRank()
-        {
-            return true;
-        }
+        public double Plus(double x, double y) => x + y;
 
-        public int MaxParses()
-        {
-            return 0;
-        }
-
-        public void SetGrammar(ESLIFGrammar grammar)
-        {
-            this.grammar = grammar;
-        }
-
-        public void SetResult(object result)
-        {
-            this.result = result;
-        }
-
-        public void SetRuleName(string ruleName)
-        {
-            this.ruleName = ruleName;
-        }
-
-        public void SetRuleNumber(int ruleNumber)
-        {
-            this.ruleNumber = ruleNumber;
-        }
-
-        public void SetSymbolName(string symbolName)
-        {
-            this.symbolName = symbolName;
-        }
-
-        public void SetSymbolNumber(int symbolNumber)
-        {
-            this.symbolNumber = symbolNumber;
-        }
-
-        public Dictionary<string, Func<List<object>, object>> RuleActions()
-        {
-            return new Dictionary<string, Func<List<object>, object>>
-            {
-                { "digits", (args) =>
-                    {
-                        return int.Parse(args[0] as string);
-                    }
-                },
-                { "exp", (args) =>
-                    {
-                        return args[1];
-                    }
-                },
-                { "pow", (args) =>
-                    {
-                        return Math.Pow(ObjToDouble(args[0]), ObjToDouble(args[1]));
-                    }
-                },
-                { "mul", (args) =>
-                    {
-                        return ObjToDouble(args[0]) * ObjToDouble(args[1]);
-                    }
-                },
-                { "div", (args) =>
-                    {
-                        return ObjToDouble(args[0])/ ObjToDouble(args[1]);
-                    }
-                },
-                { "plus", (args) =>
-                    {
-                        return ObjToDouble(args[0]) + ObjToDouble(args[1]);
-                    }
-                },
-                { "minus", (args) =>
-                    {
-                        return ObjToDouble(args[0]) - ObjToDouble(args[1]);
-                    }
-                },
-            };
-        }
-
-        public Dictionary<string, Func<object, object>> SymbolActions()
-        {
-            return new Dictionary<string, Func<object, object>>
-            {
-                { "digits", (arg) =>
-                    {
-                        return arg;
-                    }
-                },
-            };
-        }
-
-        private static double ObjToDouble(object obj)
-        {
-            return Convert.ToDouble(obj, CultureInfo.InvariantCulture);
-        }
+        public double Minus(double x, double y) => x - y;
     }
 }
