@@ -69,7 +69,7 @@ namespace org.parser.marpa
         };
     
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizerRegexCallback_t(IntPtr userDatavp, IntPtr marpaESLIFRecognizerp, IntPtr marpaESLIFCalloutBlockp, ref IntPtr marpaESLIFValueResultOutp);
+        public delegate @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizerRegexCallback_t(IntPtr userDatavp, IntPtr marpaESLIFRecognizerp, IntPtr marpaESLIFCalloutBlockp, ref @C2CSHARP_TYPE_INT@ marpaESLIFValueResultOutp);
     
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate marpaESLIFRecognizerRegexCallback_t marpaESLIFRecognizerRegexActionResolver_t(IntPtr userDatavp, IntPtr marpaESLIFRecognizerp, IntPtr actions);

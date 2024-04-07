@@ -605,7 +605,7 @@ namespace org.parser.marpa
                     else
                     {
                         int j = (int)marpaESLIFValueResultFlat_t.r.sizel - 1;
-                        object[] objects = new object[j];
+                        object[] objects = new object[(int)marpaESLIFValueResultFlat_t.r.sizel];
                         for (int i = 0; i < marpaESLIFValueResultFlat_t.r.sizel; i++, j--)
                         {
                             objects[j] = stack.Pop();

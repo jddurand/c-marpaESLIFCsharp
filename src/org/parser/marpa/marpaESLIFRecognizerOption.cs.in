@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -102,8 +103,86 @@ namespace org.parser.marpa
             return marpaESLIFRecognizerGeneratorCallback;
         }
 
-        private static @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizerRegexCallback(IntPtr userDatavp, IntPtr marpaESLIFRecognizerp, IntPtr marpaESLIFCalloutBlockp, ref IntPtr marpaESLIFValueResultOutp)
+        private static @C2CSHARP_TYPE_INT@ RegexCallback(marpaESLIFRecognizerOptionContext context, object[] args)
         {
+            // We do not support the same method with multiple definitions
+            MethodInfo methodInfo = context.recognizerInterface.GetType().GetMethod(context.action) ?? throw new ESLIFException($"{context.action} is not supported.");
+            // We let C# deal with variance
+            object output;
+            try
+            {
+                output = methodInfo.Invoke(context.recognizerInterface, args);
+            }
+            catch (Exception e)
+            {
+                throw new ESLIFException($"{context.action} failure", e);
+            }
+
+            return (@C2CSHARP_TYPE_INT@) output;
+        }
+
+        private static @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizerRegexCallback(IntPtr userDatavp, IntPtr marpaESLIFRecognizerp, IntPtr marpaESLIFCalloutBlockp, ref @C2CSHARP_TYPE_INT@ marpaESLIFValueResultOutp)
+        {
+            marpaESLIFRecognizerOptionContext context = GetContext(userDatavp);
+            object input = GetObject(context.stack, marpaESLIFRecognizerp, marpaESLIFCalloutBlockp);
+            Dictionary<object, object> dict = input as Dictionary<object, object>;
+            ESLIFRegexCallout callout = new ESLIFRegexCallout();
+
+            if (dict.TryGetValue("callout_number", out object callout_number) && callout_number != null)
+            {
+                callout.callout_number = (int)callout_number;
+            }
+            if (dict.TryGetValue("callout_string", out object callout_string) && callout_string != null)
+            {
+                callout.callout_string = Encoding.UTF8.GetString((byte[]) callout_string);
+            }
+            if (dict.TryGetValue("subject", out object subject))
+            {
+                callout.subject = (byte[])subject;
+            }
+            if (dict.TryGetValue("pattern", out object pattern))
+            {
+                callout.pattern = (byte[])pattern;
+            }
+            if (dict.TryGetValue("capture_top", out object capture_top))
+            {
+                callout.capture_top = (int)capture_top;
+            }
+            if (dict.TryGetValue("capture_last", out object capture_last))
+            {
+                callout.capture_last = (int)capture_last;
+            }
+            if (dict.TryGetValue("offset_vector", out object offset_vector))
+            {
+                callout.offset_vector = (offset_vector as object[])?.Select(o => (int)o).ToArray();
+            }
+            if (dict.TryGetValue("mark", out object mark) && mark != null)
+            {
+                callout.mark = (int)mark;
+            }
+            if (dict.TryGetValue("start_match", out object start_match))
+            {
+                callout.start_match = (int)start_match;
+            }
+            if (dict.TryGetValue("current_position", out object current_position))
+            {
+                callout.current_position = (int)current_position;
+            }
+            if (dict.TryGetValue("next_item", out object next_item))
+            {
+                callout.next_item = (byte[])next_item;
+            }
+            if (dict.TryGetValue("grammar_level", out object grammar_level))
+            {
+                callout.grammar_level = (int)grammar_level;
+            }
+            if (dict.TryGetValue("symbol_id", out object symbol_id))
+            {
+                callout.symbol_id = (int)symbol_id;
+            }
+
+            marpaESLIFValueResultOutp = RegexCallback(context, new object[] { callout });
+
             return 1;
         }
 

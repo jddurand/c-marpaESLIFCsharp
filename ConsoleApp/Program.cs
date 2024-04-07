@@ -110,11 +110,11 @@ namespace marpaESLIFShrTest
 
             grammar = ESLIFGrammar.Instance(eslif,
                     @"
-:default ::= event-action => MyEvent
+:default ::= event-action => MyEvent regex-action => MyRegexAction
 :discard ::= /[\s]+/
 :symbol ::= ""("" name => LPAREN pause => before event => ^LPAREN
 :symbol ::= "")"" name => RPAREN pause => before event => ^RPAREN
-:symbol ::= /[\d]+/ name => DIGITS pause => before event => ^DIGITS if-action => GreaterThanZero
+:symbol ::= /(?C1)([\d]+(?C""some """"arbitrary"""" text""))/ name => DIGITS pause => before event => ^DIGITS if-action => GreaterThanZero
 exp ::=
     digits                                  action => Digits # ::luac->function(input) return tonumber(input) end
     | $LPAREN  exp $RPAREN   assoc => group action => Exp # ::luac->function(l,e,r) return e               end
@@ -256,6 +256,13 @@ digits ::= $DIGITS                          action => ::ascii
             {
                 this.logger.LogInformation($"Event callback[{i}]: {events[i]}");
             }
+        }
+
+        public int MyRegexAction(ESLIFRegexCallout callout)
+        {
+            this.logger.LogInformation($"Regex callout: {callout}");
+
+            return 0;
         }
     }
 
