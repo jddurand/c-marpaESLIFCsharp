@@ -2,7 +2,6 @@
 using org.parser.marpa;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 
 namespace marpaESLIFShrTest
@@ -114,7 +113,7 @@ namespace marpaESLIFShrTest
 :discard ::= /[\s]+/
 :symbol ::= ""("" name => LPAREN pause => before event => ^LPAREN
 :symbol ::= "")"" name => RPAREN pause => before event => ^RPAREN
-:symbol ::= /[\d]+/ name => DIGITS pause => before event => ^DIGITS # symbol-action => symboldigits
+:symbol ::= /[\d]+/ name => DIGITS pause => before event => ^DIGITS if-action => GreaterThanZero
 exp ::=
     digits                                  action => Digits # ::luac->function(input) return tonumber(input) end
     | $LPAREN  exp $RPAREN   assoc => group action => Exp # ::luac->function(l,e,r) return e               end
@@ -192,92 +191,23 @@ digits ::= $DIGITS                          action => ::ascii
         }
     }
 
-    public class MyRecognizer : ESLIFRecognizerInterface
+    public class MyRecognizer : ESLIFRecognizerString
     {
-        private readonly string input;
         public MyRecognizer(string input)
+            : base(input)
         {
-            this.input = input ?? throw new ArgumentNullException(nameof(input));
         }
 
-        public Dictionary<string, Func<List<object>, object>> Actions()
+        public bool GreaterThanZero(byte[] bytes)
         {
-            return new Dictionary<string, Func<List<object>, object>>();
-        }
+            string input = System.Text.Encoding.UTF8.GetString(bytes);
+            if (int.TryParse(input, out int value))
+            {
+                return value > 0;
+            }
 
-        public byte[] Data()
-        {
-            return System.Text.Encoding.UTF8.GetBytes(this.input);
-        }
-
-        public string Encoding()
-        {
-            return "UTF-8";
-        }
-
-        public ESLIFRecognizer GetESLIFRecognizer()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsCharacterStream()
-        {
-            return true;
-        }
-
-        public bool IsEof()
-        {
-            return true;
-        }
-
-        public bool IsWithDisableThreshold()
-        {
-            return true;
-        }
-
-        public bool IsWithExhaustion()
-        {
-            return true;
-        }
-
-        public bool IsWithNewline()
-        {
-            return true;
-        }
-
-        public bool IsWithTrack()
-        {
             return false;
         }
-
-        public bool Read()
-        {
-            return true;
-        }
-
-        public void SetESLIFRecognizer(ESLIFRecognizer recognizer)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Dictionary<string, Func<byte[], bool>> IfActions()
-        {
-            return new Dictionary<string, Func<byte[], bool>>
-            {
-                { "if-greater-than-zero", (bytes) =>
-                    {
-                        string input = System.Text.Encoding.UTF8.GetString(bytes);
-                        if (int.TryParse(input, out int value))
-                        {
-                            return value > 0;
-                        }
-
-                        return false;
-                    }
-                },
-            };
-        }
-
     }
 
     public class MyValue : ESLIFValue

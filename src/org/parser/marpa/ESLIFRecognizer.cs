@@ -6,13 +6,13 @@ namespace org.parser.marpa
     public class ESLIFRecognizer
     {
         public ESLIFGrammar eslifGrammar { get; protected set; }
-        public ESLIFRecognizerInterface recognizerInterface { get; protected set; }
+        public IESLIFRecognizer recognizerInterface { get; protected set; }
         private readonly marpaESLIFRecognizer marpaESLIFRecognizer;
         private readonly marpaESLIFRecognizerOption marpaESLIFRecognizerOption;
         private ESLIFRecognizer eslifRecognizerShared;
         private ESLIFRecognizer eslifRecognizerPeeked;
 
-        public ESLIFRecognizer(ESLIFGrammar eslifGrammar, ESLIFRecognizerInterface recognizerInterface)
+        public ESLIFRecognizer(ESLIFGrammar eslifGrammar, IESLIFRecognizer recognizerInterface)
         {
             this.eslifGrammar = eslifGrammar ?? throw new ArgumentNullException(nameof(eslifGrammar));
             this.recognizerInterface = recognizerInterface; // Can be null
