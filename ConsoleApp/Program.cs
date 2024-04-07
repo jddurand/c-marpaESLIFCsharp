@@ -148,9 +148,9 @@ digits ::= $DIGITS                          action => ::ascii
             logger.LogInformation("Creating recognizer");
             ESLIFRecognizer eslifRecognizer = new ESLIFRecognizer(grammar, myRecognizer);
             logger.LogInformation($"Expected: {string.Join(", ", eslifRecognizer.ExpectedNames())}");
-            logger.LogInformation($"Last pause at symbol DIGITS: {eslifRecognizer.LastPauseName("DIGITS")}");
-            logger.LogInformation($"Last try at symbol DIGITS: {eslifRecognizer.LastTryName("DIGITS")}");
-            logger.LogInformation($"Last discard: {eslifRecognizer.LastDiscard()}");
+            logger.LogInformation($"Last pause at symbol DIGITS: {new string(eslifRecognizer.LastPauseName("DIGITS").Select(b => (char)b).ToArray())}");
+            logger.LogInformation($"Last try at symbol DIGITS: {new string(eslifRecognizer.LastTryName("DIGITS").Select(b => (char)b).ToArray())}");
+            logger.LogInformation($"Last discard: {new string(eslifRecognizer.LastDiscard().Select(b => (char)b).ToArray())}");
             logger.LogInformation($"IsEof: {eslifRecognizer.IsEof()}");
             logger.LogInformation($"IsStartComplete: {eslifRecognizer.IsStartComplete()}");
             logger.LogInformation($"EventOnOff on exp: {eslifRecognizer.EventOnOff("exp", ESLIFEventType.NONE, true)}");
@@ -171,9 +171,16 @@ digits ::= $DIGITS                          action => ::ascii
                 logger.LogInformation($"{eslifProgress}");
             }
 
-            logger.LogWarning("===> Calling eslifRecognizer.Input()");
-            byte[] recognizerInput = eslifRecognizer.Input();
-            logger.LogInformation($"Input: {new string(recognizerInput.Select(b => (char)b).ToArray())}");
+            logger.LogWarning("===> Calling eslifRecognizer.InputLength()");
+            int inputLength = eslifRecognizer.InputLength();
+            logger.LogInformation($"Input length: {inputLength}");
+
+            for (int i = 0; i < inputLength; i++)
+            {
+                logger.LogWarning($"===> Calling eslifRecognizer.Input(0, {i})");
+                byte[] recognizerInput = eslifRecognizer.Input(0, i);
+                logger.LogInformation($"Input: {new string(recognizerInput.Select(b => (char)b).ToArray())}");
+            }
 
             logger.LogWarning("===> Calling eslifRecognizer.Error()");
             eslifRecognizer.Error();

@@ -537,7 +537,20 @@ namespace org.parser.marpa
             return output;
         }
 
-        public byte[] Input()
+        public int InputLength()
+        {
+            @C2CSHARP_TYPE_SIZE_T@ inputl = 0;
+            IntPtr inputs = IntPtr.Zero;
+
+            if (marpaESLIFShr.marpaESLIFRecognizer_inputb(this.marpaESLIFRecognizerp, ref inputs, ref inputl) == 0)
+            {
+                throw new ESLIFException("marpaESLIFRecognizer_inputb failure");
+            }
+
+            return (int) inputl;
+        }
+
+        public byte[] Input(int offset, int length)
         {
             @C2CSHARP_TYPE_SIZE_T@ inputl = 0;
             IntPtr inputs = IntPtr.Zero;
@@ -552,8 +565,61 @@ namespace org.parser.marpa
                 return new byte[0];
             }
 
-            byte[] output = new byte[(int) inputl];
-            Marshal.Copy(inputs, output, 0, (int) inputl);
+            long maxinputs = (long) inputs + inputl - 1;
+
+            // Apply offset parameter
+            long realinputs = (long) inputs;
+            if (offset < 0)
+            {
+                realinputs += (long) inputl;
+            }
+            realinputs += offset;
+            if ((realinputs < (long) inputs) || (realinputs > (long) maxinputs))
+            {
+                return new byte[0];
+            }
+
+            /* Adapt input length to the modified start offset */
+            @C2CSHARP_TYPE_SIZE_T@ deltal = 0;
+            if (realinputs > (long)inputs)
+            {
+                deltal = (@C2CSHARP_TYPE_SIZE_T@) (realinputs - (long) inputs);
+                inputl -= deltal;
+            }
+
+            @C2CSHARP_TYPE_SIZE_T@ realinputl;
+            /* Apply length parameter */
+            if (length == 0)
+            {
+                realinputl = inputl; /* All bytes available */
+            }
+            else if (length > 0)
+            {
+                if (length < inputl)
+                {
+                    realinputl = (@C2CSHARP_TYPE_SIZE_T@) length; /* Remains more bytes than what the user want */
+                }
+                else
+                {
+                    realinputl = inputl; /* Remains less bytes than what the user want */
+                }
+            }
+            else
+            {
+                length = -length;
+                if (length < inputl)
+                {
+                    deltal = inputl - (@C2CSHARP_TYPE_SIZE_T@) length;
+                    realinputl = deltal; /* Skip length last bytes */
+                }
+                else
+                {
+                    realinputl = 0; /* Skipping more bytes that what is available */
+                }
+            }
+
+            byte[] output = new byte[(int) realinputl];
+            Marshal.Copy(inputs, output, (int) deltal, (int) realinputl);
 
             return output;
         }
