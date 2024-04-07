@@ -1,5 +1,3 @@
-#cmakedefine MARPAESLIF_HAVE_LONG_LONG
-#cmakedefine C2CSHARP_TYPE_INT_IS_INT
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -116,8 +114,74 @@ namespace org.parser.marpa
             return marpaESLIFRecognizerRegexCallback;
         }
 
+        private static void EventCallback(marpaESLIFRecognizerOptionContext context, object[] args)
+        {
+            // We do not support the same method with multiple definitions
+            MethodInfo methodInfo = context.recognizerInterface.GetType().GetMethod(context.action) ?? throw new ESLIFException($"{context.action} is not supported.");
+            // We let C# deal with variance
+            try
+            {
+                methodInfo.Invoke(context.recognizerInterface, args);
+            }
+            catch (Exception e)
+            {
+                throw new ESLIFException($"{context.action} failure", e);
+            }
+        }
+
         private static @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizerEventCallback(IntPtr userDatavp, IntPtr marpaESLIFRecognizerp, IntPtr eventArrayp, @C2CSHARP_TYPE_SIZE_T@ eventArrayl, ref marpaESLIFShr.marpaESLIFValueResultBool_t marpaESLIFValueResultBoolp)
         {
+            marpaESLIFRecognizerOptionContext context = GetContext(userDatavp);
+            ESLIFEvent[] events;
+            if (eventArrayp == IntPtr.Zero || eventArrayl <= 0)
+            {
+                events = new ESLIFEvent[0];
+            }
+            else
+            {
+                events = new ESLIFEvent[(int)eventArrayl];
+                for (int i = 0; i < events.Length; i++)
+                {
+                    marpaESLIFShr.marpaESLIFEvent_t marpaESLIFEvent = (marpaESLIFShr.marpaESLIFEvent_t)Marshal.PtrToStructure(eventArrayp, typeof(marpaESLIFShr.marpaESLIFEvent_t));
+                    ESLIFEventType eventType;
+                    switch (marpaESLIFEvent.type)
+                    {
+                        case marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_NONE:
+                            eventType = ESLIFEventType.NONE;
+                            break;
+                        case marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_COMPLETED:
+                            eventType = ESLIFEventType.COMPLETED;
+                            break;
+                        case marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_NULLED:
+                            eventType = ESLIFEventType.NULLED;
+                            break;
+                        case marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_PREDICTED:
+                            eventType = ESLIFEventType.PREDICTED;
+                            break;
+                        case marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_BEFORE:
+                            eventType = ESLIFEventType.BEFORE;
+                            break;
+                        case marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_AFTER:
+                            eventType = ESLIFEventType.AFTER;
+                            break;
+                        case marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_EXHAUSTED:
+                            eventType = ESLIFEventType.EXHAUSTED;
+                            break;
+                        case marpaESLIFShr.marpaESLIFEventType_t.MARPAESLIF_EVENTTYPE_DISCARD:
+                            eventType = ESLIFEventType.DISCARD;
+                            break;
+                        default:
+                            throw new ESLIFException($"Unsupported event type {(int) marpaESLIFEvent.type}");
+                    }
+                    string symbol = marpaESLIFEvent.symbols != IntPtr.Zero ? Marshal.PtrToStringAnsi(marpaESLIFEvent.symbols) : null;
+                    string @event = marpaESLIFEvent.events != IntPtr.Zero ? Marshal.PtrToStringAnsi(marpaESLIFEvent.events) : null;
+                    events[i] = new ESLIFEvent(eventType, symbol, @event);
+                    eventArrayp += Marshal.SizeOf(marpaESLIFEvent);
+                }
+            }
+
+            EventCallback(context, new object[] { events });
+
             return 1;
         }
 

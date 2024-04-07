@@ -109,7 +109,8 @@ namespace marpaESLIFShrTest
             }
 
             grammar = ESLIFGrammar.Instance(eslif,
-                @"
+                    @"
+:default ::= event-action => MyEvent
 :discard ::= /[\s]+/
 :symbol ::= ""("" name => LPAREN pause => before event => ^LPAREN
 :symbol ::= "")"" name => RPAREN pause => before event => ^RPAREN
@@ -129,17 +130,22 @@ digits ::= $DIGITS                          action => ::ascii
             );
             bool isExhausted = false;
             string input = "(3 * 4 / 2) ** 2 + 15";
-            MyRecognizer myRecognizer = new MyRecognizer(input);
+            MyRecognizer myRecognizer = new MyRecognizer(logger, input);
             MyValue myValue = new MyValue();
+
+            logger.LogWarning("===> Calling grammar.Parse()");
             if (grammar.Parse(myRecognizer, myValue, ref isExhausted))
             {
                 logger.LogInformation($"Parse of {input} gives: {myValue.result}, isExhausted={isExhausted}");
             }
+
+            logger.LogWarning("===> Calling grammar.Parse() at level 0");
             if (grammar.ParseByLevel(myRecognizer, myValue, ref isExhausted, 0))
             {
                 logger.LogInformation($"Parse of {input} at level 0 gives: {myValue.result}, isExhausted={isExhausted}");
             }
 
+            logger.LogInformation("Creating recognizer");
             ESLIFRecognizer eslifRecognizer = new ESLIFRecognizer(grammar, myRecognizer);
             logger.LogInformation($"Expected: {string.Join(", ", eslifRecognizer.ExpectedNames())}");
             logger.LogInformation($"Last pause at symbol DIGITS: {eslifRecognizer.LastPauseName("DIGITS")}");
@@ -148,23 +154,36 @@ digits ::= $DIGITS                          action => ::ascii
             logger.LogInformation($"IsEof: {eslifRecognizer.IsEof()}");
             logger.LogInformation($"IsStartComplete: {eslifRecognizer.IsStartComplete()}");
             logger.LogInformation($"EventOnOff on exp: {eslifRecognizer.EventOnOff("exp", ESLIFEventType.NONE, true)}");
+
+            logger.LogWarning("===> Calling eslifRecognizer.Scan()");
             eslifRecognizer.Scan();
+
+            logger.LogWarning("===> Calling eslifRecognizer.Events()");
             foreach (ESLIFEvent e in eslifRecognizer.Events())
             {
                 logger.LogInformation($"Event: {e}");
             }
+
+            logger.LogWarning("===> Calling eslifRecognizer.ProgressLog()");
             eslifRecognizer.ProgressLog(0, -1, LogLevel.Information);
             foreach (ESLIFProgress eslifProgress in eslifRecognizer.Progress(0, -1))
             {
                 logger.LogInformation($"{eslifProgress}");
             }
+
+            logger.LogWarning("===> Calling eslifRecognizer.Input()");
             byte[] recognizerInput = eslifRecognizer.Input();
             logger.LogInformation($"Input: {new string(recognizerInput.Select(b => (char)b).ToArray())}");
+
+            logger.LogWarning("===> Calling eslifRecognizer.Error()");
             eslifRecognizer.Error();
+
+            logger.LogWarning("===> Calling eslifRecognizer.Location()");
             (int line, int column) = eslifRecognizer.Location();
             logger.LogInformation($"Line: {line}, Column: {column}");
             try
             {
+                logger.LogWarning("===> Calling eslifRecognizer.Read()");
                 byte[] recognizerRead = eslifRecognizer.Read();
                 logger.LogInformation($"Read: {new string(recognizerRead.Select(b => (char)b).ToArray())}");
             }
@@ -172,8 +191,12 @@ digits ::= $DIGITS                          action => ::ascii
             {
                 logger.LogError($"Exception: {e.Message}");
             }
+
+            logger.LogWarning("===> Calling eslifRecognizer.DiscardHook()");
             eslifRecognizer.DiscardHook(true);
             eslifRecognizer.DiscardHook(false);
+
+            logger.LogWarning("===> Calling eslifRecognizer.SwitchDiscardHook()");
             eslifRecognizer.SwitchDiscardHook();
 
             ESLIFSymbol stringSymbol = new ESLIFSymbol(eslif, "\"3\"", null);
@@ -181,32 +204,51 @@ digits ::= $DIGITS                          action => ::ascii
             ESLIFSymbol metaSymbol = new ESLIFSymbol(eslif, grammar, "ANYTHING UP TO NEWLINE");
             ESLIFSymbol stringSymbol2 = new ESLIFSymbol(eslif, "\"XXXX\"", null);
 
+            logger.LogWarning("===> Calling eslifRecognizer.SymbolTry()");
             logger.LogInformation($"string symbol try: {eslifRecognizer.SymbolTry(stringSymbol)}");
             logger.LogInformation($"regex symbol try: {eslifRecognizer.SymbolTry(regexSymbol)}");
             logger.LogInformation($"meta symbol try: {eslifRecognizer.SymbolTry(metaSymbol)}");
             logger.LogInformation($"string symbol2 try: {eslifRecognizer.SymbolTry(stringSymbol2)}");
-
-            // Give some time to the logger ;)
-            Console.ReadLine();
+           
+            Console.ReadLine(); // Give some time to the logger ;)
         }
     }
 
     public class MyRecognizer : ESLIFRecognizerString
     {
-        public MyRecognizer(string input)
+        private readonly ILogger logger;
+
+        public MyRecognizer(ILogger logger,  string input)
             : base(input)
         {
+            this.logger = logger;
         }
 
         public bool GreaterThanZero(byte[] bytes)
         {
+            bool output;
+
             string input = System.Text.Encoding.UTF8.GetString(bytes);
             if (int.TryParse(input, out int value))
             {
-                return value > 0;
+                output = value > 0;
+            }
+            else
+            {
+                output = false;
             }
 
-            return false;
+            this.logger.LogInformation($"Symbol callback on \"{input}\": {output}");
+
+            return output;
+        }
+
+        public void MyEvent(ESLIFEvent[] events)
+        {
+            for (int i = 0; i < events.Length; i++)
+            {
+                this.logger.LogInformation($"Event callback[{i}]: {events[i]}");
+            }
         }
     }
 
