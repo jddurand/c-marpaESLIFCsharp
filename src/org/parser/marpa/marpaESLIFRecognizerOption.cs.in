@@ -12,24 +12,24 @@ namespace org.parser.marpa
         public IntPtr marpaESLIFRecognizerOptionp { get; protected set; }
         public marpaESLIFRecognizerOptionContext context { get; protected set; }
         private readonly marpaESLIFShr.marpaESLIFRecognizerOption_t marpaESLIFRecognizerOption_t;
-        private readonly IESLIFRecognizer recognizerInterface;
+        private readonly ESLIFRecognizerInterface recognizerInterface;
         private readonly GCHandle contextHandle;
         private readonly IntPtr userDatavp;
         private bool disposedValue;
 
         public class marpaESLIFRecognizerOptionContext
         {
-            public IESLIFRecognizer recognizerInterface;
+            public ESLIFRecognizerInterface recognizerInterface;
             public string action;
             public Stack<object> stack = new Stack<object>();
 
-            public marpaESLIFRecognizerOptionContext(IESLIFRecognizer recognizerInterface)
+            public marpaESLIFRecognizerOptionContext(ESLIFRecognizerInterface recognizerInterface)
             {
                 this.recognizerInterface = recognizerInterface ?? throw new ArgumentNullException(nameof(recognizerInterface));
             }
         }
 
-        public marpaESLIFRecognizerOption(IESLIFRecognizer recognizerInterface)
+        public marpaESLIFRecognizerOption(ESLIFRecognizerInterface recognizerInterface)
         {
             this.recognizerInterface = recognizerInterface ?? throw new ArgumentNullException(nameof(recognizerInterface));
 
@@ -91,8 +91,32 @@ namespace org.parser.marpa
             return 1;
         }
 
-        private static @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizerGeneratorCallback(IntPtr userDatavp, IntPtr marpaESLIFRecognizerp, IntPtr contextp, ref IntPtr marpaESLIFValueResultOutp)
+        private static string GeneratorCallback(marpaESLIFRecognizerOptionContext context, object[] args)
         {
+            // We do not support the same method with multiple definitions
+            MethodInfo methodInfo = context.recognizerInterface.GetType().GetMethod(context.action) ?? throw new ESLIFException($"{context.action} is not supported.");
+            // We let C# deal with variance
+            string actionResult;
+            try
+            {
+                actionResult = methodInfo.Invoke(context.recognizerInterface, args) as string;
+            }
+            catch (Exception e)
+            {
+                throw new ESLIFException($"{context.action} failure", e);
+            }
+
+            return actionResult;
+        }
+
+        private static @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizerGeneratorCallback(IntPtr userDatavp, IntPtr marpaESLIFRecognizerp, IntPtr contextp, IntPtr marpaESLIFValueResultOutp)
+        {
+            marpaESLIFRecognizerOptionContext context = GetContext(userDatavp);
+            object input = GetObject(context.stack, marpaESLIFRecognizerp, contextp);
+            string actionResult = GeneratorCallback(context, new object[] { input });
+
+            ImportExport.Instance.ExportStringtoMarpaEslifValueResultString(actionResult, marpaESLIFValueResultOutp);
+
             return 1;
         }
 
@@ -322,7 +346,7 @@ namespace org.parser.marpa
         private static short ReaderCallback(IntPtr userDatavp, ref IntPtr inputcpp, ref @C2CSHARP_TYPE_SIZE_T@ inputlp, ref short eofbp, ref short characterStreambp, ref IntPtr encodingsp, ref @C2CSHARP_TYPE_SIZE_T@ encodinglp, ref marpaESLIFShr.marpaESLIFReaderDispose_t disposeCallbackpp)
         {
             marpaESLIFRecognizerOptionContext context = GetContext(userDatavp);
-            IESLIFRecognizer recognizerInterface = context.recognizerInterface;
+            ESLIFRecognizerInterface recognizerInterface = context.recognizerInterface;
             if (! recognizerInterface.Read())
             {
                 return 0;

@@ -131,6 +131,7 @@ add_library(marpaESLIFCSharp SHARED
   src/org/parser/marpa/ESLIFMultitonNullLogger.cs
   src/org/parser/marpa/ESLIFProgress.cs
   src/org/parser/marpa/ESLIFRecognizer.cs
+  src/org/parser/marpa/ESLIFRecognizerInterface.cs
   src/org/parser/marpa/ESLIFRecognizerString.cs
   src/org/parser/marpa/ESLIFRegexCallout.cs
   src/org/parser/marpa/ESLIFRulePropertyBitSet.cs
@@ -140,8 +141,6 @@ add_library(marpaESLIFCSharp SHARED
   src/org/parser/marpa/ESLIFSymbolType.cs
   src/org/parser/marpa/ESLIFValue.cs
   src/org/parser/marpa/ESLIFValueInterface.cs
-  src/org/parser/marpa/IESLIFRecognizer.cs
-  src/org/parser/marpa/IESLIFValue.cs
 )
 add_dependencies(marpaESLIFCSharp genericLoggerCopy marpaESLIFCopy)
 set_property(TARGET marpaESLIFCSharp PROPERTY VS_DOTNET_REFERENCES "System;System.Runtime.InteropServices")

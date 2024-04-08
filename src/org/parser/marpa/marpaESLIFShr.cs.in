@@ -75,7 +75,7 @@ namespace org.parser.marpa
         public delegate marpaESLIFRecognizerRegexCallback_t marpaESLIFRecognizerRegexActionResolver_t(IntPtr userDatavp, IntPtr marpaESLIFRecognizerp, IntPtr actions);
     
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizerGeneratorCallback_t(IntPtr userDatavp, IntPtr marpaESLIFRecognizerp, IntPtr contextp, ref IntPtr marpaESLIFValueResultOutp);
+        public delegate @C2CSHARP_TYPE_SHORT@ marpaESLIFRecognizerGeneratorCallback_t(IntPtr userDatavp, IntPtr marpaESLIFRecognizerp, IntPtr contextp, IntPtr marpaESLIFValueResultOutp);
     
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate marpaESLIFRecognizerGeneratorCallback_t marpaESLIFRecognizerGeneratorActionResolver_t(IntPtr userDatavp, IntPtr marpaESLIFRecognizerp, IntPtr actions);

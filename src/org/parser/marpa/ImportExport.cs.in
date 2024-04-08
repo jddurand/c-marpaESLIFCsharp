@@ -314,6 +314,26 @@ namespace org.parser.marpa
             return true;
         }
 
+        public void ExportStringtoMarpaEslifValueResultString(string value, IntPtr marpaESLIFValueResultStringp)
+        {
+            byte[] bytes = Encoding.UTF8.GetBytes(value);
+            byte[] bytesWithNul = new byte[bytes.Length + 1];
+            Buffer.BlockCopy(bytes, 0, bytesWithNul, 0, bytes.Length);
+            bytesWithNul[bytes.Length] = 0;
+            IntPtr p = Marshal.AllocHGlobal(bytesWithNul.Length);
+            Marshal.Copy(bytesWithNul, 0, p, bytesWithNul.Length);
+
+            marpaESLIFShr.marpaESLIFValueResultString_t marpaESLIFValueResultString = new marpaESLIFShr.marpaESLIFValueResultString_t
+            {
+                p = p,
+                sizel = (@C2CSHARP_TYPE_SIZE_T@) bytes.Length,
+                encodingasciis = UTF8_STRING,
+                freeCallbackp = FreeCallback,
+            };
+
+            Marshal.StructureToPtr(marpaESLIFValueResultString, marpaESLIFValueResultStringp, false);
+        }
+
         private bool ExportString(string value, IntPtr marpaESLIFValueResultp)
         {
             marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t marpaESLIFValueResultFlat_t = new marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t();

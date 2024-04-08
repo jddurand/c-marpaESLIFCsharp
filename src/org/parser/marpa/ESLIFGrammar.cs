@@ -129,7 +129,7 @@ namespace org.parser.marpa
             return this.marpaESLIFGrammar.ShowByLevel(level);
         }
 
-        public bool Parse(IESLIFRecognizer recognizerInterface, IESLIFValue valueInterface, ref bool isExhausted)
+        public bool Parse(ESLIFRecognizerInterface recognizerInterface, ESLIFValueInterface valueInterface, ref bool isExhausted)
         {
             bool _isExhausted = false;
 
@@ -139,7 +139,7 @@ namespace org.parser.marpa
             return result;
         }
 
-        public bool ParseByLevel(IESLIFRecognizer recognizerInterface, IESLIFValue valueInterface, ref bool isExhausted, int level)
+        public bool ParseByLevel(ESLIFRecognizerInterface recognizerInterface, ESLIFValueInterface valueInterface, ref bool isExhausted, int level)
         {
             bool _isExhausted = false;
 

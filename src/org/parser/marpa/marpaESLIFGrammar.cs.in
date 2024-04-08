@@ -467,7 +467,7 @@ namespace org.parser.marpa
             return grammarshowsp == IntPtr.Zero ? null : Marshal.PtrToStringAnsi(grammarshowsp);
         }
 
-        public bool Parse(IESLIFRecognizer recognizerInterface, IESLIFValue valueInterface, ref bool isExhausted)
+        public bool Parse(ESLIFRecognizerInterface recognizerInterface, ESLIFValueInterface valueInterface, ref bool isExhausted)
         {
             bool result = false;
             isExhausted = false;
@@ -498,7 +498,7 @@ namespace org.parser.marpa
             return result;
         }
 
-        public bool ParseByLevel(IESLIFRecognizer recognizerInterface, IESLIFValue valueInterface, ref bool isExhausted, int level)
+        public bool ParseByLevel(ESLIFRecognizerInterface recognizerInterface, ESLIFValueInterface valueInterface, ref bool isExhausted, int level)
         {
             bool result = false;
             isExhausted = false;

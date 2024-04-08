@@ -115,7 +115,7 @@ namespace marpaESLIFShrTest
 :symbol ::= ""("" name => LPAREN pause => before event => ^LPAREN
 :symbol ::= "")"" name => RPAREN pause => before event => ^RPAREN
 :symbol ::= /(?C1)([\d]+(?C""some """"arbitrary"""" text""))/ name => DIGITS pause => before event => ^DIGITS if-action => GreaterThanZero
-exp ::=
+exp ::= 
     digits                                  action => Digits # ::luac->function(input) return tonumber(input) end
     | $LPAREN  exp $RPAREN   assoc => group action => Exp # ::luac->function(l,e,r) return e               end
    || exp (- '**' -) exp     assoc => right action => Pow # ::luac->function(x,y)   return x^y             end
@@ -130,23 +130,23 @@ digits ::= $DIGITS                          action => ::ascii
             );
             bool isExhausted = false;
             string input = "(3 * 4 / 2) ** 2 + 15";
-            MyRecognizer myRecognizer = new MyRecognizer(logger, input);
-            MyValue myValue = new MyValue();
+            MyRecognizer recognizerInterface = new MyRecognizer(logger, input);
+            MyValue valueInterface = new MyValue();
 
             logger.LogWarning("===> Calling grammar.Parse()");
-            if (grammar.Parse(myRecognizer, myValue, ref isExhausted))
+            if (grammar.Parse(recognizerInterface, valueInterface, ref isExhausted))
             {
-                logger.LogInformation($"Parse of {input} gives: {myValue.result}, isExhausted={isExhausted}");
+                logger.LogInformation($"Parse of {input} gives: {valueInterface.result}, isExhausted={isExhausted}");
             }
 
             logger.LogWarning("===> Calling grammar.Parse() at level 0");
-            if (grammar.ParseByLevel(myRecognizer, myValue, ref isExhausted, 0))
+            if (grammar.ParseByLevel(recognizerInterface, valueInterface, ref isExhausted, 0))
             {
-                logger.LogInformation($"Parse of {input} at level 0 gives: {myValue.result}, isExhausted={isExhausted}");
+                logger.LogInformation($"Parse of {input} at level 0 gives: {valueInterface.result}, isExhausted={isExhausted}");
             }
 
             logger.LogInformation("Creating recognizer");
-            ESLIFRecognizer eslifRecognizer = new ESLIFRecognizer(grammar, myRecognizer);
+            ESLIFRecognizer eslifRecognizer = new ESLIFRecognizer(grammar, recognizerInterface);
             logger.LogInformation($"Expected: {string.Join(", ", eslifRecognizer.ExpectedNames())}");
             logger.LogInformation($"Last pause at symbol DIGITS: {new string(eslifRecognizer.LastPauseName("DIGITS").Select(b => (char)b).ToArray())}");
             logger.LogInformation($"Last try at symbol DIGITS: {new string(eslifRecognizer.LastTryName("DIGITS").Select(b => (char)b).ToArray())}");
@@ -216,7 +216,54 @@ digits ::= $DIGITS                          action => ::ascii
             logger.LogInformation($"regex symbol try: {eslifRecognizer.SymbolTry(regexSymbol)}");
             logger.LogInformation($"meta symbol try: {eslifRecognizer.SymbolTry(metaSymbol)}");
             logger.LogInformation($"string symbol2 try: {eslifRecognizer.SymbolTry(stringSymbol2)}");
-           
+
+            grammar = ESLIFGrammar.Instance(eslif,
+                    @"
+/*
+ * Example of parameterized rules
+*/
+:discard ::= /[\s]+/
+
+top  ::= rhs1
+rhs1 ::= . => parameterizedRhs->(1, nil, 'Input should be ""1""')
+       | . => parameterizedRhs->(2, nil, 'Input should be ""2""')
+       | . => parameterizedRhs->(3, nil, 'Input should be ""3""')
+       | . => parameterizedRhs->(4, nil, 'Input should be ""4""')
+"
+            );
+
+            string[] strings = new string[] { "5" };
+            foreach (string _string in strings)
+            {
+                MyParameterizedRecognizer parameterizedRecognizerInterface = new MyParameterizedRecognizer(logger, _string);
+                MyParameterizedValue parameterizedValueInterface = new MyParameterizedValue();
+                eslifRecognizer = new ESLIFRecognizer(grammar, parameterizedRecognizerInterface);
+
+                if (eslifRecognizer.Scan())
+                {
+                    bool ok = true;
+                    while (eslifRecognizer.IsCanContinue())
+                    {
+                        if (!eslifRecognizer.Resume())
+                        {
+                            ok = false;
+                            break;
+                        }
+                    }
+
+                    if (ok)
+                    {
+                        ESLIFValue parameterizedValue = new ESLIFValue(eslifRecognizer, parameterizedValueInterface);
+                        while (parameterizedValue.Value() != 0)
+                        {
+                            object result = parameterizedValueInterface.result;
+                            logger.LogInformation($"Parameterized value: {result}");
+                        }
+                    }
+                }
+
+            }
+
             Console.ReadLine(); // Give some time to the logger ;)
         }
     }
@@ -266,7 +313,7 @@ digits ::= $DIGITS                          action => ::ascii
         }
     }
 
-    public class MyValue : ESLIFValue
+    public class MyValue : ESLIFValueInterface
     {
         public int Digits(string input) => int.Parse(input);
 
@@ -281,5 +328,49 @@ digits ::= $DIGITS                          action => ::ascii
         public double Plus(double x, double y) => x + y;
 
         public double Minus(double x, double y) => x - y;
+    }
+
+    public class MyParameterizedRecognizer : ESLIFRecognizerString
+    {
+        private readonly ILogger logger;
+        private int nbParameterizedRhsCalls = 0;
+
+        public MyParameterizedRecognizer(ILogger logger, string input)
+            : base(input)
+        {
+            this.logger = logger;
+        }
+
+        public string parameterizedRhs(object[] args)
+        {
+            int parameter = Convert.ToInt32(args[0]);
+            object anything = args[1];
+            string explanation = args[2] as string;
+
+            this.nbParameterizedRhsCalls++;
+            string output;
+
+            if (this.nbParameterizedRhsCalls == 5)
+            {
+                output = "start ::= '5'\n";
+            }
+            else if (this.nbParameterizedRhsCalls > 5)
+            {
+                output = "start ::= 'no match'\n";
+            }
+            else
+            {
+                ++parameter;
+                output = $"start ::= . => parameterizedRhs->({parameter}, {new {x = "Value of x", y = "Value of y"}}, \"Input should be \"{parameter}\"')\n";
+            }
+
+            logger.LogInformation($"In rhs, parameters: [{parameter}, {anything}, {explanation}] => \"{output}\"");
+            return output;
+        }
+    }
+
+
+    public class MyParameterizedValue : ESLIFValueInterface
+    {
     }
 }

@@ -10,24 +10,24 @@ namespace org.parser.marpa
         public IntPtr marpaESLIFValueOptionp { get; protected set; }
         public marpaESLIFValueOptionContext context { get; protected set; }
         private readonly marpaESLIFShr.marpaESLIFValueOption_t marpaESLIFValueOption_t;
-        private readonly IESLIFValue valueInterface;
+        private readonly ESLIFValueInterface valueInterface;
         private readonly GCHandle contextHandle;
         private readonly IntPtr userDatavp;
         private bool disposedValue;
 
         public class marpaESLIFValueOptionContext
         {
-            public IESLIFValue valueInterface;
+            public ESLIFValueInterface valueInterface;
             public Stack<object> stack = new Stack<object>();
             public string action;
 
-            public marpaESLIFValueOptionContext(IESLIFValue valueInterface)
+            public marpaESLIFValueOptionContext(ESLIFValueInterface valueInterface)
             {
                 this.valueInterface = valueInterface ?? throw new ArgumentNullException(nameof(valueInterface));
             }
         }
 
-        public marpaESLIFValueOption(IESLIFValue valueInterface)
+        public marpaESLIFValueOption(ESLIFValueInterface valueInterface)
         {
             this.valueInterface = valueInterface ?? throw new ArgumentNullException(nameof(valueInterface));
 

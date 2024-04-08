@@ -6,13 +6,13 @@ namespace org.parser.marpa
     public class ESLIFRecognizer
     {
         public ESLIFGrammar eslifGrammar { get; protected set; }
-        public IESLIFRecognizer recognizerInterface { get; protected set; }
-        private readonly marpaESLIFRecognizer marpaESLIFRecognizer;
+        public ESLIFRecognizerInterface recognizerInterface { get; protected set; }
+        public marpaESLIFRecognizer marpaESLIFRecognizer { get; protected set; }
         private readonly marpaESLIFRecognizerOption marpaESLIFRecognizerOption;
         private ESLIFRecognizer eslifRecognizerShared;
         private ESLIFRecognizer eslifRecognizerPeeked;
 
-        public ESLIFRecognizer(ESLIFGrammar eslifGrammar, IESLIFRecognizer recognizerInterface)
+        public ESLIFRecognizer(ESLIFGrammar eslifGrammar, ESLIFRecognizerInterface recognizerInterface)
         {
             this.eslifGrammar = eslifGrammar ?? throw new ArgumentNullException(nameof(eslifGrammar));
             this.recognizerInterface = recognizerInterface; // Can be null
@@ -70,7 +70,7 @@ namespace org.parser.marpa
             return this.marpaESLIFRecognizer.Scan(initialEventsb, ref isCanContinue, ref isExhausted);
         }
 
-        public bool Resume(int deltaLengthl)
+        public bool Resume(int deltaLengthl = 0)
         {
             return this.marpaESLIFRecognizer.Resume(deltaLengthl);
         }
