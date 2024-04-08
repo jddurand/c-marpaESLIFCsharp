@@ -261,7 +261,6 @@ rhs1 ::= . => parameterizedRhs->(1, nil, 'Input should be ""1""')
                         }
                     }
                 }
-
             }
 
             Console.ReadLine(); // Give some time to the logger ;)
@@ -361,7 +360,7 @@ rhs1 ::= . => parameterizedRhs->(1, nil, 'Input should be ""1""')
             else
             {
                 ++parameter;
-                output = $"start ::= . => parameterizedRhs->({parameter}, {new {x = "Value of x", y = "Value of y"}}, \"Input should be \"{parameter}\"')\n";
+                output = $"start ::= . => parameterizedRhs->({parameter}, {{x = 'Value of x', y = 'Value of y'}}, 'Input should be \"{parameter}\"')\n";
             }
 
             logger.LogInformation($"In rhs, parameters: [{parameter}, {anything}, {explanation}] => \"{output}\"");

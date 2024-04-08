@@ -314,6 +314,24 @@ namespace org.parser.marpa
             return true;
         }
 
+        private static void MarpaEslifValueResultStringFreeCallback(IntPtr userDatavp, IntPtr marpaESLIFValueResultp)
+        {
+            IntPtr marpaESLIFValueResultFlatp = marpaESLIF_wrapperShr.marpaESLIFValueResultConvertp(marpaESLIFValueResultp);
+            marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t marpaESLIFValueResultFlat_t = new marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t();
+            Marshal.PtrToStructure<marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t>(marpaESLIFValueResultFlatp, marpaESLIFValueResultFlat_t);
+            marpaESLIF_wrapperShr.marpaESLIF_free(marpaESLIFValueResultFlatp);
+
+            switch (marpaESLIFValueResultFlat_t.type)
+            {
+                case marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_STRING:
+                    if (marpaESLIFValueResultFlat_t.s.p != IntPtr.Zero)
+                    {
+                        Marshal.FreeHGlobal(marpaESLIFValueResultFlat_t.s.p);
+                    }
+                    break;
+            }
+        }
+
         public void ExportStringtoMarpaEslifValueResultString(string value, IntPtr marpaESLIFValueResultStringp)
         {
             byte[] bytes = Encoding.UTF8.GetBytes(value);
@@ -328,7 +346,7 @@ namespace org.parser.marpa
                 p = p,
                 sizel = (@C2CSHARP_TYPE_SIZE_T@) bytes.Length,
                 encodingasciis = UTF8_STRING,
-                freeCallbackp = FreeCallback,
+                freeCallbackp = MarpaEslifValueResultStringFreeCallback,
             };
 
             Marshal.StructureToPtr(marpaESLIFValueResultString, marpaESLIFValueResultStringp, false);
