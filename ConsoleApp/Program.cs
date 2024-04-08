@@ -175,7 +175,7 @@ digits ::= $DIGITS                          action => ::ascii
             int inputLength = eslifRecognizer.InputLength();
             logger.LogInformation($"Input length: {inputLength}");
 
-            for (int i = 0; i < inputLength; i++)
+            for (int i = 0; i <= inputLength; i++)
             {
                 logger.LogWarning($"===> Calling eslifRecognizer.Input(0, {i})");
                 byte[] recognizerInput = eslifRecognizer.Input(0, i);
@@ -222,13 +222,36 @@ digits ::= $DIGITS                          action => ::ascii
 /*
  * Example of parameterized rules
 */
-:discard ::= /[\s]+/
-
-top  ::= rhs1
-rhs1 ::= . => parameterizedRhs->(1, nil, 'Input should be ""1""')
-       | . => parameterizedRhs->(2, nil, 'Input should be ""2""')
-       | . => parameterizedRhs->(3, nil, 'Input should be ""3""')
-       | . => parameterizedRhs->(4, nil, 'Input should be ""4""')
+:default ::= action => ::shift
+top ::= . => parameterizedRhs->(1)
+      | . => parameterizedRhs->(2)
+      | . => parameterizedRhs->(3)
+      | . => parameterizedRhs->(4)
+      | . => ::luac->function(x)
+                       return ""'will not match'""
+                     end
+             ->(5)
+      | . => ::luac->function(x)
+                       print('Called with x='..x)
+                       return ""'will not match'""
+                     end
+             ->(15)
+      | . => ::lua->grammar_ok->(10,12)
+      | . => ::lua->grammar_ko->(10,12)
+      | . => ::lua->action_raising_error->(10,12)
+      | . => ::lua->unknown_action->(10,12)
+ 
+<luascript>
+function grammar_ok(x,y)
+  return ""'Y'""
+end
+function grammar_ko(x,y)
+  return ""Y""
+end
+function action_raising_error(x,y)
+  error('Errors are trapped...')
+end
+</luascript>
 "
             );
 
@@ -344,27 +367,25 @@ rhs1 ::= . => parameterizedRhs->(1, nil, 'Input should be ""1""')
         {
             int parameter = Convert.ToInt32(args[0]);
             int origParameter = parameter;
-            object anything = args[1];
-            string explanation = System.Text.Encoding.UTF8.GetString(args[2] as byte[]);
 
             this.nbParameterizedRhsCalls++;
             string output;
 
             if (this.nbParameterizedRhsCalls == 5)
             {
-                output = "start ::= '5'";
+                output = "'5'";
             }
             else if (this.nbParameterizedRhsCalls > 5)
             {
-                output = "start ::= 'no match'";
+                output = "'no match'";
             }
             else
             {
                 ++parameter;
-                output = $"start ::= . => parameterizedRhs->({parameter}, {{x = 'Value of x', y = 'Value of y'}}, 'Input should be \"{parameter}\"')";
+                output = $". => parameterizedRhs->({parameter})";
             }
 
-            logger.LogInformation($"In rhs, parameters: [{origParameter}, {anything}, {explanation}] => {output}");
+            logger.LogInformation($"parameterizedRhs({origParameter}) returns: {output}");
             return $"{output}\n";
         }
     }
