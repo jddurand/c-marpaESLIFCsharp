@@ -224,34 +224,6 @@ digits ::= $DIGITS                          action => ::ascii
 */
 :default ::= action => ::shift
 top ::= . => parameterizedRhs->(1)
-      | . => parameterizedRhs->(2)
-      | . => parameterizedRhs->(3)
-      | . => parameterizedRhs->(4)
-      | . => ::luac->function(x)
-                       return ""'will not match'""
-                     end
-             ->(5)
-      | . => ::luac->function(x)
-                       print('Called with x='..x)
-                       return ""'will not match'""
-                     end
-             ->(15)
-      | . => ::lua->grammar_ok->(10,12)
-      | . => ::lua->grammar_ko->(10,12)
-      | . => ::lua->action_raising_error->(10,12)
-      | . => ::lua->unknown_action->(10,12)
- 
-<luascript>
-function grammar_ok(x,y)
-  return ""'Y'""
-end
-function grammar_ko(x,y)
-  return ""Y""
-end
-function action_raising_error(x,y)
-  error('Errors are trapped...')
-end
-</luascript>
 "
             );
 
