@@ -260,7 +260,7 @@ digits ::= $DIGITS                          action => ::ascii
 
         public int MyRegexAction(ESLIFRegexCallout callout)
         {
-            this.logger.LogInformation($"Regex callout: {callout}");
+            this.logger.LogInformation($"Regex callout: {callout.ToStringUTF8()}");
 
             return 0;
         }

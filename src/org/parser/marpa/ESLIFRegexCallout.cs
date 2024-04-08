@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Text;
 
 namespace org.parser.marpa
 {
@@ -33,9 +34,31 @@ namespace org.parser.marpa
                 + $"current_position={current_position}, "
                 + $"next_item={next_item}, "
                 + $"grammar_level={grammar_level}, "
-                + $"symbol_id={symbol_id}, "
+                + $"symbol_id={symbol_id}"
                 + "]";
-            return base.ToString();
+        }
+
+        // A special ToString() when the caller knows that input is made of characters, and not binary data
+        public string ToStringUTF8()
+        {
+            string _subject = this.subject == null ? null : Encoding.UTF8.GetString(this.subject);
+            string _pattern = this.pattern == null ? null : Encoding.UTF8.GetString(this.pattern);
+            string _next_item = this.next_item == null ? null : Encoding.UTF8.GetString(this.next_item);
+            return "ESLIFRegexCallout ["
+                + $"callout_number={callout_number}, "
+                + $"callout_string={callout_string}, "
+                + $"subject={_subject}, "
+                + $"pattern={_pattern}, "
+                + $"capture_top={capture_top}, "
+                + $"capture_last={capture_last}, "
+                + $"offset_vector={string.Join(", ", offset_vector?.Select(o => o.ToString()))}, "
+                + $"mark={mark}, "
+                + $"start_match={start_match}, "
+                + $"current_position={current_position}, "
+                + $"next_item={_next_item}, "
+                + $"grammar_level={grammar_level}, "
+                + $"symbol_id={symbol_id}"
+                + "]";
         }
     }
 }
