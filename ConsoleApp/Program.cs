@@ -343,28 +343,29 @@ rhs1 ::= . => parameterizedRhs->(1, nil, 'Input should be ""1""')
         public string parameterizedRhs(object[] args)
         {
             int parameter = Convert.ToInt32(args[0]);
+            int origParameter = parameter;
             object anything = args[1];
-            string explanation = args[2] as string;
+            string explanation = System.Text.Encoding.UTF8.GetString(args[2] as byte[]);
 
             this.nbParameterizedRhsCalls++;
             string output;
 
             if (this.nbParameterizedRhsCalls == 5)
             {
-                output = "start ::= '5'\n";
+                output = "start ::= '5'";
             }
             else if (this.nbParameterizedRhsCalls > 5)
             {
-                output = "start ::= 'no match'\n";
+                output = "start ::= 'no match'";
             }
             else
             {
                 ++parameter;
-                output = $"start ::= . => parameterizedRhs->({parameter}, {{x = 'Value of x', y = 'Value of y'}}, 'Input should be \"{parameter}\"')\n";
+                output = $"start ::= . => parameterizedRhs->({parameter}, {{x = 'Value of x', y = 'Value of y'}}, 'Input should be \"{parameter}\"')";
             }
 
-            logger.LogInformation($"In rhs, parameters: [{parameter}, {anything}, {explanation}] => \"{output}\"");
-            return output;
+            logger.LogInformation($"In rhs, parameters: [{origParameter}, {anything}, {explanation}] => {output}");
+            return $"{output}\n";
         }
     }
 
