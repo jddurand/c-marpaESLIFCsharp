@@ -19,7 +19,24 @@ namespace org.parser.marpa
 
         public short Value()
         {
-            return this.marpaESLIFValue.Value();
+            short value = this.marpaESLIFValue.Value();
+            if (value < 0)
+            {
+                throw new ESLIFException("Valuation failure");
+            }
+
+            if (value > 0)
+            {
+                if (this.marpaESLIFValueOption.context.stack.Count != 1)
+                {
+                    throw new ESLIFException($"Internal value stack is {this.marpaESLIFValueOption.context.stack.Count} instead of 1");
+                }
+
+                object result = this.marpaESLIFValueOption.context.stack.Pop();
+                this.eslifValueInterface.SetResult(result);
+            }
+
+            return value;
         }
     }
 }
