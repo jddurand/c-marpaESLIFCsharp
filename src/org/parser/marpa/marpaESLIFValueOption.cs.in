@@ -10,7 +10,7 @@ namespace org.parser.marpa
         public IntPtr marpaESLIFValueOptionp { get; protected set; }
         public marpaESLIFValueOptionContext context { get; protected set; }
         private readonly marpaESLIFShr.marpaESLIFValueOption_t marpaESLIFValueOption_t;
-        private readonly ESLIFValueInterface valueInterface;
+        public ESLIFValueInterface valueInterface { get; protected set; }
         private readonly GCHandle contextHandle;
         private readonly IntPtr userDatavp;
         private bool disposedValue;

@@ -252,7 +252,7 @@ top ::= . => parameterizedRhs->(1)
                         while (parameterizedValue.Value() != 0)
                         {
                             object result = parameterizedValueInterface.result;
-                            logger.LogInformation($"Parameterized value: {result}");
+                            logger.LogInformation($"Value: {new string((result as byte[]).Select(b => (char)b).ToArray())}");
                         }
                     }
                 }

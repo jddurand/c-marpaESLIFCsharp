@@ -45,7 +45,29 @@ namespace org.parser.marpa
 
         public short Value()
         {
-            return (short)marpaESLIFShr.marpaESLIFValue_valueb(this.marpaESLIFValuep);
+            short value = (short)marpaESLIFShr.marpaESLIFValue_valueb(this.marpaESLIFValuep);
+
+            if (value < 0)
+            {
+                throw new ESLIFException("marpaESLIFValue_valueb failure");
+            }
+
+            if (value > 0)
+            {
+                if (this.marpaESLIFValueOption != null)
+                {
+                    if (this.marpaESLIFValueOption.context.stack.Count != 1)
+                    {
+                        throw new ESLIFException($"Internal value stack is {this.marpaESLIFValueOption.context.stack.Count} instead of 1");
+                    }
+
+                    object result = this.marpaESLIFValueOption.context.stack.Pop();
+                    this.marpaESLIFValueOption.valueInterface.SetResult(result);
+                }
+                return 1;
+            }
+
+            return 0;
         }
 
         public void Dispose()
