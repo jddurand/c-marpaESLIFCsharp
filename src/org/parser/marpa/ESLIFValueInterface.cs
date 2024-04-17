@@ -29,7 +29,7 @@ namespace org.parser.marpa
 
         public virtual void SetRuleName(string ruleName) => this.ruleName = ruleName;
 
-        public void SetRuleNumber(int ruleNumber) => this.ruleNumber = ruleNumber;
+        public virtual void SetRuleNumber(int ruleNumber) => this.ruleNumber = ruleNumber;
 
         public virtual void SetGrammar(ESLIFGrammar grammar) => this.grammar = grammar;
     }
