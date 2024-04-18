@@ -128,7 +128,6 @@ add_library(marpaESLIFCSharp SHARED
   src/org/parser/marpa/ESLIFLuaFunction.cs
   src/org/parser/marpa/ESLIFLoggerInterface.cs
   src/org/parser/marpa/ESLIFLoggerLevel.cs
-  src/org/parser/marpa/ESLIFMultitonNullLogger.cs
   src/org/parser/marpa/ESLIFProgress.cs
   src/org/parser/marpa/ESLIFRecognizer.cs
   src/org/parser/marpa/ESLIFRecognizerInterface.cs
