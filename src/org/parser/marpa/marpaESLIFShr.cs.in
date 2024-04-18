@@ -430,7 +430,7 @@ namespace org.parser.marpa
         }
     
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate @C2CSHARP_TYPE_SHORT@ marpaESLIFJSONProposalAction_t(IntPtr userDatavp, IntPtr strings, @C2CSHARP_TYPE_SIZE_T@ stringl, IntPtr marpaESLIFValueResultp, short confidenceb);
+        public delegate @C2CSHARP_TYPE_SHORT@ marpaESLIFJSONProposalAction_t(IntPtr userDatavp, IntPtr strings, @C2CSHARP_TYPE_SIZE_T@ stringl, IntPtr marpaESLIFValueResultp, @C2CSHARP_TYPE_SHORT@ confidenceb);
     
         [StructLayout(LayoutKind.Explicit, Size = @SIZEOF_marpaESLIFJSONDecodeOption_t@)]
         public struct marpaESLIFJSONDecodeOption_t

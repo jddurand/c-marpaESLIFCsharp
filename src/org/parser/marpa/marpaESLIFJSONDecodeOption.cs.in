@@ -1,0 +1,120 @@
+using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+
+namespace org.parser.marpa
+{
+    public class marpaESLIFJSONDecodeOption : IDisposable
+    {
+        public bool disallowDupkeys { get; }
+        public int maxDepth { get; }
+        public bool noReplacementCharacter { get; }
+        public IntPtr marpaESLIFJSONDecodeOptionp { get; protected set; }
+        private readonly marpaESLIFShr.marpaESLIFJSONDecodeOption_t marpaESLIFJSONDecodeOption_t;
+        private bool disposedValue;
+
+        public marpaESLIFJSONDecodeOption()
+        {
+            this.marpaESLIFJSONDecodeOption_t = new marpaESLIFShr.marpaESLIFJSONDecodeOption_t();
+            this.marpaESLIFJSONDecodeOption_t.disallowDupkeysb = (@C2CSHARP_TYPE_SHORT@) (this.disallowDupkeys ? 1 : 0);
+            this.marpaESLIFJSONDecodeOption_t.maxDepthl = (@C2CSHARP_TYPE_SIZE_T@) this.maxDepth;
+            this.marpaESLIFJSONDecodeOption_t.noReplacementCharacterb = (@C2CSHARP_TYPE_SHORT@) (this.noReplacementCharacter ? 1 : 0);
+            this.marpaESLIFJSONDecodeOption_t.positiveInfinityActionp = PositiveInfinityAction;
+            this.marpaESLIFJSONDecodeOption_t.negativeInfinityActionp = NegativeInfinityAction;
+            this.marpaESLIFJSONDecodeOption_t.positiveNanActionp = PositiveNanAction;
+            this.marpaESLIFJSONDecodeOption_t.negativeNanActionp = NegativeNanAction;
+            this.marpaESLIFJSONDecodeOption_t.numberActionp = NumberAction;
+
+            this.marpaESLIFJSONDecodeOptionp = Marshal.AllocHGlobal(Marshal.SizeOf(this.marpaESLIFJSONDecodeOption_t));
+            Marshal.StructureToPtr(marpaESLIFJSONDecodeOption_t, this.marpaESLIFJSONDecodeOptionp, false);
+        }
+
+        private @C2CSHARP_TYPE_SHORT@ PositiveInfinityAction(IntPtr userDatavp, IntPtr strings, @C2CSHARP_TYPE_SIZE_T@ stringl, IntPtr marpaESLIFValueResultp, @C2CSHARP_TYPE_SHORT@ confidenceb)
+        {
+            if (confidenceb != 0) {
+                return 1;
+            }
+
+            // Should not happen, marpaESLIFValueResultp is likely to be a C float 0x7f800000
+            throw new NotImplementedException();
+        }
+
+        private @C2CSHARP_TYPE_SHORT@ NegativeInfinityAction(IntPtr userDatavp, IntPtr strings, @C2CSHARP_TYPE_SIZE_T@ stringl, IntPtr marpaESLIFValueResultp, @C2CSHARP_TYPE_SHORT@ confidenceb)
+        {
+            if (confidenceb != 0) {
+                return 1;
+            }
+
+            // Should not happen, marpaESLIFValueResultp is likely to be a C float 0xff800000
+            throw new NotImplementedException();
+        }
+
+        private @C2CSHARP_TYPE_SHORT@ PositiveNanAction(IntPtr userDatavp, IntPtr strings, @C2CSHARP_TYPE_SIZE_T@ stringl, IntPtr marpaESLIFValueResultp, @C2CSHARP_TYPE_SHORT@ confidenceb)
+        {
+            if (confidenceb != 0) {
+                return 1;
+            }
+
+            // Should not happen, marpaESLIFValueResultp is likely to be a C float 0x7fc00000
+            throw new NotImplementedException();
+        }
+
+        private @C2CSHARP_TYPE_SHORT@ NegativeNanAction(IntPtr userDatavp, IntPtr strings, @C2CSHARP_TYPE_SIZE_T@ stringl, IntPtr marpaESLIFValueResultp, @C2CSHARP_TYPE_SHORT@ confidenceb)
+        {
+            if (confidenceb != 0) {
+                return 1;
+            }
+
+            // Should not happen, marpaESLIFValueResultp is likely to be a C float 0xffc00000
+            throw new NotImplementedException();
+        }
+
+        private @C2CSHARP_TYPE_SHORT@ NumberAction(IntPtr userDatavp, IntPtr strings, @C2CSHARP_TYPE_SIZE_T@ stringl, IntPtr marpaESLIFValueResultp, @C2CSHARP_TYPE_SHORT@ confidenceb)
+        {
+            if (confidenceb != 0) {
+                return 1;
+            }
+
+            throw new NotImplementedException();
+        }
+
+        private void DisposeUnmanagedResources()
+        {
+            if (this.marpaESLIFJSONDecodeOptionp != IntPtr.Zero)
+            {
+                Marshal.FreeHGlobal(this.marpaESLIFJSONDecodeOptionp);
+                this.marpaESLIFJSONDecodeOptionp = IntPtr.Zero;
+            }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // DONE: dispose managed state (managed objects)
+                }
+
+                // DONE: free unmanaged resources (unmanaged objects) and override finalizer
+                this.DisposeUnmanagedResources();
+                // DONE: set large fields to null
+                disposedValue = true;
+            }
+        }
+
+        // DONE: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        ~marpaESLIFJSONDecodeOption()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: false);
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+    }
+}
