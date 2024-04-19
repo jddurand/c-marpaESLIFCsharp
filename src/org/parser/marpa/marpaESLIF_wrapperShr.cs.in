@@ -81,5 +81,13 @@ namespace org.parser.marpa
         [DllImport("marpaESLIF_wrapper.dll", CallingConvention = CallingConvention.Cdecl)]
         // System free()
         public static extern void marpaESLIF_free(IntPtr p);
+
+        [DllImport("marpaESLIF_wrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        // System memcpy()
+        public static extern void marpaESLIF_memcpy(IntPtr dstp, IntPtr srcp, @C2CSHARP_TYPE_SIZE_T@ sizel);
+
+        [DllImport("marpaESLIF_wrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        // System memcpy()
+        public static extern void marpaESLIF_memmove(IntPtr dstp, IntPtr srcp, @C2CSHARP_TYPE_SIZE_T@ sizel);
     }
 }

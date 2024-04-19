@@ -62,6 +62,8 @@ extern "C" {
   marpaESLIF_wrapper_EXPORT void *marpaESLIF_malloc(size_t sizel);
   marpaESLIF_wrapper_EXPORT void *marpaESLIF_realloc(void *p, size_t sizel);
   marpaESLIF_wrapper_EXPORT void  marpaESLIF_free(void *p);
+  marpaESLIF_wrapper_EXPORT void  marpaESLIF_memcpy(void *dstp, void *srcp, size_t sizel);
+  marpaESLIF_wrapper_EXPORT void  marpaESLIF_memmove(void *dstp, void *srcp, size_t sizel);
 #ifdef __cplusplus
 }
 #endif

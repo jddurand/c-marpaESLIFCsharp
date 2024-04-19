@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using System.Globalization;
 using System.Runtime.InteropServices;
 
 namespace org.parser.marpa
@@ -35,8 +35,12 @@ namespace org.parser.marpa
                 return 1;
             }
 
-            // Should not happen, marpaESLIFValueResultp is likely to be a C float 0x7f800000
-            throw new NotImplementedException();
+            // Should not happen, marpaESLIFValueResultp is very likely to be a C float
+            IntPtr marpaESLIFValueResultFloatp = ImportExport.Instance.Exporter(Double.PositiveInfinity);
+            marpaESLIF_wrapperShr.marpaESLIF_memcpy(marpaESLIFValueResultp, marpaESLIFValueResultFloatp, @SIZEOF_marpaESLIFValueResult_t@);
+            Marshal.FreeHGlobal(marpaESLIFValueResultFloatp);
+
+            return 1;
         }
 
         private @C2CSHARP_TYPE_SHORT@ NegativeInfinityAction(IntPtr userDatavp, IntPtr strings, @C2CSHARP_TYPE_SIZE_T@ stringl, IntPtr marpaESLIFValueResultp, @C2CSHARP_TYPE_SHORT@ confidenceb)
@@ -45,8 +49,12 @@ namespace org.parser.marpa
                 return 1;
             }
 
-            // Should not happen, marpaESLIFValueResultp is likely to be a C float 0xff800000
-            throw new NotImplementedException();
+            // Should not happen, marpaESLIFValueResultp is very likely to be a C float
+            IntPtr marpaESLIFValueResultFloatp = ImportExport.Instance.Exporter(Double.NegativeInfinity);
+            marpaESLIF_wrapperShr.marpaESLIF_memcpy(marpaESLIFValueResultp, marpaESLIFValueResultFloatp, @SIZEOF_marpaESLIFValueResult_t@);
+            Marshal.FreeHGlobal(marpaESLIFValueResultFloatp);
+
+            return 1;
         }
 
         private @C2CSHARP_TYPE_SHORT@ PositiveNanAction(IntPtr userDatavp, IntPtr strings, @C2CSHARP_TYPE_SIZE_T@ stringl, IntPtr marpaESLIFValueResultp, @C2CSHARP_TYPE_SHORT@ confidenceb)
@@ -55,8 +63,12 @@ namespace org.parser.marpa
                 return 1;
             }
 
-            // Should not happen, marpaESLIFValueResultp is likely to be a C float 0x7fc00000
-            throw new NotImplementedException();
+            // Should not happen, marpaESLIFValueResultp is very likely to be a C float
+            IntPtr marpaESLIFValueResultFloatp = ImportExport.Instance.Exporter(Double.NaN);
+            marpaESLIF_wrapperShr.marpaESLIF_memcpy(marpaESLIFValueResultp, marpaESLIFValueResultFloatp, @SIZEOF_marpaESLIFValueResult_t@);
+            Marshal.FreeHGlobal(marpaESLIFValueResultFloatp);
+
+            return 1;
         }
 
         private @C2CSHARP_TYPE_SHORT@ NegativeNanAction(IntPtr userDatavp, IntPtr strings, @C2CSHARP_TYPE_SIZE_T@ stringl, IntPtr marpaESLIFValueResultp, @C2CSHARP_TYPE_SHORT@ confidenceb)
@@ -65,8 +77,12 @@ namespace org.parser.marpa
                 return 1;
             }
 
-            // Should not happen, marpaESLIFValueResultp is likely to be a C float 0xffc00000
-            throw new NotImplementedException();
+            // Should not happen, marpaESLIFValueResultp is very likely to be a C float - No -NaN, we use NaN
+            IntPtr marpaESLIFValueResultFloatp = ImportExport.Instance.Exporter(Double.NaN);
+            marpaESLIF_wrapperShr.marpaESLIF_memcpy(marpaESLIFValueResultp, marpaESLIFValueResultFloatp, @SIZEOF_marpaESLIFValueResult_t@);
+            Marshal.FreeHGlobal(marpaESLIFValueResultFloatp);
+
+            return 1;
         }
 
         private @C2CSHARP_TYPE_SHORT@ NumberAction(IntPtr userDatavp, IntPtr strings, @C2CSHARP_TYPE_SIZE_T@ stringl, IntPtr marpaESLIFValueResultp, @C2CSHARP_TYPE_SHORT@ confidenceb)
@@ -75,7 +91,14 @@ namespace org.parser.marpa
                 return 1;
             }
 
-            throw new NotImplementedException();
+            string stringValue = marpaESLIFString.BytesToString(strings, stringl, "UTF-8");
+            // We let C# throw an eventual exception
+            decimal decimalValue = Convert.ToDecimal(stringValue, CultureInfo.InvariantCulture);
+            IntPtr marpaESLIFValueResultDecimalp = ImportExport.Instance.Exporter(decimalValue);
+            marpaESLIF_wrapperShr.marpaESLIF_memcpy(marpaESLIFValueResultp, marpaESLIFValueResultDecimalp, @SIZEOF_marpaESLIFValueResult_t@);
+            Marshal.FreeHGlobal(marpaESLIFValueResultDecimalp);
+
+            return 1;
         }
 
         private void DisposeUnmanagedResources()

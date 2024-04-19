@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 #include <marpaESLIF_wrapper.h>
 
 void marpaESLIFValueResultFlatToMarpaESLIFValueResult(marpaESLIFValueResult_t *marpaESLIFValueResultp, marpaESLIFValueResultFlat_t *marpaESLIFValueResultFlatp)
@@ -197,8 +198,15 @@ void *marpaESLIF_realloc(void *p, size_t sizel)
   return realloc(p, sizel);
 }
 
-void  marpaESLIF_free(void *p) {
+void marpaESLIF_free(void *p) {
   free(p);
 }
 
+void marpaESLIF_memcpy(void *dstp, void *srcp, size_t sizel) {
+  memcpy(dstp, srcp, sizel);
+}
+
+void marpaESLIF_memmove(void *dstp, void *srcp, size_t sizel) {
+  memmove(dstp, srcp, sizel);
+}
 
