@@ -11,12 +11,22 @@ namespace org.parser.marpa
         public marpaESLIFGrammar marpaESLIFGrammar { get; protected set; }
         private readonly ESLIF ESLIF;
         private readonly string grammar;
+        private readonly bool? jsonDecoder;
+        private readonly bool jsonStrict;
 
         private ESLIFGrammar(ESLIF ESLIF, string grammar)
         {
             this.ESLIF = ESLIF ?? throw new ArgumentNullException(nameof(ESLIF));
             this.grammar = grammar ?? throw new ArgumentNullException(nameof(grammar));
             this.marpaESLIFGrammar = new marpaESLIFGrammar(this.ESLIF.marpaESLIF, new marpaESLIFGrammarOption(grammar));
+        }
+
+        private ESLIFGrammar(ESLIF ESLIF, bool jsonDecoder, bool jsonStrict)
+        {
+            this.ESLIF = ESLIF ?? throw new ArgumentNullException(nameof(ESLIF));
+            this.jsonDecoder = jsonDecoder;
+            this.jsonStrict = jsonStrict;
+            this.marpaESLIFGrammar = new marpaESLIFGrammar(this.ESLIF.marpaESLIF, this.jsonDecoder.Value, this.jsonStrict);
         }
 
         public ESLIFGrammar(IntPtr marpaESLIFGrammarp)
@@ -42,6 +52,36 @@ namespace org.parser.marpa
 
                 return ESLIFGrammar;
             }
+        }
+
+        private static ESLIFGrammar JSONInstance(ESLIF ESLIF, bool jsonDecoder, bool jsonStrict)
+        {
+            lock (MutitonsLock)
+            {
+                ESLIFGrammar ESLIFGrammar;
+                KeyValuePair<IntPtr, ESLIFGrammar> keyPair = Multitons.FirstOrDefault(p => ESLIF == p.Value.ESLIF && p.Value.jsonDecoder.HasValue && p.Value.jsonDecoder.Value == jsonDecoder && p.Value.jsonStrict == jsonStrict);
+                if (keyPair.Key != IntPtr.Zero)
+                {
+                    ESLIFGrammar = keyPair.Value;
+                }
+                else
+                {
+                    ESLIFGrammar = new ESLIFGrammar(ESLIF, jsonDecoder, jsonStrict);
+                    Multitons.Add(ESLIFGrammar.marpaESLIFGrammar.marpaESLIFGrammarp, ESLIFGrammar);
+                }
+
+                return ESLIFGrammar;
+            }
+        }
+
+        public static ESLIFGrammar JSONDecoderInstance(ESLIF ESLIF, bool jsonStrict)
+        {
+            return JSONInstance(ESLIF, true, jsonStrict);
+        }
+
+        public static ESLIFGrammar JSONEncoderInstance(ESLIF ESLIF, bool jsonStrict)
+        {
+            return JSONInstance(ESLIF, false, jsonStrict);
         }
 
         public int ngrammar()

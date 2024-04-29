@@ -3,7 +3,6 @@ namespace org.parser.marpa
     public abstract class ESLIFRecognizerString : ESLIFRecognizerInterface
     {
         private readonly string input;
-        public ESLIFRecognizer ESLIFRecognizer { get; private set; }
 
         public ESLIFRecognizerString(string input)
         {

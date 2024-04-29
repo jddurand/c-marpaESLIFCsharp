@@ -1,4 +1,3 @@
-#cmakedefine MARPAESLIF_HAVE_LONG_LONG
 #cmakedefine C2CSHARP_TYPE_INT_IS_INT
 using System;
 using System.Linq;
@@ -10,6 +9,8 @@ namespace org.parser.marpa
     {
         public IntPtr marpaESLIFGrammarp { get; protected set; }
         private readonly marpaESLIF marpaESLIF;
+        private readonly bool jsonDecoder;
+        private readonly bool jsonStrict;
         private readonly bool shallow;
         private readonly marpaESLIFGrammarOption marpaESLIFGrammarOption;
         private bool disposedValue;
@@ -33,6 +34,29 @@ namespace org.parser.marpa
             if (this.marpaESLIFGrammarp == IntPtr.Zero)
             {
                 throw new ESLIFException("marpaESLIFGrammar_newp failure");
+            }
+        }
+
+        public marpaESLIFGrammar(marpaESLIF marpaESLIF, bool jsonDecoder, bool jsonStrict)
+        {
+            this.marpaESLIF = marpaESLIF ?? throw new ArgumentNullException(nameof(marpaESLIF));
+            this.jsonDecoder = jsonDecoder;
+            this.jsonStrict = jsonStrict;
+            if (jsonDecoder)
+            {
+                this.marpaESLIFGrammarp = marpaESLIFShr.marpaESLIFJSON_decode_newp(this.marpaESLIF.marpaESLIFp, (@C2CSHARP_TYPE_SHORT@) (jsonStrict ? 1 : 0));
+                if (this.marpaESLIFGrammarp == IntPtr.Zero)
+                {
+                    throw new ESLIFException("marpaESLIFJSON_decode_newp failure");
+                }
+            }
+            else
+            {
+                this.marpaESLIFGrammarp = marpaESLIFShr.marpaESLIFJSON_encode_newp(this.marpaESLIF.marpaESLIFp, (@C2CSHARP_TYPE_SHORT@) (jsonStrict ? 1 : 0));
+                if (this.marpaESLIFGrammarp == IntPtr.Zero)
+                {
+                    throw new ESLIFException("marpaESLIFJSON_encode_newp failure");
+                }
             }
         }
 

@@ -258,6 +258,124 @@ top ::= . => parameterizedRhs->(1)
                 }
             }
 
+            string[] jsonInputs = new string[]
+            {
+                "{\"test\":\"1.25\"}",
+    "{\"test\":\"1.25e4\"}",
+    "{\"test\":1.25}",
+    "{\"test\":1.25e4}",
+    "[]",
+    "[\n" +
+       "{\n" +
+          "\"precision\": \"zip\",\n" +
+          "\"Latitude\":  37.7668,\n" +
+          "\"Longitude\": -122.3959,\n" +
+          "\"Address\":   \"\",\n" +
+          "\"City\":      \"SAN FRANCISCO\",\n" +
+          "\"State\":     \"CA\",\n" +
+          "\"Zip\":       \"94107\",\n" +
+          "\"Country\":   \"US\"\n" +
+       "},\n" +
+       "{\n" +
+          "\"precision\": \"zip\",\n" +
+          "\"Latitude\":  37.371991,\n" +
+          "\"Longitude\": -122.026020,\n" +
+          "\"Address\":   \"\",\n" +
+          "\"City\":      \"SUNNYVALE\",\n" +
+          "\"State\":     \"CA\",\n" +
+          "\"Zip\":       \"94085\",\n" +
+          "\"Country\":   \"US\"\n" +
+       "\n" +
+     "]",
+    "{\n" +
+       "\"Image\": {\n" +
+         "\"Width\":  800,\n" +
+         "\"Height\": 600,\n" +
+         "\"Title\":  \"View from 15th Floor\",\n" +
+         "\"Thumbnail\": {\n" +
+             "\"Url\":    \"http://www.example.com/image/481989943\",\n" +
+             "\"Height\": 125,\n" +
+             "\"Width\":  \"100\"\n" +
+         ",\n" +
+         "\"IDs\": [116, 943, 234, 38793]\n" +
+       "}\n" +
+    "}",
+    "{\n" +
+       "\"source\" : \"<a href=\\\"http://janetter.net/\\\" rel=\\\"nofollow\\\">Janetter</a>\",\n" +
+       "\"entities\" : {\n" +
+           "\"user_mentions\" : [ {\n" +
+"                   \"name\" : \"James Governor\",\n" +
+"                   \"screen_name\" : \"moankchips\",\n" +
+"                   \"indices\" : [ 0, 10 ],\n" +
+"                   \"id_str\" : \"61233\",\n" +
+"                   \"id\" : 61233\n" +
+               "} ],\n" +
+"           \"media\" : [ ],\n" +
+"           \"hashtags\" : [ ],\n" +
+"          \"urls\" : [ ]\n" +
+       "},\n" +
+       "\"in_reply_to_status_id_str\" : \"281400879465238529\",\n" +
+       "\"geo\" : {\n" +
+       "},\n" +
+       "\"id_str\" : \"281405942321532929\",\n" +
+       "\"in_reply_to_user_id\" : 61233,\n" +
+       "\"text\" : \"@monkchips Ouch. Some regrets are harsher than others.\",\n" +
+       "\"id\" : 281405942321532929,\n" +
+       "\"in_reply_to_status_id\" : 281400879465238529,\n" +
+       "\"created_at\" : \"Wed Dec 19 14:29:39 +0000 2012\",\n" +
+       "\"in_reply_to_screen_name\" : \"monkchips\",\n" +
+       "\"in_reply_to_user_id_str\" : \"61233\",\n" +
+       "\"user\" : {\n" +
+        "   \"name\" : \"Sarah Bourne\",\n" +
+        "   \"screen_name\" : \"sarahebourne\",\n" +
+        "   \"protected\" : false,\n" +
+        "   \"id_str\" : \"16010789\",\n" +
+        "   \"profile_image_url_https\" : \"https://si0.twimg.com/profile_images/638441870/Snapshot-of-sb_normal.jpg\",\n" +
+        "   \"id\" : 16010789,\n" +
+        " \"verified\" : false\n" +
+       "}\n" +
+     "}",
+    "{\"+Inf\":+Inf, \"-Inf\":-Inf, \"+NaN\":+NaN, \"-NaN\":-NaN}",
+    "{\"\\uDFAA\":0}",
+    "[\"\\uDADA\"]",
+    "[\"\\uD888\\u1234\"]",
+    "[\"\\uD800\\n\"]",
+    "[\"\\uDd1ea\"]",
+    "[\"\\uD800\\uD800\\n\"]",
+    "[\"\\ud800\"]",
+    "[\"\\ud800abc\"]",
+    "[\"\\uDd1e\\uD834\"]",
+    "[\"\\uDFAA\"]",
+    "[\"\\u0060\\u012a\\u12AB\"]",
+    "[\"\\uD801\\udc37\"]",
+    "[\"\\ud83d\\ude39\\ud83d\\udc8d\"]",
+    "[\"\\\"\\\\\\/\\b\\f\\n\\r\\t\"]",
+    "[\"\\\\u0000\"]",
+    "[\"\\\"\"]",
+    "[\"a/*b*/c/*d//e\"]",
+    "[\"\\\\a\"]",
+    "[\"\\\\n\"]",
+    "[\"\\u0012\"]",
+    "[\"\\uFFFF\"]",
+    "[\"\\uDBFF\\uDFFF\"]",
+    "[\"new\\u00A0line\"]",
+    "[\"\\u0000\"]",
+    "[\"\\u002c\"]",
+    "[\"\\uD834\\uDd1e\"]",
+    "[\"\\u0061\\u30af\\u30EA\\u30b9\"]",
+    "[\"\\uA66D\"]",
+    "[\"\\u005C\"]",
+    "[\"\\uDBFF\\uDFFE\"]",
+    "[\"\\uD83F\\uDFFE\"]",
+    "[\"\\u200B\"]",
+    "[\"\\u2064\"]",
+    " [] ",
+            };
+            foreach (string jsonInput in jsonInputs)
+            {
+                object jsonObject = ESLIFJSONDecoder.Decode(eslif, jsonInput);
+            }
+
             Console.ReadLine(); // Give some time to the logger ;)
         }
     }

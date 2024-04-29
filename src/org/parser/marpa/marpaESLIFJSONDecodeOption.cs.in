@@ -6,19 +6,19 @@ namespace org.parser.marpa
 {
     public class marpaESLIFJSONDecodeOption : IDisposable
     {
-        public bool disallowDupkeys { get; }
-        public int maxDepth { get; }
-        public bool noReplacementCharacter { get; }
+        public bool DisallowDupkeys { get; protected set; }
+        public int MaxDepth { get; protected set; }
+        public bool NoReplacementCharacter { get; protected set; }
         public IntPtr marpaESLIFJSONDecodeOptionp { get; protected set; }
         private readonly marpaESLIFShr.marpaESLIFJSONDecodeOption_t marpaESLIFJSONDecodeOption_t;
         private bool disposedValue;
 
-        public marpaESLIFJSONDecodeOption()
+        public marpaESLIFJSONDecodeOption(bool disallowDupkeys, long maxDepth, bool noReplacementCharacter)
         {
             this.marpaESLIFJSONDecodeOption_t = new marpaESLIFShr.marpaESLIFJSONDecodeOption_t();
-            this.marpaESLIFJSONDecodeOption_t.disallowDupkeysb = (@C2CSHARP_TYPE_SHORT@) (this.disallowDupkeys ? 1 : 0);
-            this.marpaESLIFJSONDecodeOption_t.maxDepthl = (@C2CSHARP_TYPE_SIZE_T@) this.maxDepth;
-            this.marpaESLIFJSONDecodeOption_t.noReplacementCharacterb = (@C2CSHARP_TYPE_SHORT@) (this.noReplacementCharacter ? 1 : 0);
+            this.marpaESLIFJSONDecodeOption_t.disallowDupkeysb = (@C2CSHARP_TYPE_SHORT@) (disallowDupkeys ? 1 : 0);
+            this.marpaESLIFJSONDecodeOption_t.maxDepthl = (@C2CSHARP_TYPE_SIZE_T@) maxDepth;
+            this.marpaESLIFJSONDecodeOption_t.noReplacementCharacterb = (@C2CSHARP_TYPE_SHORT@) (noReplacementCharacter ? 1 : 0);
             this.marpaESLIFJSONDecodeOption_t.positiveInfinityActionp = PositiveInfinityAction;
             this.marpaESLIFJSONDecodeOption_t.negativeInfinityActionp = NegativeInfinityAction;
             this.marpaESLIFJSONDecodeOption_t.positiveNanActionp = PositiveNanAction;
@@ -92,8 +92,10 @@ namespace org.parser.marpa
             }
 
             string stringValue = marpaESLIFString.BytesToString(strings, stringl, "UTF-8");
-            // We let C# throw an eventual exception
-            decimal decimalValue = Convert.ToDecimal(stringValue, CultureInfo.InvariantCulture);
+            if (! decimal.TryParse(stringValue, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal decimalValue))
+            {
+                throw new ESLIFException($"Failed to parse {stringValue}");
+            }
             IntPtr marpaESLIFValueResultDecimalp = ImportExport.Instance.Exporter(decimalValue);
             marpaESLIF_wrapperShr.marpaESLIF_memcpy(marpaESLIFValueResultp, marpaESLIFValueResultDecimalp, @SIZEOF_marpaESLIFValueResult_t@);
             Marshal.FreeHGlobal(marpaESLIFValueResultDecimalp);
