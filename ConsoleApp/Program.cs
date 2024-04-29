@@ -285,7 +285,7 @@ top ::= . => parameterizedRhs->(1)
           "\"State\":     \"CA\",\n" +
           "\"Zip\":       \"94085\",\n" +
           "\"Country\":   \"US\"\n" +
-       "\n" +
+       "},\n" +
      "]",
     "{\n" +
        "\"Image\": {\n" +
@@ -296,7 +296,7 @@ top ::= . => parameterizedRhs->(1)
              "\"Url\":    \"http://www.example.com/image/481989943\",\n" +
              "\"Height\": 125,\n" +
              "\"Width\":  \"100\"\n" +
-         ",\n" +
+         "},\n" +
          "\"IDs\": [116, 943, 234, 38793]\n" +
        "}\n" +
     "}",
@@ -373,7 +373,14 @@ top ::= . => parameterizedRhs->(1)
             };
             foreach (string jsonInput in jsonInputs)
             {
-                object jsonObject = ESLIFJSONDecoder.Decode(eslif, jsonInput);
+                try
+                {
+                    object jsonObject = ESLIFJSONDecoder.Decode(eslif, jsonInput);
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
             }
 
             Console.ReadLine(); // Give some time to the logger ;)

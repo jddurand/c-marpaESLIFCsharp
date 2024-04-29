@@ -1,9 +1,0 @@
-namespace org.parser.marpa
-{
-    public class marpaESLIFJSONEncoder : marpaESLIFGrammar
-    {
-        public marpaESLIFJSONEncoder(marpaESLIF marpaESLIF, bool strict) : base(marpaESLIF, false, strict)
-        {
-        }
-    }
-}

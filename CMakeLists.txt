@@ -80,8 +80,6 @@ configure_file(src/org/parser/marpa/marpaESLIFOption.cs.in           ${CMAKE_CUR
 configure_file(src/org/parser/marpa/marpaESLIFGrammar.cs.in          ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/generated/marpaESLIFGrammar.cs @ONLY)
 configure_file(src/org/parser/marpa/marpaESLIFGrammarOption.cs.in    ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/generated/marpaESLIFGrammarOption.cs @ONLY)
 configure_file(src/org/parser/marpa/marpaESLIFJSONDecodeOption.cs.in ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/generated/marpaESLIFJSONDecodeOption.cs @ONLY)
-configure_file(src/org/parser/marpa/marpaESLIFJSONDecoder.cs.in      ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/generated/marpaESLIFJSONDecoder.cs @ONLY)
-configure_file(src/org/parser/marpa/marpaESLIFJSONEncoder.cs.in      ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/generated/marpaESLIFJSONEncoder.cs @ONLY)
 configure_file(src/org/parser/marpa/marpaESLIFLuaFunction.cs.in      ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/generated/marpaESLIFLuaFunction.cs @ONLY)
 configure_file(src/org/parser/marpa/marpaESLIFRecognizer.cs.in       ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/generated/marpaESLIFRecognizer.cs @ONLY)
 configure_file(src/org/parser/marpa/marpaESLIFRecognizerOption.cs.in ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/generated/marpaESLIFRecognizerOption.cs @ONLY)
@@ -104,8 +102,6 @@ add_library(marpaESLIFCSharp SHARED
   src/org/parser/marpa/generated/marpaESLIFGrammar.cs
   src/org/parser/marpa/generated/marpaESLIFGrammarOption.cs
   src/org/parser/marpa/generated/marpaESLIFJSONDecodeOption.cs
-  src/org/parser/marpa/generated/marpaESLIFJSONDecoder.cs
-  src/org/parser/marpa/generated/marpaESLIFJSONEncoder.cs
   src/org/parser/marpa/generated/marpaESLIFLuaFunction.cs
   src/org/parser/marpa/generated/marpaESLIFRecognizer.cs
   src/org/parser/marpa/generated/marpaESLIFRecognizerOption.cs
