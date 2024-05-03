@@ -286,7 +286,7 @@ top ::= . => parameterizedRhs->(1)
           "\"Zip\":       \"94085\",\n" +
           "\"Country\":   \"US\"\n" +
        "},\n" +
-     "]",
+    "]",
     "{\n" +
        "\"Image\": {\n" +
          "\"Width\":  800,\n" +
@@ -379,6 +379,7 @@ top ::= . => parameterizedRhs->(1)
                 }
                 catch (Exception e)
                 {
+                    logger.LogError($"JSON: {jsonInput}: {e.Message}");
                     throw e;
                 }
             }
