@@ -376,8 +376,8 @@ top ::= . => parameterizedRhs->(1)
             {
                 try
                 {
-                    object jsonObject = ESLIFJSONDecoder.Decode(eslif, jsonInput);
-                    string jsonString = ESLIFJSONEncoder.Encode(eslif, jsonObject);
+                    object jsonObject = ESLIFJSON.Decode(eslif, jsonInput);
+                    string jsonString = ESLIFJSON.Encode(eslif, jsonObject);
                     logger.LogInformation($"{jsonInput} => decode/encode => {jsonString}");
                 }
                 catch (Exception e)

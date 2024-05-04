@@ -7,9 +7,9 @@ namespace org.parser.marpa
 {
     public class ESLIFJSONEncoder
     {
-        public static string Encode(ESLIF ESLIF, object input, bool jsonStrict = false)
+        public static string Encode(ESLIF eslif, object input, bool jsonStrict = false)
         {
-            ESLIFGrammar jsonGrammar = ESLIFGrammar.JSONEncoderInstance(ESLIF, jsonStrict);
+            ESLIFGrammar jsonGrammar = ESLIFGrammar.JSONEncoderInstance(eslif, jsonStrict);
 
             ESLIFJSONEncoderValue value = new ESLIFJSONEncoderValue();
             marpaESLIFValueOption valueOption = new marpaESLIFValueOption(value, CultureInfo.InvariantCulture);

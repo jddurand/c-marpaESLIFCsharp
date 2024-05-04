@@ -4,9 +4,9 @@ namespace org.parser.marpa
 {
     public class ESLIFJSONDecoder
     {
-        public static object Decode(ESLIF ESLIF, string jsonString, bool jsonStrict = false, ESLIFJSONDecoderOption decodeOption = null)
+        public static object Decode(ESLIF eslif, string jsonString, bool jsonStrict = false, ESLIFJSONDecoderOption decodeOption = null)
         {
-            ESLIFGrammar jsonGrammar = ESLIFGrammar.JSONDecoderInstance(ESLIF, jsonStrict);
+            ESLIFGrammar jsonGrammar = ESLIFGrammar.JSONDecoderInstance(eslif, jsonStrict);
 
             using (marpaESLIFJSONDecodeOption marpaESLIFJSONDecodeOption = decodeOption?.marpaESLIFJSONDecodeOption ?? new marpaESLIFJSONDecodeOption(false, 0, false))
             {
