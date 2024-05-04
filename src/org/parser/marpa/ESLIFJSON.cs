@@ -1,6 +1,6 @@
 namespace org.parser.marpa
 {
-    public class ESLIFJSON
+    public static class ESLIFJSON
     {
         public static object Decode(ESLIF eslif, string jsonString, bool jsonStrict = false, ESLIFJSONDecoderOption decodeOption = null)
         {

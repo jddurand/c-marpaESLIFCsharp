@@ -2,7 +2,7 @@ using System.Globalization;
 
 namespace org.parser.marpa
 {
-    public class ESLIFJSONDecoder
+    public static class ESLIFJSONDecoder
     {
         public static object Decode(ESLIF eslif, string jsonString, bool jsonStrict = false, ESLIFJSONDecoderOption decodeOption = null)
         {

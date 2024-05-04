@@ -5,7 +5,7 @@ using System.Globalization;
 
 namespace org.parser.marpa
 {
-    public class ESLIFJSONEncoder
+    public static class ESLIFJSONEncoder
     {
         public static string Encode(ESLIF eslif, object input, bool jsonStrict = false)
         {
