@@ -46,16 +46,16 @@ namespace org.parser.marpa
         public IntPtr Exporter(object input)
         {
             // We maintain in parallel stacks of marpaESLIFValueResult_t and objects
-            IntPtr marpaESLIFValueResultp = IntPtr.Zero;
+            IntPtr marpaESLIFValueResultOutputp = Marshal.AllocHGlobal(@SIZEOF_marpaESLIFValueResult_t@);
             Stack<IntPtr> marpaESLIFValueResultps = new Stack<IntPtr>();
             Stack<object> values = new Stack<object>();
 
-            marpaESLIFValueResultps.Push(Marshal.AllocHGlobal(@SIZEOF_marpaESLIFValueResult_t@));
+            marpaESLIFValueResultps.Push(marpaESLIFValueResultOutputp);
             values.Push(input);
 
             while (marpaESLIFValueResultps.Any())
             {
-                marpaESLIFValueResultp = marpaESLIFValueResultps.Pop();
+                IntPtr marpaESLIFValueResultp = marpaESLIFValueResultps.Pop();
                 object value = values.Pop();
 
                 bool eslif = false;
@@ -172,7 +172,7 @@ namespace org.parser.marpa
                 }
             }
 
-            return marpaESLIFValueResultp;
+            return marpaESLIFValueResultOutputp;
         }
 
         private bool ExportExternalPointer(ExternalPointer value, IntPtr marpaESLIFValueResultp)
@@ -484,11 +484,11 @@ namespace org.parser.marpa
                 case marpaESLIFShr.marpaESLIFValueType_t.MARPAESLIF_VALUE_TYPE_STRING:
                     if (marpaESLIFValueResultFlat_t.s.p != IntPtr.Zero)
                     {
-                        GCHandle.FromIntPtr(marpaESLIFValueResultFlat_t.s.p).Free();
+                        Marshal.FreeHGlobal(marpaESLIFValueResultFlat_t.s.p);
                     }
                     if (marpaESLIFValueResultFlat_t.s.encodingasciis != IntPtr.Zero && marpaESLIFValueResultFlat_t.s.encodingasciis != UTF8_STRING)
                     {
-                        GCHandle.FromIntPtr(marpaESLIFValueResultFlat_t.s.encodingasciis).Free();
+                        Marshal.FreeHGlobal(marpaESLIFValueResultFlat_t.s.encodingasciis);
                     }
                     break;
             }
@@ -509,15 +509,7 @@ namespace org.parser.marpa
 
             // If called on a decimal, use the R modifier to loose as little as possible
             GCHandle handle = GCHandle.FromIntPtr(marpaESLIFValueResultFlat_t.p.p);
-            byte[] bytes;
-            if (Object.ReferenceEquals(handle.Target.GetType(), typeof(decimal)))
-            {
-                bytes = Encoding.UTF8.GetBytes(((decimal)handle.Target).ToString("R"));
-            }
-            else
-            {
-                bytes = Encoding.UTF8.GetBytes($"{handle.Target}");
-            }
+            byte[] bytes = Encoding.UTF8.GetBytes($"{handle.Target}");
 
             if (bytes.Length > 0)
             {

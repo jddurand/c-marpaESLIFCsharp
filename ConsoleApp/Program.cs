@@ -260,6 +260,7 @@ top ::= . => parameterizedRhs->(1)
 
             string[] jsonInputs = new string[]
             {
+                "\"test\"",
                 "{\"test\":\"1.25\"}",
     "{\"test\":\"1.25e4\"}",
     "{\"test\":1.25}",
@@ -376,6 +377,8 @@ top ::= . => parameterizedRhs->(1)
                 try
                 {
                     object jsonObject = ESLIFJSONDecoder.Decode(eslif, jsonInput);
+                    string jsonString = ESLIFJSONEncoder.Encode(eslif, jsonObject);
+                    logger.LogInformation($"{jsonInput} => decode/encode => {jsonString}");
                 }
                 catch (Exception e)
                 {
