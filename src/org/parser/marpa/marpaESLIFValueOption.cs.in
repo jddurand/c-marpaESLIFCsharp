@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
@@ -20,18 +21,24 @@ namespace org.parser.marpa
             public ESLIFValueInterface valueInterface;
             public Stack<object> stack = new Stack<object>();
             public string action;
+            public CultureInfo cultureInfo;
 
-            public marpaESLIFValueOptionContext(ESLIFValueInterface valueInterface)
+            public marpaESLIFValueOptionContext(ESLIFValueInterface valueInterface, CultureInfo cultureInfo)
             {
                 this.valueInterface = valueInterface ?? throw new ArgumentNullException(nameof(valueInterface));
+                this.cultureInfo = cultureInfo;
             }
         }
 
-        public marpaESLIFValueOption(ESLIFValueInterface valueInterface)
+        public marpaESLIFValueOption(ESLIFValueInterface valueInterface) : this(valueInterface, CultureInfo.CurrentCulture)
+        {
+        }
+
+        public marpaESLIFValueOption(ESLIFValueInterface valueInterface, CultureInfo cultureInfo)
         {
             this.valueInterface = valueInterface ?? throw new ArgumentNullException(nameof(valueInterface));
 
-            this.context = new marpaESLIFValueOptionContext(valueInterface);
+            this.context = new marpaESLIFValueOptionContext(valueInterface, cultureInfo);
             this.contextHandle = GCHandle.Alloc(context, GCHandleType.Normal);
             this.userDatavp = GCHandle.ToIntPtr(this.contextHandle);
 

@@ -1,8 +1,8 @@
 #cmakedefine MARPAESLIF_HAVE_LONG_LONG
-#cmakedefine C2CSHARP_TYPE_INT_IS_INT
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -496,6 +496,14 @@ namespace org.parser.marpa
 
         private static short Representation(IntPtr userDatavp, IntPtr marpaESLIFValueResultp, ref IntPtr inputcpp, ref @C2CSHARP_TYPE_SIZE_T@ inputlp, ref IntPtr encodingasciisp, ref marpaESLIFShr.marpaESLIFRepresentationDispose_t disposeCallbackpp, ref @C2CSHARP_TYPE_SHORT@ stringbp)
         {
+            // userDatavp is always a marpaESLIFValueOption context
+            marpaESLIFValueOption.marpaESLIFValueOptionContext context = null;
+            if (userDatavp != IntPtr.Zero)
+            {
+                GCHandle contextHandle = GCHandle.FromIntPtr(userDatavp);
+                context = (marpaESLIFValueOption.marpaESLIFValueOptionContext)contextHandle.Target;
+            }
+
             IntPtr marpaESLIFValueResultFlatp = marpaESLIF_wrapperShr.marpaESLIFValueResultConvertp(marpaESLIFValueResultp);
             marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t marpaESLIFValueResultFlat_t = new marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t();
             Marshal.PtrToStructure<marpaESLIF_wrapperShr.marpaESLIFValueResultFlat_t>(marpaESLIFValueResultFlatp, marpaESLIFValueResultFlat_t);
@@ -509,7 +517,7 @@ namespace org.parser.marpa
 
             // If called on a decimal, use the R modifier to loose as little as possible
             GCHandle handle = GCHandle.FromIntPtr(marpaESLIFValueResultFlat_t.p.p);
-            byte[] bytes = Encoding.UTF8.GetBytes($"{handle.Target}");
+            byte[] bytes = Encoding.UTF8.GetBytes(Convert.ToString(handle.Target, context?.cultureInfo ?? CultureInfo.CurrentCulture));
 
             if (bytes.Length > 0)
             {

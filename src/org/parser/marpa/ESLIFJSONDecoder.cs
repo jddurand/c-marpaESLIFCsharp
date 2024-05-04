@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace org.parser.marpa
 {
     public class ESLIFJSONDecoder
@@ -11,7 +13,7 @@ namespace org.parser.marpa
                 using (marpaESLIFRecognizerOption marpaESLIFRecognizerOption = new marpaESLIFRecognizerOption(new ESLIFJSONDecoderRecognizer(jsonString)))
                 {
                     ESLIFJSONDecoderValue value = new ESLIFJSONDecoderValue();
-                    marpaESLIFValueOption valueOption = new marpaESLIFValueOption(value);
+                    marpaESLIFValueOption valueOption = new marpaESLIFValueOption(value, CultureInfo.InvariantCulture);
 
                     if (marpaESLIFShr.marpaESLIFJSON_decodeb(jsonGrammar.marpaESLIFGrammar.marpaESLIFGrammarp, marpaESLIFJSONDecodeOption.marpaESLIFJSONDecodeOptionp, marpaESLIFRecognizerOption.marpaESLIFRecognizerOptionp, valueOption.marpaESLIFValueOptionp) == 0)
                     {

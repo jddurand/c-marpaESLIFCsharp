@@ -1,6 +1,7 @@
 using static org.parser.marpa.marpaESLIFShr;
 using System.Runtime.InteropServices;
 using System;
+using System.Globalization;
 
 namespace org.parser.marpa
 {
@@ -11,7 +12,7 @@ namespace org.parser.marpa
             ESLIFGrammar jsonGrammar = ESLIFGrammar.JSONEncoderInstance(ESLIF, jsonStrict);
 
             ESLIFJSONEncoderValue value = new ESLIFJSONEncoderValue();
-            marpaESLIFValueOption valueOption = new marpaESLIFValueOption(value);
+            marpaESLIFValueOption valueOption = new marpaESLIFValueOption(value, CultureInfo.InvariantCulture);
             IntPtr marpaESLIFValueResultp = ImportExport.Instance.Exporter(input);
 
             if (marpaESLIFShr.marpaESLIFJSON_encodeb(jsonGrammar.marpaESLIFGrammar.marpaESLIFGrammarp, marpaESLIFValueResultp, valueOption.marpaESLIFValueOptionp) == 0)
