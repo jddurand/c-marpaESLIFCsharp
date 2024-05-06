@@ -171,9 +171,9 @@ add_custom_command(
 add_custom_command(
   OUTPUT ${DOTNET_NATIVE_PROJECT_DIR}/timestamp
   COMMAND ${CMAKE_COMMAND} -E env --unset=TARGETNAME
-    ${DOTNET_EXECUTABLE} build --nologo -c Release /p:Platform=${DOTNET_PLATFORM} ${DOTNET_NATIVE_PROJECT}.csproj /p:NoWarn=NU5128
+    ${DOTNET_EXECUTABLE} build --nologo -c Release /p:Platform=${DOTNET_PLATFORM} ${DOTNET_NATIVE_PROJECT}.csproj /p:NoWarn=NU5128 --verbosity normal
   COMMAND ${CMAKE_COMMAND} -E env --unset=TARGETNAME
-    ${DOTNET_EXECUTABLE} pack --nologo -c Release ${DOTNET_NATIVE_PROJECT}.csproj /p:NoWarn=NU5128
+    ${DOTNET_EXECUTABLE} pack --nologo -c Release ${DOTNET_NATIVE_PROJECT}.csproj /p:NoWarn=NU5128 --verbosity normal
   COMMAND ${CMAKE_COMMAND} -E touch ${DOTNET_NATIVE_PROJECT_DIR}/timestamp
   DEPENDS
     ${CMAKE_CURRENT_BINARY_DIR}/Directory.Packages.props
@@ -211,9 +211,9 @@ add_custom_command(
 add_custom_command(
   OUTPUT ${DOTNET_PROJECT_DIR}/timestamp
   COMMAND ${CMAKE_COMMAND} -E env --unset=TARGETNAME
-    ${DOTNET_EXECUTABLE} build --nologo -c Release /p:Platform=${DOTNET_PLATFORM} ${DOTNET_PROJECT}.csproj /p:NoWarn=NU5128
+    ${DOTNET_EXECUTABLE} build --nologo -c Release /p:Platform=${DOTNET_PLATFORM} ${DOTNET_PROJECT}.csproj /p:NoWarn=NU5128 --verbosity normal
   COMMAND ${CMAKE_COMMAND} -E env --unset=TARGETNAME
-    ${DOTNET_EXECUTABLE} pack --nologo -c Release ${DOTNET_PROJECT}.csproj /p:NoWarn=NU5128
+    ${DOTNET_EXECUTABLE} pack --nologo -c Release ${DOTNET_PROJECT}.csproj /p:NoWarn=NU5128 --verbosity normal
   COMMAND ${CMAKE_COMMAND} -E touch ${DOTNET_PROJECT_DIR}/timestamp
   DEPENDS
     ${DOTNET_PROJECT_DIR}/${DOTNET_PROJECT}.csproj
