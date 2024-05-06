@@ -60,16 +60,15 @@ cmake_helpers_depend(marpaESLIF
 find_package(marpaESLIF REQUIRED)
 message(STATUS "marpaESLIF version: ${marpaESLIF_VERSION}")
 #
-# A custom target that will copy genericLogger dll to runtime output directory. Note that I do not know a default property to get pdb location.
+# A custom target that will copy marpaESLIF dll to runtime output directory. Note that I do not know a default property to get pdb location.
 #
 add_subdirectory(marpaESLIFCopy)
 #
-# Our marpaESLIF wrapper just to easy the use of struct with unions
+# Our marpaESLIF wrapper just to ease the use of struct with unions
 #
 add_subdirectory(marpaESLIF_wrapper)
 #
-# Thin interfaces
-# (should be without CMAKE_CURRENT_SOURCE_DIR but does not show up in Visual Studio - a CMake bug ?)
+# Thin interfaces (should be without CMAKE_CURRENT_SOURCE_DIR but does not show up in Visual Studio - a CMake bug ?)
 #
 configure_file(src/org/parser/marpa/genericLoggerShr.cs.in           ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/generated/genericLoggerShr.cs @ONLY)
 configure_file(src/org/parser/marpa/ImportExport.cs.in               ${CMAKE_CURRENT_SOURCE_DIR}/src/org/parser/marpa/generated/ImportExport.cs @ONLY)
@@ -92,7 +91,7 @@ configure_file(src/org/parser/marpa/marpaESLIF_wrapperShr.cs.in      ${CMAKE_CUR
 #
 # The C# package itself
 #
-add_library(marpaESLIFCSharp SHARED
+add_library(marpaESLIFCsharp SHARED
   src/org/parser/marpa/generated/genericLoggerShr.cs
   src/org/parser/marpa/generated/ImportExport.cs
   src/org/parser/marpa/generated/marpaESLIFShr.cs
@@ -143,13 +142,17 @@ add_library(marpaESLIFCSharp SHARED
   src/org/parser/marpa/ESLIFValue.cs
   src/org/parser/marpa/ESLIFValueInterface.cs
 )
-add_dependencies(marpaESLIFCSharp genericLoggerCopy marpaESLIFCopy)
-set_property(TARGET marpaESLIFCSharp PROPERTY VS_DOTNET_REFERENCES "System;System.Runtime.InteropServices")
-set_property(TARGET marpaESLIFCSharp PROPERTY VS_PACKAGE_REFERENCES "Microsoft.Extensions.Logging_8.0.0")
+add_dependencies(marpaESLIFCsharp genericLoggerCopy marpaESLIFCopy)
+set_property(TARGET marpaESLIFCsharp PROPERTY VS_DOTNET_REFERENCES "System;System.Runtime.InteropServices")
+set_property(TARGET marpaESLIFCsharp PROPERTY VS_PACKAGE_REFERENCES "Microsoft.Extensions.Logging_8.0.0")
 #
 # Temporary test project
 #
 add_subdirectory(ConsoleApp)
+#
+# dotnet packaging
+#
+add_subdirectory(dotnet)
 #
 # Make ConsoleApp the start project
 #
@@ -157,6 +160,6 @@ set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT C
 #
 # C.f. https://gitlab.kitware.com/cmake/cmake/-/issues/23573
 #
-foreach (target marpaESLIFCSharp ConsoleApp)
+foreach (target marpaESLIFCsharp ConsoleApp)
   target_compile_options(${target} PRIVATE $<IF:$<STREQUAL:"win32",$<LOWER_CASE:"${CMAKE_GENERATOR_PLATFORM}">>,/platform:x86,/platform:x64>)
 endforeach()
